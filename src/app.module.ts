@@ -24,10 +24,7 @@ import { UsersModule } from './users/users.module';
         name: 'AUTH_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
           user: envs.natsUsername,
           pass: envs.natsPassword,
         },
@@ -36,22 +33,16 @@ import { UsersModule } from './users/users.module';
         name: 'USER_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
           user: envs.natsUsername,
           pass: envs.natsPassword,
         },
       },
       {
-        name: 'AGENT_SERVICE',
+        name: 'EVENTS_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
           user: envs.natsUsername,
           pass: envs.natsPassword,
         },

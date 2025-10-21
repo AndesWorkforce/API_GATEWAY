@@ -12,13 +12,10 @@ import { EventsController } from './events.controller';
   imports: [
     NestClientsModule.register([
       {
-        name: 'AGENT_SERVICE',
+        name: 'EVENTS_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
           user: envs.natsUsername,
           pass: envs.natsPassword,
         },

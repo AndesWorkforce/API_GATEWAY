@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('events')
 export class EventsController {
-  constructor(@Inject('AGENT_SERVICE') private readonly client: ClientProxy) {}
+  constructor(@Inject('EVENTS_SERVICE') private readonly client: ClientProxy) {}
 
   @Post()
   create(@Body() createEventDto: any) {

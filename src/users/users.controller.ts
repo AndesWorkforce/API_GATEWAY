@@ -10,6 +10,8 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+import { CurrentUser } from '../decorators/current-user.decorator';
+
 @Controller('users')
 export class UsersController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
@@ -20,7 +22,8 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
+  findAll(@CurrentUser() user: any) {
+    console.log('Usuario autenticado:', user);
     return this.client.send('findAllUsers', {});
   }
 

@@ -7,6 +7,7 @@ import {
 import { envs } from 'config';
 
 import { AuthController } from './auth.controller';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Module({
   imports: [
@@ -15,10 +16,7 @@ import { AuthController } from './auth.controller';
         name: 'AUTH_SERVICE',
         transport: Transport.NATS,
         options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
           user: envs.natsUsername,
           pass: envs.natsPassword,
         },
@@ -26,5 +24,7 @@ import { AuthController } from './auth.controller';
     ]),
   ],
   controllers: [AuthController],
+  providers: [AuthGuard],
+  exports: [AuthGuard],
 })
 export class AuthModule {}

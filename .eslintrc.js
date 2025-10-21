@@ -19,6 +19,14 @@ module.exports = {
     jest: true,
   },
   ignorePatterns: ['.eslintrc.js', 'dist', 'node_modules'],
+  overrides: [
+    {
+      files: ['config/envs.ts'],
+      rules: {
+        'import/namespace': 'off',
+      },
+    },
+  ],
   rules: {
     // TypeScript specific rules
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -78,6 +86,12 @@ module.exports = {
     'import/no-unresolved': 'off', // TypeScript handles this
     'import/no-cycle': 'error',
     'import/no-duplicates': 'error',
+    'import/namespace': [
+      'error',
+      {
+        allowComputed: true,
+      },
+    ],
 
     // SonarJS rules
     'sonarjs/no-duplicate-string': 'off',

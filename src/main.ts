@@ -2,6 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
+import { AuthGuard } from './guards/auth.guard';
 
 async function bootstrap() {
   const logger = new Logger('Main-Gateway');
@@ -14,6 +15,10 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  // Aplicar AuthGuard globalmente
+  const authGuard = app.get(AuthGuard);
+  app.useGlobalGuards(authGuard);
 
   app.enableCors();
 
