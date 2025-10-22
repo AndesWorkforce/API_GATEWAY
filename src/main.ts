@@ -16,7 +16,6 @@ async function bootstrap() {
     }),
   );
 
-  // Aplicar AuthGuard globalmente
   const authGuard = app.get(AuthGuard);
   app.useGlobalGuards(authGuard);
 
@@ -26,7 +25,6 @@ async function bootstrap() {
 
   logger.log(`API Gateway is running on port ${process.env.PORT}`);
 
-  // Configurar cierre graceful
   process.on('SIGTERM', async () => {
     await app.close();
     process.exit(0);
