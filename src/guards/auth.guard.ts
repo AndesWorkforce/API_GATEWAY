@@ -25,7 +25,10 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
+    console.log('AuthGuard - isPublic:', isPublic);
+
     if (isPublic) {
+      console.log('AuthGuard - Ruta pública, permitiendo acceso');
       return true;
     }
     const request = context.switchToHttp().getRequest<Request>();
@@ -38,7 +41,7 @@ export class AuthGuard implements CanActivate {
     try {
       // Llamar al endpoint de validación en auth-ms
       const validationResult = await this.authClient
-        .send('auth.validate', { token })
+        .send('auth.validate', token)
         .toPromise();
 
       if (!validationResult.isValid) {
