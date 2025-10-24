@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
+import { ContractorsModule } from './contractors/contractors.module';
 import { EventsModule } from './events/events.module';
 import { NatsModule } from './nats/nats.module';
 import { SessionsModule } from './sessions/sessions.module';
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
     ClientsMsModule,
     TeamsModule,
     SessionsModule,
+    ContractorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

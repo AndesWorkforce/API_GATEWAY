@@ -1,6 +1,8 @@
 import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+import { envs } from 'config';
+
 import { Public } from '../decorators/public.decorator';
 
 @Controller('auth')
@@ -11,18 +13,31 @@ export class AuthController {
       !!this.client,
     );
     console.log('AuthController - Configuración NATS:', {
-      host: process.env.NATS_HOST,
-      port: process.env.NATS_PORT,
-      username: process.env.NATS_USERNAME,
-      password: process.env.NATS_PASSWORD ? '***' : 'undefined',
+      host: envs.natsHost,
+      port: envs.natsPort,
+      username: envs.natsUsername,
+      password: envs.natsPassword ? '***' : 'undefined',
     });
   }
 
   @Public()
-  @Post('register')
-  register(@Body() registerDto: any) {
-    console.log('AuthController - Enviando registro a auth-ms:', registerDto);
-    return this.client.send('auth.register', registerDto);
+  @Post('register/user')
+  registerUser(@Body() registerDto: any) {
+    console.log(
+      'AuthController - Enviando registro de usuario a auth-ms:',
+      registerDto,
+    );
+    return this.client.send('auth.register.user', registerDto);
+  }
+
+  @Public()
+  @Post('register/client')
+  registerClient(@Body() registerDto: any) {
+    console.log(
+      'AuthController - Enviando registro de cliente a auth-ms:',
+      registerDto,
+    );
+    return this.client.send('auth.register.client', registerDto);
   }
 
   @Public()
