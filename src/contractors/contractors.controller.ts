@@ -9,6 +9,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Public } from '../decorators/public.decorator';
 
 @Controller('contractors')
 export class ContractorsController {
@@ -43,6 +44,12 @@ export class ContractorsController {
   @Get('team/:teamId')
   findByTeamId(@Param('teamId') teamId: string) {
     return this.client.send('findContractorsByTeamId', teamId);
+  }
+
+  @Public()
+  @Get('by-activation-key/:activationKey')
+  findByActivationKey(@Param('activationKey') activationKey: string) {
+    return this.client.send('findContractorByActivationKey', activationKey);
   }
 
   @Patch(':id')

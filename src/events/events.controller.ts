@@ -18,13 +18,18 @@ export class EventsController {
     return this.client.send('findEvents', {});
   }
 
-  @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string) {
-    return this.client.send('findEventsByUserId', userId);
+  @Get('contractor/:contractorId')
+  findByContractorId(@Param('contractorId') contractorId: string) {
+    return this.client.send('findEventsByContractorId', contractorId);
   }
 
   @Get('session/:sessionId')
   findBySessionId(@Param('sessionId') sessionId: string) {
     return this.client.send('findEventsBySessionId', sessionId);
+  }
+
+  @Get('agent/:agentId')
+  findByAgentId(@Param('agentId') agentId: string) {
+    return this.client.send('findEventsByAgentId', agentId);
   }
 }
