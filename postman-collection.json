@@ -63,6 +63,11 @@
       "type": "string"
     },
     {
+      "key": "agent2Id",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "eventId",
       "value": "",
       "type": "string"
@@ -629,6 +634,37 @@
           }
         },
         {
+          "name": "GET /contractors/by-activation-key/:activationKey",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/contractors/by-activation-key/{{activationKey}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["contractors", "by-activation-key", "{{activationKey}}"]
+            },
+            "description": "Obtiene contractor por activationKey (público). Devuelve { id, nombre, activationKey }."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.expect(json).to.have.property('nombre');",
+                  "pm.expect(json).to.have.property('activationKey');"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
           "name": "PATCH /contractors/:id",
           "request": {
             "method": "PATCH",
@@ -1044,9 +1080,9 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"activationKey\": \"{{activationKey}}\",\n  \"name\": \"PC Principal\",\n  \"hostname\": \"DESKTOP-ABC123\",\n  \"os\": \"Windows 11\"\n}"
+              "raw": "{\n  \"activationKey\": \"{{activationKey}}\",\n  \"hostname\": \"DESKTOP-ABC123\"\n}"
             },
-            "description": "Registra un nuevo agente o activa uno existente. Si hay HOST activo, crea VM. Si no hay HOST activo y todos están inactivos > 14 días, realiza transferencia automática."
+            "description": "Registra un nuevo agente o activa uno existente. Si hay HOST activo, crea VM. Si no hay HOST activo, crea VM bajo el HOST más reciente o un nuevo HOST si no existen HOSTs."
           },
           "event": [
             {
@@ -1100,6 +1136,44 @@
                   "  const json = pm.response.json();",
                   "  pm.expect(json).to.have.property('ok', true);",
                   "  pm.expect(json).to.have.property('last_heartbeat');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /agents/swap",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agents/swap",
+              "host": ["{{baseUrl}}"],
+              "path": ["agents", "swap"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent1_id\": \"{{agentId}}\",\n  \"agent2_id\": \"{{agent2Id}}\"\n}"
+            },
+            "description": "Intercambia manualmente los tipos (HOST/VM) y parent_agent_id entre dos agentes del mismo contratista."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json).to.have.property('agent1');",
+                  "  pm.expect(json).to.have.property('agent2');",
                   "}"
                 ],
                 "type": "text/javascript"

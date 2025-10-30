@@ -3,13 +3,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 import { envs } from 'config';
 
-console.log('NatsModule - Configuración NATS:', {
-  host: envs.natsHost,
-  port: envs.natsPort,
-  username: envs.natsUsername,
-  password: envs.natsPassword ? '***' : 'undefined',
-});
-
 @Global()
 @Module({
   imports: [

@@ -8,17 +8,7 @@ import { Public } from '../decorators/public.decorator';
 @Controller('auth')
 export class AuthController {
   constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {
-    console.log(
-      'AuthController - Cliente AUTH_SERVICE inyectado:',
-      !!this.client,
-    );
-    console.log('AuthController - Configuración NATS:', {
-      host: envs.natsHost,
-      port: envs.natsPort,
-      username: envs.natsUsername,
-      password: envs.natsPassword ? '***' : 'undefined',
-    });
-  }
+     }
 
   @Public()
   @Post('register/user')

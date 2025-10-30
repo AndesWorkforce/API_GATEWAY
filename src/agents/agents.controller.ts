@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { RegisterAgentDto, HeartbeatAgentDto } from './dto/agent.dto';
+import { RegisterAgentDto, HeartbeatAgentDto, SwapAgentsDto } from './dto/agent.dto';
 
 @Controller('agents')
 export class AgentsController {
@@ -25,6 +25,11 @@ export class AgentsController {
   @Get('contractor/:contractorId/hierarchy')
   getAgentHierarchy(@Param('contractorId') contractorId: string) {
     return this.client.send('getAgentHierarchy', contractorId);
+  }
+
+  @Post('swap')
+  swapAgentTypes(@Body() swapDto: SwapAgentsDto) {
+    return this.client.send('swapAgentTypes', swapDto);
   }
 
   @Get()
