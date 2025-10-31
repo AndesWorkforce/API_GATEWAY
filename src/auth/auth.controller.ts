@@ -13,20 +13,12 @@ export class AuthController {
   @Public()
   @Post('register/user')
   registerUser(@Body() registerDto: any) {
-    console.log(
-      'AuthController - Enviando registro de usuario a auth-ms:',
-      registerDto,
-    );
     return this.client.send('auth.register.user', registerDto);
   }
 
   @Public()
   @Post('register/client')
   registerClient(@Body() registerDto: any) {
-    console.log(
-      'AuthController - Enviando registro de cliente a auth-ms:',
-      registerDto,
-    );
     return this.client.send('auth.register.client', registerDto);
   }
 

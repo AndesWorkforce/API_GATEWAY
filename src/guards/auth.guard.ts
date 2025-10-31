@@ -25,10 +25,7 @@ export class AuthGuard implements CanActivate {
       context.getClass(),
     ]);
 
-    console.log('AuthGuard - isPublic:', isPublic);
-
     if (isPublic) {
-      console.log('AuthGuard - Ruta pública, permitiendo acceso');
       return true;
     }
     const request = context.switchToHttp().getRequest<Request>();
@@ -49,8 +46,6 @@ export class AuthGuard implements CanActivate {
           validationResult.error || 'Token inválido',
         );
       }
-
-      // Guardar la información del usuario en la request
       request['user'] = {
         id: validationResult.userId,
         email: validationResult.email,
