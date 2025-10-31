@@ -23,7 +23,6 @@ export class UsersController {
 
   @Get()
   findAll(@CurrentUser() user: any) {
-    console.log('Usuario autenticado:', user);
     return this.client.send('findAllUsers', {});
   }
 

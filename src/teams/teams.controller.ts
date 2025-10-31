@@ -14,7 +14,6 @@ import { ClientProxy } from '@nestjs/microservices';
 export class TeamsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  // Team endpoints
   @Post()
   create(@Body() createTeamDto: any) {
     return this.client.send('createTeam', createTeamDto);
