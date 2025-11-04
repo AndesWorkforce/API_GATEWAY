@@ -188,7 +188,8 @@
         { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] } } },
         { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Slack Updated\"\n}","options":{"raw":{"language":"json"}}} } },
         { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] } } },
-        { "name": "Assign to Contractor", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}/assign", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}","assign"] }, "body": {"mode":"raw","raw":"{\n  \"app_ids\": [\"{{appId}}\"]\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Add Apps to Contractor", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}/assign", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}","assign"] }, "body": {"mode":"raw","raw":"{\n  \"app_ids\": [\"{{appId}}\"]\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove Apps from Contractor", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}/remove", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}","remove"] }, "body": {"mode":"raw","raw":"{\n  \"app_ids\": [\"{{appId}}\"]\n}","options":{"raw":{"language":"json"}}} } },
         { "name": "Get Apps by Contractor", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}"] } } }
       ]
     },
@@ -265,7 +266,6 @@
     {
       "name": "Users",
       "item": [
-        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }, "body": {"mode":"raw","raw":"{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"name\": \"User Name\",\n  \"role\": \"Visualizer\"\n}","options":{"raw":{"language":"json"}}} } },
         { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] } } },
         { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users","{{userId}}"] } } },
         { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users","{{userId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"User Name Updated\"\n}","options":{"raw":{"language":"json"}}} } },

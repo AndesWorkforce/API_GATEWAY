@@ -54,5 +54,16 @@ export class ApplicationsController {
   getAppsByContractor(@Param('contractorId') contractorId: string) {
     return this.client.send('getAppsByContractor', contractorId);
   }
+
+  @Delete('contractor/:contractorId/remove')
+  removeAppsFromContractor(
+    @Param('contractorId') contractorId: string,
+    @Body() body: { app_ids: string[] },
+  ) {
+    return this.client.send('removeAppsFromContractor', {
+      contractorId,
+      assignApplicationsDto: body,
+    });
+  }
 }
 
