@@ -46,7 +46,7 @@ export class ApplicationsController {
   ) {
     return this.client.send('assignAppsToContractor', {
       contractorId,
-      assignAppsDto: body,
+      assignApplicationsDto: body,
     });
   }
 
