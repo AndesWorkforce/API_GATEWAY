@@ -14,11 +14,6 @@ import { ClientProxy } from '@nestjs/microservices';
 export class ClientsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  @Post()
-  create(@Body() createClientDto: any) {
-    return this.client.send('createClient', createClientDto);
-  }
-
   @Get()
   findAll() {
     return this.client.send('findAllClients', {});

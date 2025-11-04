@@ -16,10 +16,6 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 export class UsersController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  @Post()
-  create(@Body() createUserDto: any) {
-    return this.client.send('createUser', createUserDto);
-  }
 
   @Get()
   findAll(@CurrentUser() user: any) {
