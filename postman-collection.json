@@ -58,6 +58,11 @@
       "type": "string"
     },
     {
+      "key": "agentSessionId",
+      "value": "",
+      "type": "string"
+    },
+    {
       "key": "agentId",
       "value": "",
       "type": "string"
@@ -1274,9 +1279,9 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"session_id\": \"{{sessionId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"event_type\": \"click\",\n  \"data\": {\n    \"element\": \"button\",\n    \"timestamp\": \"2025-11-01T10:00:00.000Z\"\n  }\n}"
+              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"payload\": {\n    \"event_type\": \"click\",\n    \"element\": \"button\",\n    \"timestamp\": \"2025-11-01T10:00:00.000Z\"\n  },\n  \"timestamp\": \"2025-11-01T10:00:00.000Z\"\n}"
             },
-            "description": "Crea un nuevo evento. Ruta pública (no requiere autenticación)."
+            "description": "Crea un nuevo evento. Ruta pública (no requiere autenticación). El sistema automáticamente crea o reutiliza una agent session para el agente. El campo agent_session_id se asigna automáticamente."
           },
           "event": [
             {
@@ -1330,7 +1335,20 @@
               "host": ["{{baseUrl}}"],
               "path": ["events", "session", "{{sessionId}}"]
             },
-            "description": "Obtiene todos los eventos de una sesión."
+            "description": "Obtiene todos los eventos de una sesión (contractor session)."
+          }
+        },
+        {
+          "name": "GET /events/agent-session/:agentSessionId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/agent-session/{{agentSessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "agent-session", "{{agentSessionId}}"]
+            },
+            "description": "Obtiene todos los eventos de una agent session."
           }
         },
         {
@@ -1344,6 +1362,175 @@
               "path": ["events", "agent", "{{agentId}}"]
             },
             "description": "Obtiene todos los eventos de un agente."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agent Sessions",
+      "description": "Gestión de sesiones por agente (sub-sesiones)",
+      "item": [
+        {
+          "name": "POST /agent-sessions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"session_start\": \"2025-11-01T09:00:00.000Z\",\n  \"session_id\": null\n}"
+            },
+            "description": "Crea una nueva agent session. El campo session_id es opcional y se usa para relacionar con una Session principal."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
+                  "if ([200,201].includes(pm.response.code)) {",
+                  "  const json = pm.response.json();",
+                  "  pm.collectionVariables.set('agentSessionId', json.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /agent-sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions"]
+            },
+            "description": "Obtiene todas las agent sessions."
+          }
+        },
+        {
+          "name": "GET /agent-sessions/active",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "active"]
+            },
+            "description": "Obtiene todas las agent sessions activas."
+          }
+        },
+        {
+          "name": "GET /agent-sessions/:id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "{{agentSessionId}}"]
+            },
+            "description": "Obtiene una agent session específica por ID."
+          }
+        },
+        {
+          "name": "GET /agent-sessions/agent/:agentId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/agent/{{agentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "agent", "{{agentId}}"]
+            },
+            "description": "Obtiene todas las agent sessions de un agente específico."
+          }
+        },
+        {
+          "name": "GET /agent-sessions/agent/:agentId/active",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/agent/{{agentId}}/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "agent", "{{agentId}}", "active"]
+            },
+            "description": "Obtiene la agent session activa de un agente específico (si existe)."
+          }
+        },
+        {
+          "name": "GET /agent-sessions/contractor/:contractorId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/contractor/{{contractorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "contractor", "{{contractorId}}"]
+            },
+            "description": "Obtiene todas las agent sessions de un contractor."
+          }
+        },
+        {
+          "name": "PATCH /agent-sessions/:id",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "{{agentSessionId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_end\": \"2025-11-01T18:00:00.000Z\"\n}"
+            },
+            "description": "Actualiza una agent session."
+          }
+        },
+        {
+          "name": "PATCH /agent-sessions/:id/end",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}/end",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "{{agentSessionId}}", "end"]
+            },
+            "description": "Finaliza una agent session actualizando automáticamente el session_end y calculando la duración total."
+          }
+        },
+        {
+          "name": "DELETE /agent-sessions/:id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent-sessions", "{{agentSessionId}}"]
+            },
+            "description": "Elimina una agent session."
           }
         }
       ]

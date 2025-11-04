@@ -32,4 +32,9 @@ export class EventsController {
   findByAgentId(@Param('agentId') agentId: string) {
     return this.client.send('findEventsByAgentId', agentId);
   }
+
+  @Get('agent-session/:agentSessionId')
+  findByAgentSessionId(@Param('agentSessionId') agentSessionId: string) {
+    return this.client.send('findEventsByAgentSessionId', agentSessionId);
+  }
 }
