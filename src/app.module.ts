@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AgentsModule } from './agents/agents.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
 import { ContractorsModule } from './contractors/contractors.module';
@@ -28,6 +29,7 @@ import { UsersModule } from './users/users.module';
     SessionsModule,
     ContractorsModule,
     AgentsModule,
+    ApplicationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

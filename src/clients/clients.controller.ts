@@ -38,4 +38,9 @@ export class ClientsController {
   remove(@Param('id') id: string) {
     return this.client.send('removeClient', id);
   }
+
+  @Post(':id/assign-contractors')
+  assignContractors(@Param('id') id: string, @Body() body: { contractorIds: string[] }) {
+    return this.client.send('assignContractorsToClient', { clientId: id, contractorIds: body.contractorIds });
+  }
 }
