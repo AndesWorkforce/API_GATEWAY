@@ -1,1563 +1,288 @@
 {
   "info": {
-    "name": "Proyecto Métricas - API Completa",
-    "_postman_id": "proyecto-metricas-completo",
-    "description": "Colección completa de todas las rutas HTTP del API Gateway del proyecto Métricas",
+    "name": "Proyecto-Metricas API Gateway",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "1.0.0"
-  },
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{accessToken}}",
-        "type": "string"
-      }
-    ]
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
   },
   "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001" },
+    { "key": "accessToken", "value": "" },
+    { "key": "appId", "value": "" },
+    { "key": "clientId", "value": "" },
+    { "key": "teamId", "value": "" },
+    { "key": "contractorId", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "sessionId", "value": "" },
+    { "key": "agentId", "value": "" },
+    { "key": "agentSessionId", "value": "" },
+    { "key": "dayOffId", "value": "" },
+    { "key": "activationKey", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "event": [
     {
-      "key": "baseUrl",
-      "value": "http://localhost:4000",
-      "type": "string"
-    },
-    {
-      "key": "accessToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "refreshToken",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "clientId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "contractorId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "teamId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "sessionId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "agentSessionId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "agentId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "agent2Id",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "eventId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "dayOffId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "activationKey",
-      "value": "",
-      "type": "string"
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Si el request marca noAuth, no agregar Authorization",
+          "if (pm.request && pm.request.headers && pm.request.headers.has('X-No-Auth')) {",
+          "  pm.request.headers.remove('Authorization');",
+          "}"
+        ]
+      }
     }
   ],
   "item": [
     {
       "name": "Auth",
-      "description": "Endpoints de autenticación (públicos excepto logout)",
       "item": [
         {
-          "name": "POST /auth/register/user",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/register/user",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register", "user"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Juan\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"TeamAdmin\"\n}"
-            },
-            "description": "Registra un nuevo usuario. Retorna tokens de autenticación."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  if (json.accessToken) {",
-                  "    pm.collectionVariables.set('accessToken', json.accessToken);",
-                  "    pm.collectionVariables.set('refreshToken', json.refreshToken || json.refresh_token);",
-                  "    pm.collectionVariables.set('userId', json.user?.id || json.id);",
-                  "  }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /auth/register/client",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/register/client",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register", "client"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Cliente ACME\",\n  \"email\": \"cliente@acme.com\",\n  \"password\": \"Password123\"\n}"
-            },
-            "description": "Registra un nuevo cliente."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  if (json.id) pm.collectionVariables.set('clientId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /auth/login",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"Password123\"\n}"
-            },
-            "description": "Inicia sesión con email y password. Retorna tokens de autenticación."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200) {",
-                  "  const json = pm.response.json();",
-                  "  pm.expect(json).to.have.property('accessToken');",
-                  "  pm.collectionVariables.set('accessToken', json.accessToken);",
-                  "  pm.collectionVariables.set('refreshToken', json.refreshToken || json.refresh_token);",
-                  "  pm.collectionVariables.set('userId', json.user?.id || json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /auth/refresh-token",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/refresh-token",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh-token"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
-            },
-            "description": "Renueva el access token usando el refresh token."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200) {",
-                  "  const json = pm.response.json();",
-                  "  if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /auth/logout",
+          "name": "Register User",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
-            },
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/auth/register/user", "host": ["{{baseUrl}}"], "path": ["auth","register","user"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
-            },
-            "description": "Cierra sesión invalidando el refresh token."
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\",\n  \"name\": \"User Name\",\n  \"role\": \"Visualizer\"\n}",
+              "options": {"raw": {"language": "json"}}
+            }
           },
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
-                ],
-                "type": "text/javascript"
+                  "const res = pm.response.json();",
+                  "const token = res?.accessToken || res?.access_token || res?.token;",
+                  "if (token) { pm.environment.set('accessToken', token); pm.collectionVariables.set('accessToken', token); }"
+                ]
               }
             }
           ]
         },
         {
-          "name": "GET /auth/validate",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/validate?token={{accessToken}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "validate"],
-              "query": [
-                {
-                  "key": "token",
-                  "value": "{{accessToken}}"
-                }
-              ]
-            },
-            "description": "Valida un token JWT y retorna información del usuario."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Users",
-      "description": "Gestión de usuarios del sistema",
-      "item": [
-        {
-          "name": "POST /users",
+          "name": "Register Client",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
-            },
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/auth/register/client", "host": ["{{baseUrl}}"], "path": ["auth","register","client"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Ana\",\n  \"email\": \"ana@example.com\",\n  \"password\": \"Password123\",\n  \"role\": \"TeamAdmin\"\n}"
+              "raw": "{\n  \"email\": \"client@example.com\",\n  \"password\": \"Password123!\",\n  \"name\": \"Client Name\"\n}",
+              "options": {"raw": {"language": "json"}}
             }
           },
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('userId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "const res = pm.response.json();",
+                  "const token = res?.accessToken || res?.access_token || res?.token;",
+                  "if (token) { pm.environment.set('accessToken', token); pm.collectionVariables.set('accessToken', token); }"
+                ]
               }
             }
           ]
         },
         {
-          "name": "GET /users",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /users/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
-            }
-          }
-        },
-        {
-          "name": "PATCH /users/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Ana García\",\n  \"email\": \"ana.garcia@example.com\"\n}"
-            }
-          }
-        },
-        {
-          "name": "DELETE /users/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Clients",
-      "description": "Gestión de clientes",
-      "item": [
-        {
-          "name": "POST /clients",
+          "name": "Login",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/clients",
-              "host": ["{{baseUrl}}"],
-              "path": ["clients"]
-            },
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth","login"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Cliente ACME\",\n  \"descripcion\": \"Cliente importante\"\n}"
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!\"\n}",
+              "options": {"raw": {"language": "json"}}
             }
           },
           "event": [
             {
               "listen": "test",
               "script": {
+                "type": "text/javascript",
                 "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('clientId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
+                  "const res = pm.response.json();",
+                  "const token = res?.accessToken || res?.access_token || res?.token;",
+                  "if (token) { pm.environment.set('accessToken', token); pm.collectionVariables.set('accessToken', token); }"
+                ]
               }
             }
           ]
         },
         {
-          "name": "GET /clients",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/clients",
-              "host": ["{{baseUrl}}"],
-              "path": ["clients"]
-            }
-          }
-        },
-        {
-          "name": "GET /clients/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["clients", "{{clientId}}"]
-            }
-          }
-        },
-        {
-          "name": "PATCH /clients/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["clients", "{{clientId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"descripcion\": \"Cliente estratégico\"\n}"
-            }
-          }
-        },
-        {
-          "name": "DELETE /clients/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/clients/{{clientId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["clients", "{{clientId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Contractors",
-      "description": "Gestión de contratistas y sus días libres",
-      "item": [
-        {
-          "name": "POST /contractors",
+          "name": "Refresh Token",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/contractors",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors"]
-            },
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/auth/refresh-token", "host": ["{{baseUrl}}"], "path": ["auth","refresh-token"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan@example.com\",\n  \"puesto_trabajo\": \"Developer\",\n  \"horario_laboral_inicio\": \"09:00\",\n  \"horario_laboral_fin\": \"18:00\",\n  \"cliente_id\": \"{{clientId}}\",\n  \"team_id\": null\n}"
+              "raw": "{\n  \"refreshToken\": \"{{accessToken}}\"\n}",
+              "options": {"raw": {"language": "json"}}
             }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('contractorId', json.id);",
-                  "  if (json.activationKey) pm.collectionVariables.set('activationKey', json.activationKey);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
+          }
         },
         {
-          "name": "GET /contractors",
+          "name": "Validate Token",
           "request": {
             "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors"]
-            }
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/auth/validate?token={{accessToken}}", "host": ["{{baseUrl}}"], "path": ["auth","validate"], "query": [{"key":"token","value":"{{accessToken}}"}] }
           }
         },
         {
-          "name": "GET /contractors/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "{{contractorId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /contractors/:id/with-day-offs",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/{{contractorId}}/with-day-offs",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "{{contractorId}}", "with-day-offs"]
-            }
-          }
-        },
-        {
-          "name": "GET /contractors/client/:clientId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/client/{{clientId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "client", "{{clientId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /contractors/team/:teamId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/team/{{teamId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "team", "{{teamId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /contractors/by-activation-key/:activationKey",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/by-activation-key/{{activationKey}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "by-activation-key", "{{activationKey}}"]
-            },
-            "description": "Obtiene contractor por activationKey (público). Devuelve { id, nombre, activationKey }."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property('id');",
-                  "pm.expect(json).to.have.property('nombre');",
-                  "pm.expect(json).to.have.property('activationKey');"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "PATCH /contractors/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "{{contractorId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"puesto_trabajo\": \"Senior Developer\",\n  \"horario_laboral_inicio\": \"08:00\",\n  \"horario_laboral_fin\": \"17:00\"\n}"
-            }
-          }
-        },
-        {
-          "name": "DELETE /contractors/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/contractors/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["contractors", "{{contractorId}}"]
-            }
-          }
-        },
-        {
-          "name": "Contractor Day Offs",
-          "item": [
-            {
-              "name": "POST /contractors/:id/day-offs",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/contractors/{{contractorId}}/day-offs",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["contractors", "{{contractorId}}", "day-offs"]
-                },
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"fecha\": \"2025-11-15T00:00:00.000Z\",\n  \"motivo\": \"Vacaciones\"\n}"
-                }
-              },
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "exec": [
-                      "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                      "if ([200,201].includes(pm.response.code)) {",
-                      "  const json = pm.response.json();",
-                      "  pm.collectionVariables.set('dayOffId', json.id);",
-                      "}"
-                    ],
-                    "type": "text/javascript"
-                  }
-                }
-              ]
-            },
-            {
-              "name": "GET /contractors/:id/day-offs",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/contractors/{{contractorId}}/day-offs",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["contractors", "{{contractorId}}", "day-offs"]
-                }
-              }
-            },
-            {
-              "name": "GET /contractors/day-offs/:dayOffId",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["contractors", "day-offs", "{{dayOffId}}"]
-                }
-              }
-            },
-            {
-              "name": "PATCH /contractors/day-offs/:dayOffId",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["contractors", "day-offs", "{{dayOffId}}"]
-                },
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"motivo\": \"Vacaciones reprogramadas\"\n}"
-                }
-              }
-            },
-            {
-              "name": "DELETE /contractors/day-offs/:dayOffId",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["contractors", "day-offs", "{{dayOffId}}"]
-                }
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Teams",
-      "description": "Gestión de equipos",
-      "item": [
-        {
-          "name": "POST /teams",
+          "name": "Logout",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/teams",
-              "host": ["{{baseUrl}}"],
-              "path": ["teams"]
-            },
+            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth","logout"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Equipo Desarrollo\",\n  \"descripcion\": \"Equipo de desarrollo backend\",\n  \"cliente_id\": \"{{clientId}}\"\n}"
+              "raw": "{}",
+              "options": {"raw": {"language": "json"}}
             }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('teamId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /teams",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/teams",
-              "host": ["{{baseUrl}}"],
-              "path": ["teams"]
-            }
-          }
-        },
-        {
-          "name": "GET /teams/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/teams/{{teamId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["teams", "{{teamId}}"]
-            }
-          }
-        },
-        {
-          "name": "PATCH /teams/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/teams/{{teamId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["teams", "{{teamId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"descripcion\": \"Equipo de desarrollo fullstack\"\n}"
-            }
-          }
-        },
-        {
-          "name": "DELETE /teams/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/teams/{{teamId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["teams", "{{teamId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Sessions",
-      "description": "Gestión de sesiones de trabajo",
-      "item": [
-        {
-          "name": "POST /sessions",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/sessions",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"inicio_sesion\": \"2025-11-01T09:00:00.000Z\"\n}"
-            }
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('sessionId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /sessions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions"]
-            }
-          }
-        },
-        {
-          "name": "GET /sessions/active",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/active",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "active"]
-            }
-          }
-        },
-        {
-          "name": "GET /sessions/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/{{sessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "{{sessionId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /sessions/user/:userId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/user/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "user", "{{userId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /sessions/contractor/:contractorId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/contractor/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "contractor", "{{contractorId}}"]
-            }
-          }
-        },
-        {
-          "name": "GET /sessions/contractor/:contractorId/active",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/contractor/{{contractorId}}/active",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "contractor", "{{contractorId}}", "active"]
-            }
-          }
-        },
-        {
-          "name": "PATCH /sessions/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/{{sessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "{{sessionId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"fin_sesion\": \"2025-11-01T18:00:00.000Z\"\n}"
-            }
-          }
-        },
-        {
-          "name": "PATCH /sessions/:id/end",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/{{sessionId}}/end",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "{{sessionId}}", "end"]
-            }
-          },
-          "description": "Finaliza una sesión actualizando automáticamente el fin_sesion y calculando la duración."
-        },
-        {
-          "name": "DELETE /sessions/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/sessions/{{sessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["sessions", "{{sessionId}}"]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Agents",
-      "description": "Gestión de agentes de monitoreo",
-      "item": [
-        {
-          "name": "POST /agents/register",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agents/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "register"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"activationKey\": \"{{activationKey}}\",\n  \"hostname\": \"DESKTOP-ABC123\"\n}"
-            },
-            "description": "Registra un nuevo agente o activa uno existente. Si hay HOST activo, crea VM. Si no hay HOST activo, crea VM bajo el HOST más reciente o un nuevo HOST si no existen HOSTs."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200/201', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.expect(json).to.have.property('agent_id');",
-                  "  pm.expect(json).to.have.property('type');",
-                  "  pm.collectionVariables.set('agentId', json.agent_id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /agents/heartbeat",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agents/heartbeat",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "heartbeat"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"agentId\": \"{{agentId}}\"\n}"
-            },
-            "description": "Envía un heartbeat para mantener activo el agente."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200) {",
-                  "  const json = pm.response.json();",
-                  "  pm.expect(json).to.have.property('ok', true);",
-                  "  pm.expect(json).to.have.property('last_heartbeat');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "POST /agents/swap",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agents/swap",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "swap"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"agent1_id\": \"{{agentId}}\",\n  \"agent2_id\": \"{{agent2Id}}\"\n}"
-            },
-            "description": "Intercambia manualmente los tipos (HOST/VM) y parent_agent_id entre dos agentes del mismo contratista."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200) {",
-                  "  const json = pm.response.json();",
-                  "  pm.expect(json).to.have.property('agent1');",
-                  "  pm.expect(json).to.have.property('agent2');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /agents",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agents",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents"]
-            },
-            "description": "Obtiene todos los agentes del sistema."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
-                  "if (pm.response.code === 200 && pm.response.json().length > 0) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('agentId', json[0].id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /agents/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agents/{{agentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "{{agentId}}"]
-            },
-            "description": "Obtiene un agente específico por ID."
-          }
-        },
-        {
-          "name": "GET /agents/contractor/:contractorId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agents/contractor/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "contractor", "{{contractorId}}"]
-            },
-            "description": "Obtiene todos los agentes de un contractor."
-          }
-        },
-        {
-          "name": "GET /agents/contractor/:contractorId/hierarchy",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agents/contractor/{{contractorId}}/hierarchy",
-              "host": ["{{baseUrl}}"],
-              "path": ["agents", "contractor", "{{contractorId}}", "hierarchy"]
-            },
-            "description": "Obtiene la jerarquía completa de agentes de un contractor (HOST y VMs)."
           }
         }
       ]
     },
     {
       "name": "Events",
-      "description": "Gestión de eventos de monitoreo",
       "item": [
         {
-          "name": "POST /events",
+          "name": "Create Event",
           "request": {
-            "auth": {
-              "type": "noauth"
-            },
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/events",
-              "host": ["{{baseUrl}}"],
-              "path": ["events"]
-            },
+            "header": [ {"key":"X-No-Auth","value":"1"} ],
+            "url": { "raw": "{{baseUrl}}/events", "host": ["{{baseUrl}}"], "path": ["events"] },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"payload\": {\n    \"event_type\": \"click\",\n    \"element\": \"button\",\n    \"timestamp\": \"2025-11-01T10:00:00.000Z\"\n  },\n  \"timestamp\": \"2025-11-01T10:00:00.000Z\"\n}"
-            },
-            "description": "Crea un nuevo evento. Ruta pública (no requiere autenticación). El sistema automáticamente crea o reutiliza una agent session para el agente. El campo agent_session_id se asigna automáticamente."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('eventId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
+              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"payload\": {\n    \"Keyboard\": {\"InactiveTime\": 0},\n    \"Mouse\": {\"InactiveTime\": 0},\n    \"IdleTime\": 0\n  },\n  \"timestamp\": \"2025-01-01T12:00:00.000Z\"\n}",
+              "options": {"raw": {"language": "json"}}
             }
-          ]
-        },
-        {
-          "name": "GET /events",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/events",
-              "host": ["{{baseUrl}}"],
-              "path": ["events"]
-            },
-            "description": "Obtiene todos los eventos."
           }
         },
-        {
-          "name": "GET /events/contractor/:contractorId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/events/contractor/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "contractor", "{{contractorId}}"]
-            },
-            "description": "Obtiene todos los eventos de un contractor."
-          }
-        },
-        {
-          "name": "GET /events/session/:sessionId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/events/session/{{sessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "session", "{{sessionId}}"]
-            },
-            "description": "Obtiene todos los eventos de una sesión (contractor session)."
-          }
-        },
-        {
-          "name": "GET /events/agent-session/:agentSessionId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/events/agent-session/{{agentSessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "agent-session", "{{agentSessionId}}"]
-            },
-            "description": "Obtiene todos los eventos de una agent session."
-          }
-        },
-        {
-          "name": "GET /events/agent/:agentId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/events/agent/{{agentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["events", "agent", "{{agentId}}"]
-            },
-            "description": "Obtiene todos los eventos de un agente."
-          }
-        }
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/events", "host": ["{{baseUrl}}"], "path": ["events"] } } },
+        { "name": "By Contractor", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/events/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["events","contractor","{{contractorId}}"] } } },
+        { "name": "By Session", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/events/session/{{sessionId}}", "host": ["{{baseUrl}}"], "path": ["events","session","{{sessionId}}"] } } },
+        { "name": "By Agent", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/events/agent/{{agentId}}", "host": ["{{baseUrl}}"], "path": ["events","agent","{{agentId}}"] } } },
+        { "name": "By Agent Session", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/events/agent-session/{{agentSessionId}}", "host": ["{{baseUrl}}"], "path": ["events","agent-session","{{agentSessionId}}"] } } }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/apps", "host": ["{{baseUrl}}"], "path": ["apps"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Slack\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/apps", "host": ["{{baseUrl}}"], "path": ["apps"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Slack Updated\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/apps/{{appId}}", "host": ["{{baseUrl}}"], "path": ["apps","{{appId}}"] } } },
+        { "name": "Add Apps to Contractor", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}/assign", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}","assign"] }, "body": {"mode":"raw","raw":"{\n  \"app_ids\": [\"{{appId}}\"]\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove Apps from Contractor", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}/remove", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}","remove"] }, "body": {"mode":"raw","raw":"{\n  \"app_ids\": [\"{{appId}}\"]\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Get Apps by Contractor", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/apps/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["apps","contractor","{{contractorId}}"] } } }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }, "body": {"mode":"raw","raw":"{\n  \"email\": \"client@example.com\",\n  \"name\": \"Acme Inc\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Acme Updated\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] } } },
+        { "name": "Assign Contractors", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/clients/{{clientId}}/assign-contractors", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}","assign-contractors"] }, "body": {"mode":"raw","raw":"{\n  \"contractorIds\": [\"{{contractorId}}\"]\n}","options":{"raw":{"language":"json"}}} } }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/teams", "host": ["{{baseUrl}}"], "path": ["teams"] }, "body": {"mode":"raw","raw":"{\n  \"client_id\": \"{{clientId}}\",\n  \"name\": \"Team A\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/teams", "host": ["{{baseUrl}}"], "path": ["teams"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams","{{teamId}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams","{{teamId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Team A Updated\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams","{{teamId}}"] } } },
+        { "name": "Assign Contractors", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/teams/{{teamId}}/assign-contractors", "host": ["{{baseUrl}}"], "path": ["teams","{{teamId}}","assign-contractors"] }, "body": {"mode":"raw","raw":"{\n  \"contractorIds\": [\"{{contractorId}}\"]\n}","options":{"raw":{"language":"json"}}} } }
+      ]
+    },
+    {
+      "name": "Contractors",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/contractors", "host": ["{{baseUrl}}"], "path": ["contractors"] }, "body": {"mode":"raw","raw":"{\n  \"client_id\": \"{{clientId}}\",\n  \"name\": \"Juan Perez\",\n  \"job_position\": \"Desarrollador\",\n  \"email\": \"juan.perez@example.com\",\n  \"country\": \"AR\",\n  \"team_id\": \"{{teamId}}\",\n  \"activation_key\": null,\n  \"work_schedule_start\": \"09:00\",\n  \"work_schedule_end\": \"18:00\",\n  \"lunch_time\": [\"13:00\", \"14:00\"]\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors", "host": ["{{baseUrl}}"], "path": ["contractors"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}"] } } },
+        { "name": "Find One With Day Offs", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}/with-day-offs", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}","with-day-offs"] } } },
+        { "name": "By Client", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/client/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["contractors","client","{{clientId}}"] } } },
+        { "name": "By Team", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/team/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["contractors","team","{{teamId}}"] } } },
+        { "name": "By Activation Key (Public)", "request": { "method": "GET", "header": [ {"key":"X-No-Auth","value":"1"} ], "url": { "raw": "{{baseUrl}}/contractors/by-activation-key/{{activationKey}}", "host": ["{{baseUrl}}"], "path": ["contractors","by-activation-key","{{activationKey}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"Juan Perez\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}"] } } },
+        { "name": "Create Day Off", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}/day-offs", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}","day-offs"] }, "body": {"mode":"raw","raw":"{\n  \"date\": \"2025-01-02\",\n  \"reason\": \"Vacaciones\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "List Day Offs", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/{{contractorId}}/day-offs", "host": ["{{baseUrl}}"], "path": ["contractors","{{contractorId}}","day-offs"] } } },
+        { "name": "Find Day Off By Id", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}", "host": ["{{baseUrl}}"], "path": ["contractors","day-offs","{{dayOffId}}"] } } },
+        { "name": "Update Day Off", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}", "host": ["{{baseUrl}}"], "path": ["contractors","day-offs","{{dayOffId}}"] }, "body": {"mode":"raw","raw":"{\n  \"date\": \"2025-01-05\",\n  \"reason\": \"Cambio\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove Day Off", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/contractors/day-offs/{{dayOffId}}", "host": ["{{baseUrl}}"], "path": ["contractors","day-offs","{{dayOffId}}"] } } }
+      ]
+    },
+    {
+      "name": "Sessions",
+      "item": [
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/sessions", "host": ["{{baseUrl}}"], "path": ["sessions"] }, "body": {"mode":"raw","raw":"{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"session_start\": \"2025-01-01T09:00:00.000Z\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions", "host": ["{{baseUrl}}"], "path": ["sessions"] } } },
+        { "name": "Find Active", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions/active", "host": ["{{baseUrl}}"], "path": ["sessions","active"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions/{{sessionId}}", "host": ["{{baseUrl}}"], "path": ["sessions","{{sessionId}}"] } } },
+        { "name": "By User", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["sessions","user","{{userId}}"] } } },
+        { "name": "By Contractor", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["sessions","contractor","{{contractorId}}"] } } },
+        { "name": "By Contractor Active", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/sessions/contractor/{{contractorId}}/active", "host": ["{{baseUrl}}"], "path": ["sessions","contractor","{{contractorId}}","active"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/sessions/{{sessionId}}", "host": ["{{baseUrl}}"], "path": ["sessions","{{sessionId}}"] }, "body": {"mode":"raw","raw":"{\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "End", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/sessions/{{sessionId}}/end", "host": ["{{baseUrl}}"], "path": ["sessions","{{sessionId}}","end"] } } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/sessions/{{sessionId}}", "host": ["{{baseUrl}}"], "path": ["sessions","{{sessionId}}"] } } }
       ]
     },
     {
       "name": "Agent Sessions",
-      "description": "Gestión de sesiones por agente (sub-sesiones)",
       "item": [
-        {
-          "name": "POST /agent-sessions",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"session_start\": \"2025-11-01T09:00:00.000Z\",\n  \"session_id\": null\n}"
-            },
-            "description": "Crea una nueva agent session. El campo session_id es opcional y se usa para relacionar con una Session principal."
-          },
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('status 201/200', function () { pm.expect([200,201]).to.include(pm.response.code); });",
-                  "if ([200,201].includes(pm.response.code)) {",
-                  "  const json = pm.response.json();",
-                  "  pm.collectionVariables.set('agentSessionId', json.id);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ]
-        },
-        {
-          "name": "GET /agent-sessions",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions"]
-            },
-            "description": "Obtiene todas las agent sessions."
-          }
-        },
-        {
-          "name": "GET /agent-sessions/active",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/active",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "active"]
-            },
-            "description": "Obtiene todas las agent sessions activas."
-          }
-        },
-        {
-          "name": "GET /agent-sessions/:id",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "{{agentSessionId}}"]
-            },
-            "description": "Obtiene una agent session específica por ID."
-          }
-        },
-        {
-          "name": "GET /agent-sessions/agent/:agentId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/agent/{{agentId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "agent", "{{agentId}}"]
-            },
-            "description": "Obtiene todas las agent sessions de un agente específico."
-          }
-        },
-        {
-          "name": "GET /agent-sessions/agent/:agentId/active",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/agent/{{agentId}}/active",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "agent", "{{agentId}}", "active"]
-            },
-            "description": "Obtiene la agent session activa de un agente específico (si existe)."
-          }
-        },
-        {
-          "name": "GET /agent-sessions/contractor/:contractorId",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/contractor/{{contractorId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "contractor", "{{contractorId}}"]
-            },
-            "description": "Obtiene todas las agent sessions de un contractor."
-          }
-        },
-        {
-          "name": "PATCH /agent-sessions/:id",
-          "request": {
-            "method": "PATCH",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "{{agentSessionId}}"]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"session_end\": \"2025-11-01T18:00:00.000Z\"\n}"
-            },
-            "description": "Actualiza una agent session."
-          }
-        },
-        {
-          "name": "PATCH /agent-sessions/:id/end",
-          "request": {
-            "method": "PATCH",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}/end",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "{{agentSessionId}}", "end"]
-            },
-            "description": "Finaliza una agent session actualizando automáticamente el session_end y calculando la duración total."
-          }
-        },
-        {
-          "name": "DELETE /agent-sessions/:id",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["agent-sessions", "{{agentSessionId}}"]
-            },
-            "description": "Elimina una agent session."
-          }
-        }
+        { "name": "Create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/agent-sessions", "host": ["{{baseUrl}}"], "path": ["agent-sessions"] }, "body": {"mode":"raw","raw":"{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"agent_id\": \"{{agentId}}\",\n  \"session_id\": \"{{sessionId}}\",\n  \"session_start\": \"2025-01-01T09:00:00.000Z\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agent-sessions", "host": ["{{baseUrl}}"], "path": ["agent-sessions"] } } },
+        { "name": "Find Active", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agent-sessions/active", "host": ["{{baseUrl}}"], "path": ["agent-sessions","active"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}", "host": ["{{baseUrl}}"], "path": ["agent-sessions","{{agentSessionId}}"] } } },
+        { "name": "By Agent", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agent-sessions/agent/{{agentId}}", "host": ["{{baseUrl}}"], "path": ["agent-sessions","agent","{{agentId}}"] } } },
+        { "name": "By Contractor", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agent-sessions/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["agent-sessions","contractor","{{contractorId}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}", "host": ["{{baseUrl}}"], "path": ["agent-sessions","{{agentSessionId}}"] }, "body": {"mode":"raw","raw":"{\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "End", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}/end", "host": ["{{baseUrl}}"], "path": ["agent-sessions","{{agentSessionId}}","end"] } } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/agent-sessions/{{agentSessionId}}", "host": ["{{baseUrl}}"], "path": ["agent-sessions","{{agentSessionId}}"] } } }
       ]
     },
     {
-      "name": "App",
-      "description": "Endpoints generales de la aplicación",
+      "name": "Users",
       "item": [
-        {
-          "name": "GET /",
-          "request": {
-            "auth": {
-              "type": "noauth"
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/",
-              "host": ["{{baseUrl}}"],
-              "path": [""]
-            },
-            "description": "Endpoint de prueba/health check."
-          }
-        }
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users","{{userId}}"] } } },
+        { "name": "Update", "request": { "method": "PATCH", "url": { "raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users","{{userId}}"] }, "body": {"mode":"raw","raw":"{\n  \"name\": \"User Name Updated\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Remove", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users","{{userId}}"] } } }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        { "name": "Register Agent (Public)", "request": { "method": "POST", "header": [ {"key":"X-No-Auth","value":"1"} ], "url": { "raw": "{{baseUrl}}/agents/register", "host": ["{{baseUrl}}"], "path": ["agents","register"] }, "body": {"mode":"raw","raw":"{\n  \"contractor_id\": \"{{contractorId}}\",\n  \"type\": \"HOST\",\n  \"hostname\": \"PC-01\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Heartbeat (Public)", "request": { "method": "POST", "header": [ {"key":"X-No-Auth","value":"1"} ], "url": { "raw": "{{baseUrl}}/agents/heartbeat", "host": ["{{baseUrl}}"], "path": ["agents","heartbeat"] }, "body": {"mode":"raw","raw":"{\n  \"agent_id\": \"{{agentId}}\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Get Contractor Agents", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agents/contractor/{{contractorId}}", "host": ["{{baseUrl}}"], "path": ["agents","contractor","{{contractorId}}"] } } },
+        { "name": "Get Hierarchy", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agents/contractor/{{contractorId}}/hierarchy", "host": ["{{baseUrl}}"], "path": ["agents","contractor","{{contractorId}}","hierarchy"] } } },
+        { "name": "Swap Agent Types", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/agents/swap", "host": ["{{baseUrl}}"], "path": ["agents","swap"] }, "body": {"mode":"raw","raw":"{\n  \"agentIdA\": \"{{agentId}}\",\n  \"agentIdB\": \"{{agentId}}\"\n}","options":{"raw":{"language":"json"}}} } },
+        { "name": "Find All", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agents", "host": ["{{baseUrl}}"], "path": ["agents"] } } },
+        { "name": "Find One", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/agents/{{agentId}}", "host": ["{{baseUrl}}"], "path": ["agents","{{agentId}}"] } } }
       ]
     }
   ]
 }
-
-

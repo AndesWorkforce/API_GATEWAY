@@ -38,4 +38,9 @@ export class TeamsController {
   remove(@Param('id') id: string) {
     return this.client.send('removeTeam', id);
   }
+
+  @Post(':id/assign-contractors')
+  assignContractors(@Param('id') id: string, @Body() body: { contractorIds: string[] }) {
+    return this.client.send('assignContractorsToTeam', { teamId: id, contractorIds: body.contractorIds });
+  }
 }
