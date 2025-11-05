@@ -39,6 +39,16 @@ export class SessionsController {
     return this.client.send('findSessionsByUserId', userId);
   }
 
+  @Get('contractor/:contractorId')
+  findByContractorId(@Param('contractorId') contractorId: string) {
+    return this.client.send('findSessionsByContractorId', contractorId);
+  }
+
+  @Get('contractor/:contractorId/active')
+  findActiveSessionByContractorId(@Param('contractorId') contractorId: string) {
+    return this.client.send('findActiveSessionByContractorId', contractorId);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSessionDto: any) {
     return this.client.send('updateSession', { id, updateSessionDto });

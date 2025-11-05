@@ -1,15 +1,15 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
-import { envs } from 'config';
-
+import { AgentsModule } from './agents/agents.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
+import { ContractorsModule } from './contractors/contractors.module';
 import { EventsModule } from './events/events.module';
+import { NatsModule } from './nats/nats.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { TeamsModule } from './teams/teams.module';
 import { UsersModule } from './users/users.module';
@@ -19,50 +19,15 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ClientsModule.register([
-      {
-        name: 'AUTH_SERVICE',
-        transport: Transport.NATS,
-        options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
-          user: envs.natsUsername,
-          pass: envs.natsPassword,
-        },
-      },
-      {
-        name: 'USER_SERVICE',
-        transport: Transport.NATS,
-        options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
-          user: envs.natsUsername,
-          pass: envs.natsPassword,
-        },
-      },
-      {
-        name: 'AGENT_SERVICE',
-        transport: Transport.NATS,
-        options: {
-          servers: [
-            `nats://${envs.natsHost}:${envs.natsPort}` ||
-              'nats://localhost:4222',
-          ],
-          user: envs.natsUsername,
-          pass: envs.natsPassword,
-        },
-      },
-    ]),
+    NatsModule,
     AuthModule,
     EventsModule,
     UsersModule,
     ClientsMsModule,
     TeamsModule,
     SessionsModule,
+    ContractorsModule,
+    AgentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
