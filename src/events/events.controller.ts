@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Inject, Param, UseInterceptors } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { WorkingHoursInterceptor } from './interceptors/working-hours.interceptor';
 
 import { Public } from '../decorators/public.decorator';
 
@@ -10,7 +9,6 @@ export class EventsController {
 
   @Public()
   @Post()
-  @UseInterceptors(WorkingHoursInterceptor)
   create(@Body() createEventDto: any) {
     return this.client.send('postEvent', createEventDto);
   }
