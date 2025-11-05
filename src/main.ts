@@ -1,6 +1,5 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { envs } from 'config';
 
@@ -26,21 +25,8 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.NATS,
-    options: {
-      servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
-      user: envs.natsUsername,
-      pass: envs.natsPassword,
-    },
-  });
-
-  await app.startAllMicroservices();
-  logger.log('✅ Microservicio NATS conectado y escuchando mensajes');
-
   await app.listen(envs.port);
   logger.log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
-  logger.log(`🚀 API Gateway híbrido (HTTP + NATS) listo para recibir y enviar mensajes`);
 
   process.on('SIGTERM', async () => {
     logger.log('🛑 SIGTERM recibido, cerrando aplicación...');
