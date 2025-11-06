@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Inject, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Inject, Param, UseInterceptors } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
