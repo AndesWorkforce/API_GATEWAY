@@ -4,6 +4,8 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { envs } from 'config/envs';
 
+import { envs } from 'config';
+
 import { AppModule } from './app.module';
 import { AuthGuard } from './guards/auth.guard';
 
