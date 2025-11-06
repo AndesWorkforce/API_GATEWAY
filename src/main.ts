@@ -28,16 +28,5 @@ async function bootstrap() {
   await app.listen(envs.port);
   logger.log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
 
-  process.on('SIGTERM', async () => {
-    logger.log('🛑 SIGTERM recibido, cerrando aplicación...');
-    await app.close();
-    process.exit(0);
-  });
-
-  process.on('SIGINT', async () => {
-    logger.log('🛑 SIGINT recibido, cerrando aplicación...');
-    await app.close();
-    process.exit(0);
-  });
 }
 bootstrap();
