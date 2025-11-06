@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
 import { ContractorsModule } from './contractors/contractors.module';
 import { EventsModule } from './events/events.module';
+import { MetricsModule } from './metrics/metrics.module';
 import { NatsModule } from './nats/nats.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { TeamsModule } from './teams/teams.module';
@@ -30,6 +31,7 @@ import { UsersModule } from './users/users.module';
     ContractorsModule,
     AgentsModule,
     ApplicationsModule,
+    MetricsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

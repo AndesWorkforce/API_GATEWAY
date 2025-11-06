@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Inject, Param, UseInterceptors } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 import { Public } from '../decorators/public.decorator';
 
@@ -9,32 +10,40 @@ export class EventsController {
 
   @Public()
   @Post()
-  create(@Body() createEventDto: any) {
-    return this.client.send('postEvent', createEventDto);
+  async create(@Body() createEventDto: any) {
+    // Enviar evento sin esperar respuesta (fire-and-forget)
+    this.client.emit('postEvent', createEventDto);
+    
+    // Retornar confirmación inmediata
+    return {
+      message: 'Event received and will be processed',
+      status: 'accepted',
+    };
   }
 
   @Get()
-  findAll() {
-    return this.client.send('findEvents', {});
+  async findAll() {
+    return firstValueFrom(this.client.send('findEvents', {}));
   }
 
+  @Public()
   @Get('contractor/:contractorId')
-  findByContractorId(@Param('contractorId') contractorId: string) {
-    return this.client.send('findEventsByContractorId', contractorId);
+  async findByContractorId(@Param('contractorId') contractorId: string) {
+    return firstValueFrom(this.client.send('findEventsByContractorId', contractorId));
   }
 
   @Get('session/:sessionId')
-  findBySessionId(@Param('sessionId') sessionId: string) {
-    return this.client.send('findEventsBySessionId', sessionId);
+  async findBySessionId(@Param('sessionId') sessionId: string) {
+    return firstValueFrom(this.client.send('findEventsBySessionId', sessionId));
   }
 
   @Get('agent/:agentId')
-  findByAgentId(@Param('agentId') agentId: string) {
-    return this.client.send('findEventsByAgentId', agentId);
+  async findByAgentId(@Param('agentId') agentId: string) {
+    return firstValueFrom(this.client.send('findEventsByAgentId', agentId));
   }
 
   @Get('agent-session/:agentSessionId')
-  findByAgentSessionId(@Param('agentSessionId') agentSessionId: string) {
-    return this.client.send('findEventsByAgentSessionId', agentSessionId);
+  async findByAgentSessionId(@Param('agentSessionId') agentSessionId: string) {
+    return firstValueFrom(this.client.send('findEventsByAgentSessionId', agentSessionId));
   }
 }

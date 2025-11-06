@@ -4,6 +4,8 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 import { envs } from 'config';
 
+import { envs } from 'config';
+
 import { AppModule } from './app.module';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -26,32 +28,8 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.NATS,
-    options: {
-      servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
-      user: envs.natsUsername,
-      pass: envs.natsPassword,
-    },
-  });
-
-  await app.startAllMicroservices();
-  logger.log('✅ Microservicio NATS conectado y escuchando mensajes');
-
   await app.listen(envs.port);
   logger.log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
-  logger.log(`🚀 API Gateway híbrido (HTTP + NATS) listo para recibir y enviar mensajes`);
 
-  process.on('SIGTERM', async () => {
-    logger.log('🛑 SIGTERM recibido, cerrando aplicación...');
-    await app.close();
-    process.exit(0);
-  });
-
-  process.on('SIGINT', async () => {
-    logger.log('🛑 SIGINT recibido, cerrando aplicación...');
-    await app.close();
-    process.exit(0);
-  });
 }
 bootstrap();
