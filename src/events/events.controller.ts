@@ -11,14 +11,7 @@ export class EventsController {
   @Public()
   @Post()
   async create(@Body() createEventDto: any) {
-    // Enviar evento sin esperar respuesta (fire-and-forget)
-    this.client.emit('postEvent', createEventDto);
-    
-    // Retornar confirmación inmediata
-    return {
-      message: 'Event received and will be processed',
-      status: 'accepted',
-    };
+    return firstValueFrom(this.client.send('postEvent', createEventDto));
   }
 
   @Get()

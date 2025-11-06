@@ -2,9 +2,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { envs } from 'config';
-
-import { envs } from 'config';
+import { envs } from 'config/envs';
 
 import { AppModule } from './app.module';
 import { AuthGuard } from './guards/auth.guard';
