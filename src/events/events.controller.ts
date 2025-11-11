@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Inject, Param, UseInterceptors } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, MessagePattern, Payload } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 import { Public } from '../decorators/public.decorator';
@@ -8,9 +8,9 @@ import { Public } from '../decorators/public.decorator';
 export class EventsController {
   constructor(@Inject('EVENTS_SERVICE') private readonly client: ClientProxy) {}
 
-  @Public()
-  @Post()
-  async create(@Body() createEventDto: any) {
+
+  @MessagePattern('postEvent')
+  async create(@Payload() createEventDto: any) {
     return firstValueFrom(this.client.send('postEvent', createEventDto));
   }
 

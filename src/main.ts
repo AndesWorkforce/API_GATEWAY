@@ -26,6 +26,18 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.NATS,
+    options: {
+      servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
+      user: envs.natsUsername,
+      pass: envs.natsPassword,
+    },
+  });
+
+  await app.startAllMicroservices();
+  logger.log('✅ API Gateway microservicio NATS conectado');
+
   await app.listen(envs.port);
   logger.log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
 
