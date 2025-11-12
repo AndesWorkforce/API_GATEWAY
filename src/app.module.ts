@@ -1,5 +1,7 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Module } from '@nestjs/common';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 
 import { AgentsModule } from './agents/agents.module';
@@ -21,6 +23,12 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 20,
+      },
+    ]),
     NatsModule,
     AuthModule,
     EventsModule,
@@ -34,6 +42,12 @@ import { UsersModule } from './users/users.module';
     MetricsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
