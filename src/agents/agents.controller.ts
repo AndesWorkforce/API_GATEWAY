@@ -3,11 +3,13 @@ import { ClientProxy } from '@nestjs/microservices';
 
 import { RegisterAgentDto, HeartbeatAgentDto, SwapAgentsDto } from './dto/agent.dto';
 import { Public } from 'src/decorators/public.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('agents')
 export class AgentsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {

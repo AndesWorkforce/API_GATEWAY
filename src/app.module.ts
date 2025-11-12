@@ -9,6 +9,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './guards/auth.guard';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
 import { ContractorsModule } from './contractors/contractors.module';
 import { EventsModule } from './events/events.module';
@@ -25,8 +26,8 @@ import { UsersModule } from './users/users.module';
     }),
     ThrottlerModule.forRoot([
       {
-        ttl: 60,
-        limit: 20,
+        ttl: 60_000,
+        limit: 100,
       },
     ]),
     NatsModule,
@@ -47,6 +48,10 @@ import { UsersModule } from './users/users.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

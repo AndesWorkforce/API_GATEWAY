@@ -5,7 +5,6 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { envs } from 'config/envs';
 
 import { AppModule } from './app.module';
-import { AuthGuard } from './guards/auth.guard';
 
 async function bootstrap() {
   const logger = new Logger('Main-Gateway');
@@ -20,9 +19,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  const authGuard = app.get(AuthGuard);
-  app.useGlobalGuards(authGuard);
 
   app.enableCors();
 
