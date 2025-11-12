@@ -8,6 +8,7 @@ interface EnvVars {
   NATS_PORT: number;
   NATS_USERNAME: string;
   NATS_PASSWORD: string;
+  DEV_LOGS: boolean;
 }
 
 export const envSchema = Joi.object({
@@ -16,6 +17,14 @@ export const envSchema = Joi.object({
   NATS_PORT: Joi.number().required(),
   NATS_USERNAME: Joi.string().required(),
   NATS_PASSWORD: Joi.string().required(),
+  DEV_LOGS: Joi.boolean()
+    .truthy('true')
+    .truthy('1')
+    .truthy('yes')
+    .falsy('false')
+    .falsy('0')
+    .falsy('no')
+    .default(false),
 }).unknown(true);
 
 const { error, value } = envSchema.validate(process.env);
@@ -32,4 +41,5 @@ export const envs = {
   natsPort: envVars.NATS_PORT,
   natsUsername: envVars.NATS_USERNAME,
   natsPassword: envVars.NATS_PASSWORD,
+  devLogsEnabled: envVars.DEV_LOGS,
 };
