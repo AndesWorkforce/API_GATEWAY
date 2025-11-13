@@ -10,6 +10,7 @@ export class AgentsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {
     return this.client.send('registerOrActivateAgent', registerDto);
