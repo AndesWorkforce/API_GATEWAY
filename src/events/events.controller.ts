@@ -8,12 +8,6 @@ import { Public } from '../decorators/public.decorator';
 export class EventsController {
   constructor(@Inject('EVENTS_SERVICE') private readonly client: ClientProxy) {}
 
-
-  @MessagePattern('postEvent')
-  async create(@Payload() createEventDto: any) {
-    return firstValueFrom(this.client.send('postEvent', createEventDto));
-  }
-
   @Get()
   async findAll() {
     return firstValueFrom(this.client.send('findEvents', {}));
