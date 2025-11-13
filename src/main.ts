@@ -2,15 +2,25 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
-import { envs } from 'config/envs';
+import { envs, getLogModeMessage, resolveLogLevels } from 'config';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const logger = new Logger('Main-Gateway');
+  const logLevels = resolveLogLevels();
+  Logger.overrideLogger(logLevels);
 
-  // Crear aplicación HTTP
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: logLevels });
+  const logger = new Logger('Main-Gateway');
+  const log = (message: string) =>
+    envs.devLogsEnabled ? logger.log(message) : logger.warn(message);
+
+  const modeMessage = getLogModeMessage();
+  if (envs.devLogsEnabled) {
+    logger.verbose(modeMessage);
+  } else {
+    logger.warn(modeMessage);
+  }
 
   // Configurar validación global
   app.useGlobalPipes(
@@ -22,20 +32,22 @@ async function bootstrap() {
 
   app.enableCors();
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.NATS,
-    options: {
-      servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
-      user: envs.natsUsername,
-      pass: envs.natsPassword,
+  app.connectMicroservice<MicroserviceOptions>(
+    {
+      transport: Transport.NATS,
+      options: {
+        servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
+        user: envs.natsUsername,
+        pass: envs.natsPassword,
+      },
     },
-  });
+    { inheritAppConfig: true },
+  );
 
   await app.startAllMicroservices();
-  logger.log('✅ API Gateway microservicio NATS conectado');
+  log('✅ API Gateway microservicio NATS conectado');
 
   await app.listen(envs.port);
-  logger.log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
-
+  log(`✅ API Gateway HTTP corriendo en puerto ${envs.port}`);
 }
 bootstrap();
