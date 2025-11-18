@@ -9,6 +9,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+
 import { Public } from '../decorators/public.decorator';
 
 @Controller('contractors')
@@ -23,7 +24,7 @@ export class ContractorsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllContractors', {});
+    return this.client.send('findAllContractorsList', {});
   }
 
   @Get(':id')

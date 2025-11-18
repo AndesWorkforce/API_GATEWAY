@@ -7,7 +7,6 @@ export class MetricsController {
 
   @Get('contractor/:contractorId')
   getContractorMetrics(@Param('contractorId') contractorId: string) {
-    return this.client.send('getContractorMetrics', contractorId);
+    return this.client.send('getContractorMetrics', { contractorId });
   }
 }
-

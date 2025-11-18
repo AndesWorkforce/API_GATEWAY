@@ -21,7 +21,7 @@ export class SessionsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllSessions', {});
+    return this.client.send('findAllSessionsList', {});
   }
 
   @Get('active')

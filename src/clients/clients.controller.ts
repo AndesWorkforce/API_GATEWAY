@@ -16,7 +16,7 @@ export class ClientsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllClients', {});
+    return this.client.send('findAllClients_', {});
   }
 
   @Get(':id')
@@ -35,7 +35,13 @@ export class ClientsController {
   }
 
   @Post(':id/assign-contractors')
-  assignContractors(@Param('id') id: string, @Body() body: { contractorIds: string[] }) {
-    return this.client.send('assignContractorsToClient', { clientId: id, contractorIds: body.contractorIds });
+  assignContractors(
+    @Param('id') id: string,
+    @Body() body: { contractorIds: string[] },
+  ) {
+    return this.client.send('assignContractorsToClient', {
+      clientId: id,
+      contractorIds: body.contractorIds,
+    });
   }
 }
