@@ -46,7 +46,8 @@ export class AuthGuard implements CanActivate {
           validationResult.error || 'Token inválido',
         );
       }
-      request['user'] = {
+      // Attach user info to request. If the auth service returns role(s), include them.
+      const user: Record<string, unknown> = {
         id: validationResult.userId,
         email: validationResult.email,
         name: validationResult.name,
@@ -54,6 +55,19 @@ export class AuthGuard implements CanActivate {
         createdAt: validationResult.createdAt,
         updatedAt: validationResult.updatedAt,
       };
+
+      // Support either a single role string or an array of roles from auth service
+      if (validationResult.role) {
+        user.role = validationResult.role;
+      } else if (
+        validationResult.roles &&
+        Array.isArray(validationResult.roles)
+      ) {
+        // Prefer the first role or adjust logic as needed
+        user.role = validationResult.roles[0];
+      }
+
+      request['user'] = user;
 
       return true;
     } catch {
