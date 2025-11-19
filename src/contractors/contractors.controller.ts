@@ -15,10 +15,13 @@ import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
 import { Public } from '../decorators/public.decorator';
 
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('contractors')
 export class ContractorsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
   @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Post()
   create(@Body() createContractorDto: any) {
     return this.client.send('createContractor', createContractorDto);
@@ -38,7 +41,7 @@ export class ContractorsController {
   findOneWithDayOffs(@Param('id') id: string) {
     return this.client.send('findContractorWithDayOffs', id);
   }
-  @AllowClient()
+
   @Get('client/:clientId')
   findByClientId(@Param('clientId') clientId: string) {
     return this.client.send('findContractorsByClientId', clientId);
@@ -55,17 +58,23 @@ export class ContractorsController {
     return this.client.send('findContractorByActivationKey', activationKey);
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateContractorDto: any) {
     return this.client.send('updateContractor', { id, updateContractorDto });
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.client.send('removeContractor', id);
   }
 
   // Contractor Day Off endpoints
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Post(':id/day-offs')
   createContractorDayOff(
     @Param('id') id: string,
@@ -87,6 +96,8 @@ export class ContractorsController {
     return this.client.send('findContractorDayOffById', dayOffId);
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Patch('day-offs/:dayOffId')
   updateContractorDayOff(
     @Param('dayOffId') dayOffId: string,
@@ -98,6 +109,8 @@ export class ContractorsController {
     });
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Delete('day-offs/:dayOffId')
   removeContractorDayOff(@Param('dayOffId') dayOffId: string) {
     return this.client.send('removeContractorDayOff', dayOffId);

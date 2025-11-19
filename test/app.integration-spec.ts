@@ -110,6 +110,8 @@ describe('API Gateway (integration)', () => {
           isActive: mockUser.isActive,
           createdAt: mockUser.createdAt,
           updatedAt: mockUser.updatedAt,
+          userType: 'user',
+          role: 'Superadmin',
         }),
       );
 
@@ -153,6 +155,8 @@ describe('API Gateway (integration)', () => {
           isActive: true,
           createdAt: new Date(),
           updatedAt: new Date(),
+          userType: 'user',
+          role: 'Superadmin',
         }),
       );
 

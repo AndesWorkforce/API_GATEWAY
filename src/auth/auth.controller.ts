@@ -1,14 +1,11 @@
 import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
-import { envs } from 'config';
-
 import { Public } from '../decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {
-     }
+  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {}
 
   @Public()
   @Post('register/user')
@@ -33,7 +30,7 @@ export class AuthController {
   refreshToken(@Body() refreshTokenDto: any) {
     return this.client.send('auth.refresh-token', refreshTokenDto);
   }
-
+  @Public()
   @Post('logout')
   logout(@Body() logoutDto: any) {
     return this.client.send('auth.logout', logoutDto);

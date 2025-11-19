@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Throttle } from '@nestjs/throttler';
 
+import { Role } from 'src/common/enums/role.enum';
 import { Public } from 'src/decorators/public.decorator';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
 import {
   RegisterAgentDto,
@@ -10,6 +12,8 @@ import {
   SwapAgentsDto,
 } from './dto/agent.dto';
 
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('agents')
 export class AgentsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
@@ -36,6 +40,7 @@ export class AgentsController {
     return this.client.send('getAgentHierarchy', contractorId);
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post('swap')
   swapAgentTypes(@Body() swapDto: SwapAgentsDto) {
     return this.client.send('swapAgentTypes', swapDto);
