@@ -10,12 +10,15 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
 import { Public } from '../decorators/public.decorator';
 
 @Controller('contractors')
 export class ContractorsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
-
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post()
   create(@Body() createContractorDto: any) {
     return this.client.send('createContractor', createContractorDto);
@@ -35,7 +38,7 @@ export class ContractorsController {
   findOneWithDayOffs(@Param('id') id: string) {
     return this.client.send('findContractorWithDayOffs', id);
   }
-
+  @AllowClient()
   @Get('client/:clientId')
   findByClientId(@Param('clientId') clientId: string) {
     return this.client.send('findContractorsByClientId', clientId);

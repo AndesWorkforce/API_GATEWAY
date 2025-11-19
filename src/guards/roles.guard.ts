@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
@@ -21,8 +20,6 @@ interface RequestUser {
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  private readonly logger = new Logger(RolesGuard.name);
-
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -38,7 +35,6 @@ export class RolesGuard implements CanActivate {
         context.getClass(),
       ]) ?? false;
 
-    // If no rules declared, allow
     if (!requiredRoles.length && !allowClient) {
       return true;
     }
@@ -50,36 +46,23 @@ export class RolesGuard implements CanActivate {
       throw new UnauthorizedException('User not found in request');
     }
 
-    // Log for debugging
-    this.logger.debug(
-      `RolesGuard check - userType: ${user.type}, allowClient: ${allowClient}, requiredRoles: ${requiredRoles.join(', ')}, userRole: ${user.role}`,
-    );
-
-    // Check if user is a client (case-insensitive comparison for safety)
     if (user.type?.toLowerCase() === 'client') {
       if (allowClient) {
-        this.logger.debug('Client access granted via @AllowClient()');
         return true;
       }
       throw new ForbiddenException('Client does not have access to this route');
     }
 
-    // User is not a client, check roles
+    if (allowClient && !requiredRoles.length) {
+      throw new ForbiddenException('This route is only accessible to clients');
+    }
     if (!requiredRoles.length) {
-      // Route only for authenticated users without additional restriction
-      this.logger.debug('User access granted - no role restrictions');
       return true;
     }
-
-    // Check if user has required role
     if (!user.role || !requiredRoles.includes(user.role)) {
-      this.logger.warn(
-        `User ${user.id} (${user.email}) does not have required role. User role: ${user.role}, Required: ${requiredRoles.join(', ')}`,
-      );
       throw new ForbiddenException('User does not have sufficient permissions');
     }
 
-    this.logger.debug(`User access granted - role: ${user.role}`);
     return true;
   }
 }
