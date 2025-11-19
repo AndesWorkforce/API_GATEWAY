@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Verificar si la ruta es pública
+    // Check if route is public
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -32,20 +32,21 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
 
     if (!token) {
-      throw new UnauthorizedException('Token de autorización no proporcionado');
+      throw new UnauthorizedException('Authorization token not provided');
     }
 
     try {
-      // Llamar al endpoint de validación en auth-ms
+      // Call validation endpoint in auth-ms
       const validationResult = await this.authClient
         .send('auth.validate', token)
         .toPromise();
 
-      if (!validationResult.isValid) {
+      if (!validationResult || !validationResult.isValid) {
         throw new UnauthorizedException(
-          validationResult.error || 'Token inválido',
+          validationResult?.error || 'Invalid token',
         );
       }
+
       request['user'] = {
         id: validationResult.userId,
         email: validationResult.email,
@@ -53,11 +54,16 @@ export class AuthGuard implements CanActivate {
         isActive: validationResult.isActive,
         createdAt: validationResult.createdAt,
         updatedAt: validationResult.updatedAt,
+        type: validationResult.userType ?? 'user',
+        role: validationResult.role ?? null,
       };
 
       return true;
-    } catch {
-      throw new UnauthorizedException('Error al validar el token');
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('Error validating token');
     }
   }
 

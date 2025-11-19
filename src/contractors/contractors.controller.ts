@@ -16,7 +16,6 @@ import { Public } from '../decorators/public.decorator';
 export class ContractorsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  // Contractor endpoints
   @Post()
   create(@Body() createContractorDto: any) {
     return this.client.send('createContractor', createContractorDto);
