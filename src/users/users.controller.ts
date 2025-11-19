@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
@@ -16,9 +15,8 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 export class UsersController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-
   @Get()
-  findAll(@CurrentUser() user: any) {
+  findAll(@CurrentUser() _user: unknown) {
     return this.client.send('findAllUsers', {});
   }
 
@@ -28,8 +26,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: any) {
-    return this.client.send('updateUser', { id, updateUserDto });
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: Record<string, unknown>,
+  ) {
+    return this.client.send('updateUser', { id, data: updateUserDto });
   }
 
   @Delete(':id')

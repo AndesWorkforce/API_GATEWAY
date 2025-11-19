@@ -26,7 +26,7 @@ export class ApplicationsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findAppById', id);
+    return this.client.send('findAppById', { id });
   }
 
   @Patch(':id')
@@ -66,4 +66,3 @@ export class ApplicationsController {
     });
   }
 }
-

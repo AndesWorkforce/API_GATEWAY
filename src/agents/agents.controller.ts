@@ -1,9 +1,14 @@
 import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-
-import { RegisterAgentDto, HeartbeatAgentDto, SwapAgentsDto } from './dto/agent.dto';
-import { Public } from 'src/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
+
+import { Public } from 'src/decorators/public.decorator';
+
+import {
+  RegisterAgentDto,
+  HeartbeatAgentDto,
+  SwapAgentsDto,
+} from './dto/agent.dto';
 
 @Controller('agents')
 export class AgentsController {
@@ -43,6 +48,6 @@ export class AgentsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findAgentById', id);
+    return this.client.send('findAgentByID', id);
   }
 }

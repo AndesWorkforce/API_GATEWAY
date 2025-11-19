@@ -40,7 +40,13 @@ export class TeamsController {
   }
 
   @Post(':id/assign-contractors')
-  assignContractors(@Param('id') id: string, @Body() body: { contractorIds: string[] }) {
-    return this.client.send('assignContractorsToTeam', { teamId: id, contractorIds: body.contractorIds });
+  assignContractors(
+    @Param('id') id: string,
+    @Body() body: { contractorIds: string[] },
+  ) {
+    return this.client.send('assignContractorsToTeam', {
+      teamId: id,
+      contractor_ids: body.contractorIds,
+    });
   }
 }
