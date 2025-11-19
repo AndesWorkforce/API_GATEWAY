@@ -1,9 +1,14 @@
 import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-
-import { RegisterAgentDto, HeartbeatAgentDto, SwapAgentsDto } from './dto/agent.dto';
-import { Public } from 'src/decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
+
+import { Public } from 'src/decorators/public.decorator';
+
+import {
+  RegisterAgentDto,
+  HeartbeatAgentDto,
+  SwapAgentsDto,
+} from './dto/agent.dto';
 
 @Controller('agents')
 export class AgentsController {
@@ -13,7 +18,7 @@ export class AgentsController {
   @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {
-    return this.client.send('registerOrActivateAgent', registerDto);
+    return this.client.send('registerOrActivateAgent', registerDto).pipe;
   }
   @Public()
   @Post('heartbeat')

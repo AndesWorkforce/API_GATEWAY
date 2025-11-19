@@ -1,47 +1,69 @@
 import { Controller, Post, Body, Inject, Get, Query } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-
-import { envs } from 'config';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError } from 'rxjs';
 
 import { Public } from '../decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {
-     }
+  constructor(@Inject('AUTH_SERVICE') private readonly client: ClientProxy) {}
 
   @Public()
   @Post('register/user')
   registerUser(@Body() registerDto: any) {
-    return this.client.send('auth.register.user', registerDto);
+    return this.client.send('auth.register.user_test', registerDto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Public()
   @Post('register/client')
   registerClient(@Body() registerDto: any) {
-    return this.client.send('auth.register.client', registerDto);
+    return this.client.send('auth.register.client', registerDto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Public()
   @Post('login')
   login(@Body() loginDto: any) {
-    return this.client.send('auth.login', loginDto);
+    return this.client.send('auth.login', loginDto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Public()
   @Post('refresh-token')
   refreshToken(@Body() refreshTokenDto: any) {
-    return this.client.send('auth.refresh-token', refreshTokenDto);
+    return this.client.send('auth.refresh-token', refreshTokenDto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Post('logout')
   logout(@Body() logoutDto: any) {
-    return this.client.send('auth.logout', logoutDto);
+    return this.client.send('auth.logout', logoutDto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Public()
   @Get('validate')
   validateToken(@Query('token') token: string) {
-    return this.client.send('auth.validate', { token });
+    return this.client.send('auth.validate', { token }).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 }

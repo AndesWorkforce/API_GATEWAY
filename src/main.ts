@@ -5,6 +5,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { envs, getLogModeMessage, resolveLogLevels } from 'config';
 
 import { AppModule } from './app.module';
+import { RpcExceptionsFilter } from './filters/rpc-exception.filter';
 
 async function bootstrap() {
   const logLevels = resolveLogLevels();
@@ -29,6 +30,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  app.useGlobalFilters(new RpcExceptionsFilter());
 
   app.enableCors();
 
