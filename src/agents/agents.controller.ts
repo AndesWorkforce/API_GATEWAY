@@ -18,7 +18,7 @@ export class AgentsController {
   @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {
-    return this.client.send('registerOrActivateAgent', registerDto);
+    return this.client.send('registerOrActivateAgent', registerDto).pipe;
   }
   @Public()
   @Post('heartbeat')
