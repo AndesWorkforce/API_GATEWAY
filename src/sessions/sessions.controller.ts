@@ -11,10 +11,16 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('sessions')
 export class SessionsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post()
   create(@Body() createSessionDto: any) {
     return this.client.send('createSession', createSessionDto).pipe(
@@ -80,6 +86,7 @@ export class SessionsController {
       );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSessionDto: any) {
     return this.client.send('updateSession', { id, updateSessionDto }).pipe(
@@ -89,6 +96,7 @@ export class SessionsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Patch(':id/end')
   endSession(@Param('id') id: string) {
     return this.client.send('endSession', id).pipe(
@@ -98,6 +106,7 @@ export class SessionsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.client.send('removeSession', id).pipe(

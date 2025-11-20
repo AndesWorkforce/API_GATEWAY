@@ -11,6 +11,11 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('clients')
 export class ClientsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
@@ -33,6 +38,8 @@ export class ClientsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: any) {
     return this.client.send('updateClient', { id, updateClientDto }).pipe(
@@ -42,6 +49,8 @@ export class ClientsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.client.send('removeClient', id).pipe(
@@ -51,6 +60,8 @@ export class ClientsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Post(':id/assign-contractors')
   assignContractors(
     @Param('id') id: string,

@@ -11,10 +11,17 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('teams')
 export class TeamsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Post()
   create(@Body() createTeamDto: any) {
     return this.client.send('createTeam', createTeamDto).pipe(
@@ -42,6 +49,8 @@ export class TeamsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTeamDto: any) {
     return this.client.send('updateTeam', { id, updateTeamDto }).pipe(
@@ -51,6 +60,8 @@ export class TeamsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.client.send('removeTeam', id).pipe(
@@ -60,6 +71,8 @@ export class TeamsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
   @Post(':id/assign-contractors')
   assignContractors(
     @Param('id') id: string,

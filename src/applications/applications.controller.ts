@@ -11,10 +11,16 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('apps')
 export class ApplicationsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post()
   create(@Body() createAppDto: any) {
     return this.client.send('createApp', createAppDto).pipe(
@@ -41,7 +47,7 @@ export class ApplicationsController {
       }),
     );
   }
-
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAppDto: any) {
     return this.client.send('updateApp', { id, updateAppDto }).pipe(
@@ -50,7 +56,7 @@ export class ApplicationsController {
       }),
     );
   }
-
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.client.send('removeApp', id).pipe(
@@ -59,7 +65,7 @@ export class ApplicationsController {
       }),
     );
   }
-
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post('contractor/:contractorId/assign')
   assignAppsToContractor(
     @Param('contractorId') contractorId: string,
@@ -85,7 +91,7 @@ export class ApplicationsController {
       }),
     );
   }
-
+  @Roles(Role.Superadmin, Role.TeamAdmin)
   @Delete('contractor/:contractorId/remove')
   removeAppsFromContractor(
     @Param('contractorId') contractorId: string,

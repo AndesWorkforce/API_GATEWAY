@@ -2,8 +2,13 @@ import { Controller, Get, Inject, Param } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { Role } from 'src/common/enums/role.enum';
+import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
 import { Public } from '../decorators/public.decorator';
 
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
+@AllowClient()
 @Controller('events')
 export class EventsController {
   constructor(@Inject('EVENTS_SERVICE') private readonly client: ClientProxy) {}

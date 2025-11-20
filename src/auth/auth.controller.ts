@@ -47,7 +47,7 @@ export class AuthController {
       }),
     );
   }
-
+  @Public()
   @Post('logout')
   logout(@Body() logoutDto: any) {
     return this.client.send('auth.logout', logoutDto).pipe(
