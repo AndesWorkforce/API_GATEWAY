@@ -1,0 +1,40 @@
+{
+  "name": "Andes Gateway Env",
+  "values": [
+    { "key": "baseUrl", "value": "http://localhost:3001", "enabled": true },
+    { "key": "accessToken", "value": "", "enabled": true },
+    {
+      "key": "superadmin_email",
+      "value": "superadmin@example.com",
+      "enabled": true
+    },
+    { "key": "superadmin_password", "value": "Password123!", "enabled": true },
+    {
+      "key": "teamadmin_email",
+      "value": "teamadmin@example.com",
+      "enabled": true
+    },
+    { "key": "teamadmin_password", "value": "Password123!", "enabled": true },
+    {
+      "key": "visualizer_email",
+      "value": "visualizer@example.com",
+      "enabled": true
+    },
+    { "key": "visualizer_password", "value": "Password123!", "enabled": true },
+    { "key": "client_email", "value": "client@example.com", "enabled": true },
+    { "key": "client_password", "value": "Password123!", "enabled": true },
+    { "key": "appId", "value": "", "enabled": true },
+    { "key": "clientId", "value": "", "enabled": true },
+    { "key": "teamId", "value": "", "enabled": true },
+    { "key": "contractorId", "value": "", "enabled": true },
+    { "key": "userId", "value": "", "enabled": true },
+    { "key": "sessionId", "value": "", "enabled": true },
+    { "key": "agentId", "value": "", "enabled": true },
+    { "key": "agentSessionId", "value": "", "enabled": true },
+    { "key": "dayOffId", "value": "", "enabled": true },
+    { "key": "activationKey", "value": "", "enabled": true }
+  ],
+  "_postman_variable_scope": "environment",
+  "_postman_exported_at": "2025-11-19T00:00:00.000Z",
+  "_postman_exported_using": "GitHub Copilot setup"
+}
