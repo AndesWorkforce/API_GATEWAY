@@ -8,7 +8,8 @@ import {
   Delete,
   Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError } from 'rxjs';
 
 @Controller('clients')
 export class ClientsController {
@@ -16,22 +17,38 @@ export class ClientsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllClients_', {});
+    return this.client.send('findAllClients_', {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findClientById', id);
+    return this.client.send('findClientById', id).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: any) {
-    return this.client.send('updateClient', { id, updateClientDto });
+    return this.client.send('updateClient', { id, updateClientDto }).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeClient', id);
+    return this.client.send('removeClient', id).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Post(':id/assign-contractors')
@@ -39,9 +56,15 @@ export class ClientsController {
     @Param('id') id: string,
     @Body() body: { contractorIds: string[] },
   ) {
-    return this.client.send('assignContractorsToClient', {
-      clientId: id,
-      contractorIds: body.contractorIds,
-    });
+    return this.client
+      .send('assignContractorsToClient', {
+        clientId: id,
+        contractorIds: body.contractorIds,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 }

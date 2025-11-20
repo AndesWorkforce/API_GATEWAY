@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError } from 'rxjs';
 
 @Controller('metrics')
 export class MetricsController {
@@ -7,6 +8,10 @@ export class MetricsController {
 
   @Get('contractor/:contractorId')
   getContractorMetrics(@Param('contractorId') contractorId: string) {
-    return this.client.send('getContractorMetrics', { contractorId });
+    return this.client.send('getContractorMetrics', { contractorId }).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 }

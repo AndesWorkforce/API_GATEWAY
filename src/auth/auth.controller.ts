@@ -11,7 +11,7 @@ export class AuthController {
   @Public()
   @Post('register/user')
   registerUser(@Body() registerDto: any) {
-    return this.client.send('auth.register.user_test', registerDto).pipe(
+    return this.client.send('auth.register.user', registerDto).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
