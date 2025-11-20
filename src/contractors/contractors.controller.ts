@@ -29,7 +29,7 @@ export class ContractorsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllContractorsList', {});
+    return this.client.send('findAllContractors', {});
   }
 
   @Get(':id')
