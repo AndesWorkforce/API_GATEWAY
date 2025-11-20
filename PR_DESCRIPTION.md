@@ -1,147 +1,113 @@
-# Flujos de Postman por Rol - API Gateway
+# Manejo Consistente de Excepciones RPC - API Gateway
 
 ## 📋 Descripción
 
-Se implementan flujos de trabajo completos en Postman organizados por rol de usuario, facilitando el testing y validación de la API Gateway. Se centraliza toda la configuración de Postman en una carpeta dedicada.
+Se implementa un manejo consistente de excepciones RPC en todos los controllers del API Gateway, siguiendo el patrón establecido en `auth.controller`. Esto asegura que todos los errores de los microservicios se propaguen correctamente y sean manejados por el filtro global `RpcExceptionFilter`.
 
 ## 🎯 Objetivos
 
-- Crear flujos de prueba específicos para cada rol (Superadmin, TeamAdmin, Visualizer, Client, Público)
-- Automatizar la captura de IDs entre requests para flujos dependientes
-- Centralizar toda la configuración de Postman en una carpeta dedicada
-- Proporcionar scripts de setup automatizado para facilitar la configuración
+- Unificar el manejo de excepciones RPC en todos los controllers
+- Utilizar el patrón `pipe(catchError)` para capturar errores de microservicios
+- Asegurar que todos los errores se lancen como `RpcException`
+- Mejorar la consistencia y mantenibilidad del código
 
 ## 🔄 Cambios Realizados
 
-### Archivos Agregados
+### Archivos Modificados
 
-- **`postman/collection.json`**: Colección completa con 5 flujos por rol
-- **`postman/environment.andes.json`**: Variables de entorno con credenciales y placeholders de IDs
-- **`postman/setup-postman.ps1`**: Script PowerShell para configuración automatizada
-- **`postman/README.md`**: Documentación de uso y ejecución
+- **`src/applications/applications.controller.ts`**: 9 métodos con error handling
+- **`src/agents/agents.controller.ts`**: 8 métodos con error handling
+- **`src/clients/clients.controller.ts`**: 6 métodos con error handling
+- **`src/events/events.controller.ts`**: 5 métodos (removido `firstValueFrom`, usando `pipe`)
+- **`src/teams/teams.controller.ts`**: 7 métodos con error handling
+- **`src/contractors/contractors.controller.ts`**: 14 métodos con error handling
+- **`src/sessions/sessions.controller.ts`**: 10 métodos con error handling
+- **`src/sessions/agent-sessions.controller.ts`**: 10 métodos con error handling
+- **`src/users/users.controller.ts`**: 4 métodos con error handling
+- **`src/metrics/metrics.controller.ts`**: 1 método con error handling
+- **`src/auth/auth.controller.ts`**: Sin cambios (ya seguía el patrón correcto)
 
-### Archivos Eliminados
+## 🛠️ Patrón Implementado
 
-- **`postman-collection.json`**: Movido a `postman/collection.json`
+### Antes
 
-## 🚀 Flujos Implementados
-
-### 1. Flujo Superadmin
-
-**Funcionalidad**: Configuración completa del sistema y gestión total
-
-- ✅ Login con credenciales de superadmin
-- ✅ Obtener clientes (captura `clientId`)
-- ✅ Crear equipo (captura `teamId`)
-- ✅ Crear contratista (captura `contractorId` y `activationKey`)
-- ✅ Crear aplicación (captura `appId`)
-- ✅ Asignar aplicación a contratista
-- ✅ Crear sesión (captura `sessionId`)
-- ✅ Crear agent session (captura `agentSessionId`)
-- ✅ Consultar eventos por contratista y sesión
-
-### 2. Flujo TeamAdmin
-
-**Funcionalidad**: Gestión de equipos, contratistas y calendarios
-
-- ✅ Login con credenciales de team admin
-- ✅ Listar equipos
-- ✅ Crear contratista (captura `contractorId`)
-- ✅ Listar días libres
-- ✅ Crear día libre (captura `dayOffId`)
-- ✅ Consultar sesiones por contratista
-- ✅ Consultar agentes por contratista
-
-### 3. Flujo Visualizer
-
-**Funcionalidad**: Dashboard de solo lectura para métricas y reportes
-
-- ✅ Login con credenciales de visualizer
-- ✅ Consultar todos los eventos
-- ✅ Consultar sesiones activas
-- ✅ Listar clientes, equipos, contratistas, usuarios y aplicaciones
-
-### 4. Flujo Client
-
-**Funcionalidad**: Vista filtrada de contratistas propios y métricas
-
-- ✅ Login con credenciales de cliente
-- ✅ Listar contratistas por cliente
-- ✅ Consultar sesiones por contratista
-- ✅ Consultar agent sessions por contratista
-- ✅ Consultar agentes por contratista
-- ✅ Consultar aplicaciones por contratista
-- ✅ Consultar eventos por contratista
-- ✅ Consultar métricas por contratista
-
-### 5. Flujo Público
-
-**Funcionalidad**: Activación de agentes sin autenticación
-
-- ✅ Buscar contratista por activation key
-- ✅ Registrar agente (captura `agentId`)
-- ✅ Enviar heartbeat
-- ✅ Consultar eventos por contratista
-
-## 🔧 Características Técnicas
-
-### Variables de Colección
-
-- **Autenticación**: `accessToken` (auto-capturado en login)
-- **Credenciales por Rol**:
-  - `superadmin_email` / `superadmin_password`
-  - `teamadmin_email` / `teamadmin_password`
-  - `visualizer_email` / `visualizer_password`
-  - `client_email` / `client_password`
-- **IDs Capturados Automáticamente**:
-  - `clientId`, `teamId`, `contractorId`, `activationKey`
-  - `appId`, `sessionId`, `agentSessionId`, `agentId`, `dayOffId`
-
-### Automatización
-
-- **Pre-request Script**: Maneja autenticación Bearer, permite requests públicos con header `X-No-Auth`
-- **Test Scripts**: Captura automática de IDs de respuestas JSON usando `pm.collectionVariables.set()`
-- **Setup Script**: PowerShell para registrar cliente y generar archivo de entorno
-
-## 📦 Estructura de Archivos
-
-```
-API_GATEWAY/
-└── postman/
-    ├── collection.json          # Colección completa con todos los flujos
-    ├── environment.andes.json   # Variables de entorno
-    ├── setup-postman.ps1        # Script de configuración
-    └── README.md                # Documentación de uso
+```typescript
+@Get()
+findAll() {
+  return this.client.send('findAllItems', {});
+}
 ```
 
-## 🧪 Uso
+### Después
 
-### Configuración Inicial
-
-```powershell
-cd API_GATEWAY/postman
-.\setup-postman.ps1 -BaseUrl "http://localhost:3001" -ClientEmail "client@test.com" -ClientPassword "pass123"
+```typescript
+@Get()
+findAll() {
+  return this.client.send('findAllItems', {}).pipe(
+    catchError((error) => {
+      throw new RpcException(error);
+    }),
+  );
+}
 ```
 
-### Ejecución de Flujos
+### Imports Agregados
 
-1. Importar `postman/collection.json` y `postman/environment.andes.json` en Postman
-2. Ejecutar flujos en orden recomendado:
-   - Flujo Superadmin (configuración inicial)
-   - Flujo Público (activación de agentes)
-   - Flujo TeamAdmin (gestión operativa)
-   - Flujo Visualizer (monitoreo)
-   - Flujo Client (vista cliente)
+```typescript
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError } from 'rxjs';
+```
 
-## ✅ Validación
+## 📊 Estadísticas
 
-- ✅ Flujos alineados con user story map del proyecto
-- ✅ Todos los endpoints verificados contra controllers existentes
-- ✅ Eliminados endpoints no soportados (POST /events, POST /clients)
-- ✅ Test scripts validados para captura correcta de IDs
-- ✅ Runner ejecuta sin errores 404
+- **Total de métodos actualizados**: ~74 métodos
+- **Controllers modificados**: 11 archivos
+- **Líneas agregadas**: +560
+- **Líneas eliminadas**: -109
+- **Patrón**: Consistente en todos los controllers
+
+## 🔧 Beneficios
+
+- ✅ **Consistencia**: Todos los controllers siguen el mismo patrón
+- ✅ **Mantenibilidad**: Fácil de entender y modificar
+- ✅ **Debuggabilidad**: Errores se capturan y propagan correctamente
+- ✅ **Compatibilidad**: Funciona con el filtro global `RpcExceptionFilter`
+- ✅ **Type Safety**: Uso correcto de tipos RxJS y NestJS
+
+## ✅ Testing
+
+```bash
+# Tests de integración
+npm run test:integration
+
+# Resultados
+✓ 11 tests passed
+✓ Build successful
+✓ No lint errors (excepto warnings de 'any' preexistentes)
+```
+
+## 📝 Cambios en Events Controller
+
+Se reemplazó `firstValueFrom()` con el patrón `pipe(catchError())` para mantener consistencia:
+
+```typescript
+// Antes
+async findAll() {
+  return firstValueFrom(this.client.send('findEvents', {}));
+}
+
+// Después
+findAll() {
+  return this.client.send('findEvents', {}).pipe(
+    catchError((error) => {
+      throw new RpcException(error);
+    }),
+  );
+}
+```
 
 ## 🔗 Referencias
 
-- Issue: SDT-128 - Flujo en la colección de postman
+- Issue: SDT-123 - Manejo unificado de excepciones RPC
 - Base: `development`
+- Patrón de referencia: `src/auth/auth.controller.ts`
