@@ -1,19 +1,19 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Module } from '@nestjs/common';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { AgentsModule } from './agents/agents.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ApplicationsModule } from './applications/applications.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthGuard } from './guards/auth.guard';
 import { ClientsModule as ClientsMsModule } from './clients/clients.module';
 import { ContractorsModule } from './contractors/contractors.module';
 import { EventsModule } from './events/events.module';
-import { MetricsModule } from './metrics/metrics.module';
+import { AuthGuard } from './guards/auth.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { NatsModule } from './nats/nats.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { TeamsModule } from './teams/teams.module';
@@ -40,7 +40,6 @@ import { UsersModule } from './users/users.module';
     ContractorsModule,
     AgentsModule,
     ApplicationsModule,
-    MetricsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -52,6 +51,10 @@ import { UsersModule } from './users/users.module';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
