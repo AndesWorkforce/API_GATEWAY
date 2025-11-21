@@ -11,6 +11,7 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
@@ -22,7 +23,7 @@ export class ClientsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllClients_', {}).pipe(
+    return this.client.send(getMessagePattern('findAllClients'), {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -31,7 +32,7 @@ export class ClientsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findClientById', id).pipe(
+    return this.client.send(getMessagePattern('findClientById'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -42,18 +43,20 @@ export class ClientsController {
   @AllowClient()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateClientDto: any) {
-    return this.client.send('updateClient', { id, updateClientDto }).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('updateClient'), { id, updateClientDto })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeClient', id).pipe(
+    return this.client.send(getMessagePattern('removeClient'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -68,7 +71,7 @@ export class ClientsController {
     @Body() body: { contractorIds: string[] },
   ) {
     return this.client
-      .send('assignContractorsToClient', {
+      .send(getMessagePattern('assignContractorsToClient'), {
         clientId: id,
         contractorIds: body.contractorIds,
       })

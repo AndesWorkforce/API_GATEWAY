@@ -10,6 +10,7 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { Roles } from 'src/decorators/roles.decorator';
 
@@ -22,7 +23,7 @@ export class UsersController {
 
   @Get()
   findAll(@CurrentUser() _user: unknown) {
-    return this.client.send('findAllUsers', {}).pipe(
+    return this.client.send(getMessagePattern('findAllUsers'), {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -31,7 +32,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findUserById', id).pipe(
+    return this.client.send(getMessagePattern('findUserById'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -43,17 +44,19 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updateUserDto: Record<string, unknown>,
   ) {
-    return this.client.send('updateUser', { id, data: updateUserDto }).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('updateUser'), { id, data: updateUserDto })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Roles(Role.Superadmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeUser', id).pipe(
+    return this.client.send(getMessagePattern('removeUser'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),

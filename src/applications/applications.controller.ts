@@ -11,6 +11,7 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
@@ -23,7 +24,7 @@ export class ApplicationsController {
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post()
   create(@Body() createAppDto: any) {
-    return this.client.send('createApp', createAppDto).pipe(
+    return this.client.send(getMessagePattern('createApp'), createAppDto).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -32,7 +33,7 @@ export class ApplicationsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllApps', {}).pipe(
+    return this.client.send(getMessagePattern('findAllApps'), {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -41,7 +42,7 @@ export class ApplicationsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findAppById', { id }).pipe(
+    return this.client.send(getMessagePattern('findAppById'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -50,16 +51,18 @@ export class ApplicationsController {
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAppDto: any) {
-    return this.client.send('updateApp', { id, updateAppDto }).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('updateApp'), { id, updateAppDto })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeApp', id).pipe(
+    return this.client.send(getMessagePattern('removeApp'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -72,7 +75,7 @@ export class ApplicationsController {
     @Body() body: { app_ids: string[] },
   ) {
     return this.client
-      .send('assignAppsToContractor', {
+      .send(getMessagePattern('assignAppsToContractor'), {
         contractorId,
         assignApplicationsDto: body,
       })
@@ -85,11 +88,13 @@ export class ApplicationsController {
 
   @Get('contractor/:contractorId')
   getAppsByContractor(@Param('contractorId') contractorId: string) {
-    return this.client.send('getAppsByContractor', contractorId).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('getAppsByContractor'), contractorId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Delete('contractor/:contractorId/remove')
@@ -98,7 +103,7 @@ export class ApplicationsController {
     @Body() body: { app_ids: string[] },
   ) {
     return this.client
-      .send('removeAppsFromContractor', {
+      .send(getMessagePattern('removeAppsFromContractor'), {
         contractorId,
         assignApplicationsDto: body,
       })

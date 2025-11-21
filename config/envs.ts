@@ -9,6 +9,7 @@ interface EnvVars {
   NATS_USERNAME: string;
   NATS_PASSWORD: string;
   DEV_LOGS: boolean;
+  ENVIRONMENT: string;
 }
 
 export const envSchema = Joi.object({
@@ -25,6 +26,9 @@ export const envSchema = Joi.object({
     .falsy('0')
     .falsy('no')
     .default(false),
+  ENVIRONMENT: Joi.string()
+    .valid('development', 'production', 'staging')
+    .default('development'),
 }).unknown(true);
 
 const { error, value } = envSchema.validate(process.env);
@@ -42,4 +46,24 @@ export const envs = {
   natsUsername: envVars.NATS_USERNAME,
   natsPassword: envVars.NATS_PASSWORD,
   devLogsEnabled: envVars.DEV_LOGS,
+  environment: envVars.ENVIRONMENT,
 };
+
+/**
+ * Genera un MessagePattern con prefijo según el entorno
+ * @param pattern - El nombre del pattern sin prefijo
+ * @returns El pattern con el prefijo del entorno (dev, prod, staging)
+ *
+ * @example
+ * getMessagePattern('findUser') // 'dev.findUser' en desarrollo
+ * getMessagePattern('findUser') // 'prod.findUser' en producción
+ */
+export function getMessagePattern(pattern: string): string {
+  const prefix =
+    envs.environment === 'production'
+      ? 'prod'
+      : envs.environment === 'staging'
+        ? 'staging'
+        : 'dev';
+  return `${prefix}.${pattern}`;
+}
