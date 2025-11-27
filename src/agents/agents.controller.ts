@@ -3,6 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Throttle } from '@nestjs/throttler';
 import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { Public } from 'src/decorators/public.decorator';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
@@ -23,44 +24,52 @@ export class AgentsController {
   @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {
-    return this.client.send('registerOrActivateAgent', registerDto).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('registerOrActivateAgent'), registerDto)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
   @Public()
   @Post('heartbeat')
   heartbeatAgent(@Body() heartbeatDto: HeartbeatAgentDto) {
-    return this.client.send('heartbeatAgent', heartbeatDto).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('heartbeatAgent'), heartbeatDto)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Get('contractor/:contractorId')
   getContractorAgents(@Param('contractorId') contractorId: string) {
-    return this.client.send('getContractorAgents', contractorId).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('getContractorAgents'), contractorId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Get('contractor/:contractorId/hierarchy')
   getAgentHierarchy(@Param('contractorId') contractorId: string) {
-    return this.client.send('getAgentHierarchy', contractorId).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('getAgentHierarchy'), contractorId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post('swap')
   swapAgentTypes(@Body() swapDto: SwapAgentsDto) {
-    return this.client.send('swapAgentTypes', swapDto).pipe(
+    return this.client.send(getMessagePattern('swapAgentTypes'), swapDto).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -69,7 +78,7 @@ export class AgentsController {
 
   @Get()
   findAll() {
-    return this.client.send('findAllAgents', {}).pipe(
+    return this.client.send(getMessagePattern('findAllAgents'), {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -78,7 +87,7 @@ export class AgentsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findAgentByID', id).pipe(
+    return this.client.send(getMessagePattern('findAgentById'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),

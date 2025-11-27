@@ -9,6 +9,8 @@ import { Reflector } from '@nestjs/core';
 import { ClientProxy } from '@nestjs/microservices';
 import { Request } from 'express';
 
+import { getMessagePattern } from 'config';
+
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
@@ -38,7 +40,7 @@ export class AuthGuard implements CanActivate {
     try {
       // Call validation endpoint in auth-ms
       const validationResult = await this.authClient
-        .send('auth.validate', token)
+        .send(getMessagePattern('auth.validate'), token)
         .toPromise();
 
       if (!validationResult || !validationResult.isValid) {

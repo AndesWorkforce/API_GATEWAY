@@ -13,10 +13,12 @@ jest.mock('config', () => ({
     natsPassword: 'test',
     jwtSecretPassword: 'test-secret',
     devLogsEnabled: false,
+    environment: 'development',
   },
   resolveLogLevels: () => ['error'],
   getLogModeMessage: () => 'test-mode',
   logError: jest.fn(),
+  getMessagePattern: (pattern: string) => `dev.${pattern}`,
 }));
 
 describe('API Gateway (integration)', () => {
@@ -169,7 +171,7 @@ describe('API Gateway (integration)', () => {
         .expect(200);
 
       expect(mockUserClient.send).toHaveBeenCalledWith(
-        'findClientById',
+        'dev.findClientById',
         'client-123',
       );
     });

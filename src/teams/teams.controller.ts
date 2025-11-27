@@ -11,6 +11,7 @@ import {
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
@@ -24,16 +25,18 @@ export class TeamsController {
   @AllowClient()
   @Post()
   create(@Body() createTeamDto: any) {
-    return this.client.send('createTeam', createTeamDto).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('createTeam'), createTeamDto)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Get()
   findAll() {
-    return this.client.send('findAllTeams', {}).pipe(
+    return this.client.send(getMessagePattern('findAllTeams'), {}).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -42,7 +45,7 @@ export class TeamsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findTeamById', id).pipe(
+    return this.client.send(getMessagePattern('findTeamById'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -53,18 +56,20 @@ export class TeamsController {
   @AllowClient()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTeamDto: any) {
-    return this.client.send('updateTeam', { id, updateTeamDto }).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+    return this.client
+      .send(getMessagePattern('updateTeam'), { id, updateTeamDto })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeTeam', id).pipe(
+    return this.client.send(getMessagePattern('removeTeam'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
@@ -79,7 +84,7 @@ export class TeamsController {
     @Body() body: { contractorIds: string[] },
   ) {
     return this.client
-      .send('assignContractorsToTeam', {
+      .send(getMessagePattern('assignContractorsToTeam'), {
         teamId: id,
         contractor_ids: body.contractorIds,
       })
