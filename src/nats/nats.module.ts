@@ -34,6 +34,15 @@ import { envs } from 'config';
           pass: envs.natsPassword,
         },
       },
+      {
+        name: 'ADT_SERVICE',
+        transport: Transport.NATS,
+        options: {
+          servers: [`nats://${envs.natsHost}:${envs.natsPort}`],
+          user: envs.natsUsername,
+          pass: envs.natsPassword,
+        },
+      },
     ]),
   ],
   exports: [ClientsModule],

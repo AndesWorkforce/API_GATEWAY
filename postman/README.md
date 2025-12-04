@@ -56,3 +56,61 @@ Agrega temporalmente en un test:
 ## Mantenimiento
 
 Actualiza endpoints solo en `collection.json`. Si cambias la estructura, re-exporta este archivo para compartirlo.
+
+---
+
+## 📊 Colección ADT (Analytical Data Tables)
+
+### Importar la Colección
+
+1. Abre Postman
+2. Click en **Import**
+3. Selecciona el archivo `adt-collection.json`
+4. La colección se importará con todos los endpoints ADT
+
+### Configurar Variables
+
+La colección usa las siguientes variables (puedes configurarlas en la colección o en el environment):
+
+- `baseUrl`: URL base del API Gateway (default: `http://localhost:3001`)
+- `accessToken`: Token de autenticación (se obtiene al hacer login)
+- `contractorId`: ID del contractor para las consultas
+
+### Endpoints Incluidos
+
+#### 📊 Consultas (Requieren: Superadmin, TeamAdmin o Visualizer)
+
+1. **Métricas Diarias** - `GET /adt/daily-metrics/:contractorId`
+2. **Métricas en Tiempo Real** - `GET /adt/realtime-metrics/:contractorId`
+3. **Resúmenes de Sesión** - `GET /adt/sessions/:contractorId`
+4. **Actividad Detallada** - `GET /adt/activity/:contractorId`
+5. **Uso de Aplicaciones** - `GET /adt/app-usage/:contractorId`
+6. **Ranking de Productividad** - `GET /adt/ranking`
+
+#### ⚙️ ETL (Solo Superadmin)
+
+7. **Procesar Eventos** - `GET /adt/etl/process-events`
+8. **Procesar Métricas Diarias** - `GET /adt/etl/process-daily-metrics`
+9. **Procesar Resúmenes de Sesión** - `GET /adt/etl/process-session-summaries`
+
+### Uso Rápido
+
+1. **Configurar Token:**
+   - Primero haz login usando la colección principal
+   - El token se guardará automáticamente en `accessToken`
+
+2. **Configurar Contractor ID:**
+   - Edita la variable `contractorId` en la colección
+   - O usa un ID específico directamente en la URL
+
+3. **Ejecutar Consultas:**
+   - Selecciona cualquier endpoint de consulta
+   - Click en **Send**
+   - Los resultados se mostrarán en la respuesta
+
+### Notas
+
+- Todos los endpoints requieren autenticación (Bearer Token)
+- Los endpoints de ETL solo están disponibles para Superadmin
+- El endpoint de "Métricas en Tiempo Real" usa caché de 30 segundos
+- Para más detalles, consulta `ADT_ENDPOINTS.md` en la raíz del proyecto
