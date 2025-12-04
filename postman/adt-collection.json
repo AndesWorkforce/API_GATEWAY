@@ -1,0 +1,568 @@
+{
+  "info": {
+    "name": "ADT - Analytical Data Tables",
+    "description": "Colección de endpoints para consultar métricas de productividad y actividad desde las tablas ADT (Analytical Data Tables).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": { "major": 1, "minor": 0, "patch": 0 }
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001" },
+    { "key": "accessToken", "value": "" },
+    { "key": "contractorId", "value": "" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "📊 Consultas",
+      "item": [
+        {
+          "name": "Métricas Diarias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/daily-metrics/{{contractorId}}?days=30",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "daily-metrics", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30",
+                  "description": "Número de días hacia atrás (default: 30)"
+                }
+              ]
+            },
+            "description": "Obtiene métricas diarias de productividad de un contractor desde la tabla `contractor_daily_metrics`."
+          },
+          "response": []
+        },
+        {
+          "name": "Métricas en Tiempo Real",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/realtime-metrics/{{contractorId}}?workday=&useCache=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "realtime-metrics", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "",
+                  "description": "Fecha del día (YYYY-MM-DD). Si está vacío, usa el día actual",
+                  "disabled": true
+                },
+                {
+                  "key": "useCache",
+                  "value": "true",
+                  "description": "Usar caché (default: true). Poner false para forzar recálculo"
+                }
+              ]
+            },
+            "description": "Obtiene métricas de productividad calculadas en tiempo real desde `contractor_activity_15s`. Ideal para dashboards que necesitan actualización frecuente. Usa caché de 30 segundos."
+          },
+          "response": []
+        },
+        {
+          "name": "Métricas en Tiempo Real (Día Específico)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/realtime-metrics/{{contractorId}}?workday=2025-01-15&useCache=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "realtime-metrics", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "2025-01-15",
+                  "description": "Fecha del día (YYYY-MM-DD)"
+                },
+                {
+                  "key": "useCache",
+                  "value": "true",
+                  "description": "Usar caché (default: true)"
+                }
+              ]
+            },
+            "description": "Obtiene métricas en tiempo real para un día específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Resúmenes de Sesión",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/sessions/{{contractorId}}?days=30",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "sessions", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30",
+                  "description": "Número de días hacia atrás (default: 30)"
+                }
+              ]
+            },
+            "description": "Obtiene resúmenes de sesiones de trabajo de un contractor."
+          },
+          "response": []
+        },
+        {
+          "name": "Actividad Detallada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/activity/{{contractorId}}?from=&to=&limit=1000",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "activity", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Fecha de inicio (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss)",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Fecha de fin (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss)",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "1000",
+                  "description": "Límite de resultados (default: 1000)"
+                }
+              ]
+            },
+            "description": "Obtiene actividad detallada (beats de 15 segundos) de un contractor."
+          },
+          "response": []
+        },
+        {
+          "name": "Actividad Detallada (Rango de Fechas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/activity/{{contractorId}}?from=2025-01-15&to=2025-01-15&limit=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "activity", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2025-01-15",
+                  "description": "Fecha de inicio (YYYY-MM-DD)"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-01-15",
+                  "description": "Fecha de fin (YYYY-MM-DD)"
+                },
+                {
+                  "key": "limit",
+                  "value": "100",
+                  "description": "Límite de resultados"
+                }
+              ]
+            },
+            "description": "Obtiene actividad detallada para un rango de fechas específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Uso de Aplicaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/app-usage/{{contractorId}}?from=&to=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "app-usage", "{{contractorId}}"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Fecha inicio (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss)",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Fecha fin (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Obtiene uso de aplicaciones por rango de fechas. También acepta 'days' como compatibilidad si no se envían from/to."
+          },
+          "response": []
+        },
+        {
+          "name": "Ranking de Productividad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/ranking?workday=&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "ranking"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "",
+                  "description": "Fecha del día (YYYY-MM-DD). Si está vacío, usa el día anterior",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Número de resultados (default: 10)"
+                }
+              ]
+            },
+            "description": "Obtiene ranking de productividad por día."
+          },
+          "response": []
+        },
+        {
+          "name": "Ranking de Productividad (Día Específico)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/ranking?workday=2025-01-15&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "ranking"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "2025-01-15",
+                  "description": "Fecha del día (YYYY-MM-DD)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Número de resultados"
+                }
+              ]
+            },
+            "description": "Obtiene ranking de productividad para un día específico."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints para consultar métricas y datos de productividad. Requieren roles: Superadmin, TeamAdmin o Visualizer."
+    },
+    {
+      "name": "⚙️ ETL (Solo Superadmin)",
+      "item": [
+        {
+          "name": "Procesar Eventos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-events?from=&to=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-events"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Fecha de inicio (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, procesa todos los eventos",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Fecha de fin (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, procesa todos los eventos",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Ejecuta ETL para convertir eventos RAW en beats de 15 segundos (`contractor_activity_15s`). Requiere rol: Superadmin."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Eventos (Force)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-events-force?from=&to=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-events-force"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Fecha de inicio (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, usa últimas 2 horas",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Fecha de fin (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, usa ahora",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "FORCE: Borra e inserta (DELETE + INSERT) el rango indicado en `contractor_activity_15s`. Útil para backfill duro. Requiere rol: Superadmin."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Eventos (Rango de Fechas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-events?from=2025-01-15&to=2025-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-events"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2025-01-15",
+                  "description": "Fecha de inicio (YYYY-MM-DD)"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-01-15",
+                  "description": "Fecha de fin (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Procesa eventos para un rango de fechas específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Métricas Diarias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-daily-metrics?workday=&from=&to=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-daily-metrics"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "",
+                  "description": "Fecha del día a procesar (YYYY-MM-DD). Si está vacío, procesa el día ACTUAL",
+                  "disabled": true
+                },
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Día inicio del rango (YYYY-MM-DD)",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Día fin del rango (YYYY-MM-DD)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Ejecuta ETL para generar métricas diarias desde `contractor_activity_15s`. Requiere rol: Superadmin."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Métricas Diarias (Día Específico)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-daily-metrics?workday=2025-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-daily-metrics"],
+              "query": [
+                {
+                  "key": "workday",
+                  "value": "2025-01-15",
+                  "description": "Fecha del día a procesar (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Procesa métricas diarias para un día específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Resúmenes de Sesión",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-session-summaries?sessionId=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-session-summaries"],
+              "query": [
+                {
+                  "key": "sessionId",
+                  "value": "",
+                  "description": "ID de sesión específica. Si está vacío, procesa todas las sesiones",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Ejecuta ETL para generar resúmenes de sesión desde `contractor_activity_15s`. Requiere rol: Superadmin."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Resúmenes de Sesión (Sesión Específica)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-session-summaries?sessionId=session-123",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-session-summaries"],
+              "query": [
+                {
+                  "key": "sessionId",
+                  "value": "session-123",
+                  "description": "ID de sesión específica"
+                }
+              ]
+            },
+            "description": "Procesa resúmenes de sesión para una sesión específica."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Uso de Aplicaciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-app-usage?from=&to=",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-app-usage"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "Fecha de inicio (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, procesa todos los eventos",
+                  "disabled": true
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "Fecha de fin (YYYY-MM-DD o YYYY-MM-DDTHH:mm:ss). Si está vacío, procesa todos los eventos",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Ejecuta ETL para convertir eventos RAW en uso de aplicaciones (`app_usage_summary`). Puede ejecutarse en paralelo con `process-events`. Requiere rol: Superadmin."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Uso de Aplicaciones (Rango de Fechas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-app-usage?from=2025-01-15&to=2025-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-app-usage"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2025-01-15",
+                  "description": "Fecha de inicio (YYYY-MM-DD)"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-01-15",
+                  "description": "Fecha de fin (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Procesa uso de aplicaciones para un rango de fechas específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Procesar Uso de Aplicaciones (Force, Rango de Fechas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/adt/etl/process-app-usage-force?from=2025-01-15&to=2025-01-15",
+              "host": ["{{baseUrl}}"],
+              "path": ["adt", "etl", "process-app-usage-force"],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "2025-01-15",
+                  "description": "Fecha de inicio (YYYY-MM-DD)"
+                },
+                {
+                  "key": "to",
+                  "value": "2025-01-15",
+                  "description": "Fecha de fin (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "FORCE: borra e inserta `app_usage_summary` para el rango indicado."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints para ejecutar procesos ETL manualmente. Requieren rol: Superadmin."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Verificar que el accessToken esté configurado",
+          "if (!pm.collectionVariables.get('accessToken') && !pm.environment.get('accessToken')) {",
+          "  console.warn('⚠️ accessToken no configurado. Algunos endpoints pueden fallar.');",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Guardar contractorId de la respuesta si está disponible",
+          "if (pm.response.code === 200) {",
+          "  try {",
+          "    const jsonData = pm.response.json();",
+          "    if (Array.isArray(jsonData) && jsonData.length > 0) {",
+          "      const firstItem = jsonData[0];",
+          "      if (firstItem.contractor_id && !pm.collectionVariables.get('contractorId')) {",
+          "        pm.collectionVariables.set('contractorId', firstItem.contractor_id);",
+          "        console.log('✅ contractorId guardado:', firstItem.contractor_id);",
+          "      }",
+          "    }",
+          "  } catch (e) {",
+          "    // Ignorar errores de parsing",
+          "  }",
+          "}"
+        ]
+      }
+    }
+  ]
+}

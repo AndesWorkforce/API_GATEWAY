@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
+import { AdtModule } from './adt/adt.module';
 import { AgentsModule } from './agents/agents.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -40,6 +41,7 @@ import { UsersModule } from './users/users.module';
     ContractorsModule,
     AgentsModule,
     ApplicationsModule,
+    AdtModule,
   ],
   controllers: [AppController],
   providers: [
