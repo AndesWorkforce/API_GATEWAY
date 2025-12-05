@@ -18,6 +18,21 @@ export class AdtController {
   constructor(@Inject('ADT_SERVICE') private readonly client: ClientProxy) {}
 
   /**
+   * Helper function para validar y convertir fechas
+   */
+  private parseDate(dateStr?: string): string | undefined {
+    if (!dateStr || dateStr.trim() === '') {
+      return undefined;
+    }
+    const date = new Date(dateStr.trim());
+    // Validar que la fecha sea válida
+    if (isNaN(date.getTime())) {
+      return undefined;
+    }
+    return date.toISOString();
+  }
+
+  /**
    * Obtiene métricas diarias de un contractor (desde tabla ADT).
    * GET /adt/daily-metrics/:contractorId?days=30
    */
@@ -39,21 +54,75 @@ export class AdtController {
   }
 
   /**
-   * Obtiene métricas de productividad en tiempo real para el día actual.
+   * Obtiene métricas de productividad en tiempo real de todos los contratistas que tienen métricas.
+   * Solo devuelve contratistas que tienen datos (total_beats > 0).
+   *
+   * Puede recibir:
+   * - workday: un día específico (YYYY-MM-DD)
+   * - from y to: un rango de fechas (YYYY-MM-DD) - devuelve métricas agregadas
+   * - Filtros opcionales: name, job_position, country, client_id, team_id
+   *
+   * GET /adt/realtime-metrics?workday=2025-01-15
+   * GET /adt/realtime-metrics?from=2025-12-01&to=2025-12-05
+   * GET /adt/realtime-metrics?from=2025-12-01&to=2025-12-05&client_id=xxx&team_id=yyy&job_position=Software Developer
+   */
+  @Get('realtime-metrics')
+  getAllRealtimeMetrics(
+    @Query('workday') workday?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('name') name?: string,
+    @Query('job_position') jobPosition?: string,
+    @Query('country') country?: string,
+    @Query('client_id') clientId?: string,
+    @Query('team_id') teamId?: string,
+    @Query('useCache') useCache: string = 'true',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getAllRealtimeMetrics'), {
+        workday: this.parseDate(workday),
+        from: this.parseDate(from),
+        to: this.parseDate(to),
+        name: name?.trim() || undefined,
+        job_position: jobPosition?.trim() || undefined,
+        country: country?.trim() || undefined,
+        client_id: clientId?.trim() || undefined,
+        team_id: teamId?.trim() || undefined,
+        useCache: useCache !== 'false',
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene métricas de productividad en tiempo real para un contractor.
    * Calcula desde contractor_activity_15s con caché de 30 segundos.
    * Ideal para dashboards que necesitan actualización frecuente.
+   *
+   * Puede recibir:
+   * - workday: un día específico (YYYY-MM-DD)
+   * - from y to: un rango de fechas (YYYY-MM-DD) - devuelve métricas agregadas
+   *
    * GET /adt/realtime-metrics/:contractorId?workday=2025-01-15
+   * GET /adt/realtime-metrics/:contractorId?from=2025-12-01&to=2025-12-05
    */
   @Get('realtime-metrics/:contractorId')
   getRealtimeMetrics(
     @Param('contractorId') contractorId: string,
     @Query('workday') workday?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
     @Query('useCache') useCache: string = 'true',
   ) {
     return this.client
       .send(getMessagePattern('adt.getRealtimeMetrics'), {
         contractorId,
-        workday: workday ? new Date(workday).toISOString() : undefined,
+        workday: this.parseDate(workday),
+        from: this.parseDate(from),
+        to: this.parseDate(to),
         useCache: useCache !== 'false',
       })
       .pipe(

@@ -65,13 +65,21 @@ Obtiene métricas de productividad calculadas en tiempo real desde `contractor_a
 
 - `contractorId` (path) - ID del contractor
 - `workday` (query, opcional) - Fecha del día (formato: `YYYY-MM-DD`). Si no se especifica, usa el día actual
+- `from` (query, opcional) - Fecha de inicio del rango (formato: `YYYY-MM-DD`). Si se especifica junto con `to`, devuelve métricas agregadas del rango
+- `to` (query, opcional) - Fecha de fin del rango (formato: `YYYY-MM-DD`). Debe usarse junto con `from`
 - `useCache` (query, opcional) - Usar caché (default: `true`). Poner `false` para forzar recálculo
 
-**Ejemplo:**
+**Ejemplos:**
 
 ```bash
+# Obtener métricas de un día específico
 GET /adt/realtime-metrics/contractor-123?workday=2025-01-15&useCache=true
+
+# Obtener métricas agregadas de un rango de fechas
+GET /adt/realtime-metrics/contractor-123?from=2025-12-01&to=2025-12-05&useCache=true
 ```
+
+**Nota:** Si se especifican `from` y `to`, se ignorará `workday` y se devolverán métricas agregadas del rango de fechas.
 
 **Respuesta:**
 
