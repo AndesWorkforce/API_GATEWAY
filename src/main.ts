@@ -45,10 +45,39 @@ async function bootstrap() {
     { inheritAppConfig: true },
   );
 
+  // CORS configuration
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'https://client.test.andes-workforce.com',
+    'http://v8wcw0g80kg400ocg8804w0s.72.61.129.234.sslip.io',
+    // Additional origins from environment variable
+    ...(process.env.CORS_ORIGINS
+      ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
+      : []),
+  ];
+
   app.enableCors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      if (envs.environment === 'development') {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Authorization'],
   });
 
   await app.startAllMicroservices();
