@@ -161,11 +161,13 @@ Calcula métricas de productividad en tiempo real desde `contractor_activity_15s
 
 **Parámetros:**
 
-| Parámetro      | Tipo    | Ubicación | Requerido | Descripción                                                        | Ejemplo          |
-| -------------- | ------- | --------- | --------- | ------------------------------------------------------------------ | ---------------- |
-| `contractorId` | String  | Path      | ✅ Sí     | ID del contractor                                                  | `contractor-123` |
-| `workday`      | String  | Query     | ❌ No     | Fecha del día (YYYY-MM-DD). Si no se especifica, usa el día actual | `2025-01-15`     |
-| `useCache`     | Boolean | Query     | ❌ No     | Usar caché (default: `true`). Poner `false` para forzar recálculo  | `true`, `false`  |
+| Parámetro      | Tipo    | Ubicación | Requerido | Descripción                                                                                                   | Ejemplo          |
+| -------------- | ------- | --------- | --------- | ------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `contractorId` | String  | Path      | ✅ Sí     | ID del contractor                                                                                             | `contractor-123` |
+| `workday`      | String  | Query     | ❌ No     | Fecha del día (YYYY-MM-DD). Si no se especifica, usa el día actual. Se ignora si se especifican `from` y `to` | `2025-01-15`     |
+| `from`         | String  | Query     | ❌ No     | Fecha de inicio del rango (YYYY-MM-DD). Debe usarse junto con `to` para obtener métricas agregadas del rango  | `2025-12-01`     |
+| `to`           | String  | Query     | ❌ No     | Fecha de fin del rango (YYYY-MM-DD). Debe usarse junto con `from`                                             | `2025-12-05`     |
+| `useCache`     | Boolean | Query     | ❌ No     | Usar caché (default: `true`). Poner `false` para forzar recálculo                                             | `true`, `false`  |
 
 **Ejemplos de Uso:**
 
@@ -181,7 +183,15 @@ GET /adt/realtime-metrics/contractor-123?workday=2025-01-15
 
 # Obtener métricas en tiempo real de un día específico sin caché
 GET /adt/realtime-metrics/contractor-123?workday=2025-01-15&useCache=false
+
+# Obtener métricas agregadas de un rango de fechas (from-to)
+GET /adt/realtime-metrics/contractor-123?from=2025-12-01&to=2025-12-05&useCache=true
+
+# Obtener métricas agregadas de un rango sin caché
+GET /adt/realtime-metrics/contractor-123?from=2025-12-01&to=2025-12-05&useCache=false
 ```
+
+**Nota Importante:** Si se especifican `from` y `to`, se ignorará el parámetro `workday` y se devolverán métricas agregadas del rango de fechas. El campo `workday` en la respuesta mostrará el rango como `"2025-12-01 to 2025-12-05"`.
 
 **Respuesta:**
 
@@ -218,6 +228,7 @@ GET /adt/realtime-metrics/contractor-123?workday=2025-01-15&useCache=false
 - 📊 **Uso recomendado**: Para dashboards que se actualizan cada 30 segundos
 - 🔄 **Diferencia con daily-metrics**: Este endpoint calcula on-demand desde `contractor_activity_15s`, mientras que `daily-metrics` lee desde datos pre-calculados
 - ⏱️ **Latencia**: < 1 segundo con caché, 2-5 segundos sin caché
+- 📅 **Rangos de fechas**: Cuando se usan `from` y `to`, las métricas se agregan para todo el rango, devolviendo un solo objeto con métricas consolidadas
 
 ---
 
@@ -983,6 +994,9 @@ iso = date.isoformat() + 'Z'  # "2025-01-15T00:00:00Z"
 ```bash
 # Consultar métricas en tiempo real del día actual
 GET /adt/realtime-metrics/contractor-123
+
+# Consultar métricas agregadas de un rango de fechas
+GET /adt/realtime-metrics/contractor-123?from=2025-12-01&to=2025-12-05
 
 # En el frontend, hacer polling cada 30 segundos
 setInterval(() => {
