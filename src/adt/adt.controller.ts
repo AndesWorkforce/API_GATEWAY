@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Query, Inject } from '@nestjs/common';
+import { Controller, Get, Param, Query, Inject, Logger } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { catchError } from 'rxjs';
+import { catchError, timeout } from 'rxjs';
 
 import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
@@ -15,6 +15,8 @@ import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 @AllowClient()
 @Controller('adt')
 export class AdtController {
+  private readonly logger = new Logger(AdtController.name);
+
   constructor(@Inject('ADT_SERVICE') private readonly client: ClientProxy) {}
 
   /**
@@ -78,23 +80,64 @@ export class AdtController {
     @Query('team_id') teamId?: string,
     @Query('useCache') useCache: string = 'true',
   ) {
-    return this.client
-      .send(getMessagePattern('adt.getAllRealtimeMetrics'), {
-        workday: this.parseDate(workday),
-        from: this.parseDate(from),
-        to: this.parseDate(to),
-        name: name?.trim() || undefined,
-        job_position: jobPosition?.trim() || undefined,
-        country: country?.trim() || undefined,
-        client_id: clientId?.trim() || undefined,
-        team_id: teamId?.trim() || undefined,
-        useCache: useCache !== 'false',
-      })
-      .pipe(
-        catchError((error) => {
-          throw new RpcException(error);
-        }),
-      );
+    const pattern = getMessagePattern('adt.getAllRealtimeMetrics');
+    const payload = {
+      workday: this.parseDate(workday),
+      from: this.parseDate(from),
+      to: this.parseDate(to),
+      name: name?.trim() || undefined,
+      job_position: jobPosition?.trim() || undefined,
+      country: country?.trim() || undefined,
+      client_id: clientId?.trim() || undefined,
+      team_id: teamId?.trim() || undefined,
+      useCache: useCache !== 'false',
+    };
+
+    this.logger.log(`📤 Enviando petición a ADT_MS: ${pattern}`);
+    this.logger.debug(`📦 Payload: ${JSON.stringify(payload)}`);
+
+    return this.client.send(pattern, payload).pipe(
+      timeout(30000), // 30 segundos de timeout
+      catchError((error) => {
+        this.logger.error('❌ Error en getAllRealtimeMetrics:', {
+          pattern,
+          payload,
+          error: error?.message || error,
+          errorName: error?.name,
+          errorCode: error?.code,
+          errorDetails: error,
+        });
+
+        // Si es un timeout
+        if (error?.name === 'TimeoutError' || error?.code === 'TIMEOUT') {
+          throw new RpcException({
+            status: 504,
+            message:
+              'Timeout waiting for ADT service response. The service may be unavailable or taking too long.',
+            details: { pattern, timeout: '30s' },
+          });
+        }
+
+        // Si es un error de conexión
+        if (
+          error?.message?.includes('Empty response') ||
+          error?.message?.includes('No response')
+        ) {
+          throw new RpcException({
+            status: 503,
+            message:
+              'ADT service is not responding. Please check if the service is running and connected to NATS.',
+            details: { pattern },
+          });
+        }
+
+        throw new RpcException({
+          status: 500,
+          message: error?.message || 'Error communicating with ADT service',
+          details: error?.details || error,
+        });
+      }),
+    );
   }
 
   /**
