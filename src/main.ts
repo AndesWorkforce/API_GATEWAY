@@ -33,8 +33,6 @@ async function bootstrap() {
 
   app.useGlobalFilters(new RpcExceptionsFilter());
 
-  app.enableCors();
-
   app.connectMicroservice<MicroserviceOptions>(
     {
       transport: Transport.NATS,
@@ -46,6 +44,12 @@ async function bootstrap() {
     },
     { inheritAppConfig: true },
   );
+
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
   await app.startAllMicroservices();
   log('✅ API Gateway microservicio NATS conectado');
