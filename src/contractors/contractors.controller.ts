@@ -6,7 +6,9 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   Inject,
+  Logger,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
@@ -21,6 +23,8 @@ import { Public } from '../decorators/public.decorator';
 @AllowClient()
 @Controller('contractors')
 export class ContractorsController {
+  private readonly logger = new Logger(ContractorsController.name);
+
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
@@ -36,12 +40,48 @@ export class ContractorsController {
   }
 
   @Get()
-  findAll() {
-    return this.client.send(getMessagePattern('findAllContractors'), {}).pipe(
-      catchError((error) => {
-        throw new RpcException(error);
-      }),
-    );
+  findAll(
+    @Query('name') name?: string,
+    @Query('country') country?: string,
+    @Query('client_id') clientId?: string,
+    @Query('team_id') teamId?: string,
+    @Query('job_position') jobPosition?: string,
+  ) {
+    const filters: {
+      name?: string;
+      country?: string;
+      client_id?: string;
+      team_id?: string;
+      job_position?: string;
+    } = {};
+
+    if (name?.trim()) {
+      filters.name = name.trim();
+    }
+    if (country?.trim()) {
+      filters.country = country.trim();
+    }
+    if (clientId?.trim()) {
+      filters.client_id = clientId.trim();
+    }
+    if (teamId?.trim()) {
+      filters.team_id = teamId.trim();
+    }
+    if (jobPosition?.trim()) {
+      filters.job_position = jobPosition.trim();
+    }
+
+    // NATS no acepta undefined/null, siempre enviar un objeto (vacío si no hay filtros)
+    // El microservicio manejará el objeto vacío como "sin filtros"
+    const payload = Object.keys(filters).length > 0 ? filters : {};
+
+    return this.client
+      .send(getMessagePattern('findAllContractors'), payload)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Get(':id')
