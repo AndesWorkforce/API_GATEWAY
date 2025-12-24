@@ -16,6 +16,7 @@ import { EventsModule } from './events/events.module';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { NatsModule } from './nats/nats.module';
+import { ReportsModule } from './reports/reports.module';
 import { SessionsModule } from './sessions/sessions.module';
 import { TeamsModule } from './teams/teams.module';
 import { UsersModule } from './users/users.module';
@@ -42,6 +43,7 @@ import { UsersModule } from './users/users.module';
     AgentsModule,
     ApplicationsModule,
     AdtModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [
