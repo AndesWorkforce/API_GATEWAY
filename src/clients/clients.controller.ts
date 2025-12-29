@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
@@ -15,6 +16,8 @@ import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
+import { FindAllClientsQueryDto } from './dto/find-all-clients-query.dto';
+
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
 @AllowClient()
 @Controller('clients')
@@ -22,8 +25,16 @@ export class ClientsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
   @Get()
-  findAll() {
-    return this.client.send(getMessagePattern('findAllClients'), {}).pipe(
+  findAll(@Query() query: FindAllClientsQueryDto) {
+    const name = query?.name?.trim();
+    const teamId = query?.teamId?.trim();
+
+    const payload: Record<string, string> = {
+      ...(name ? { name } : {}),
+      ...(teamId ? { teamId } : {}),
+    };
+
+    return this.client.send(getMessagePattern('findAllClients'), payload).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),

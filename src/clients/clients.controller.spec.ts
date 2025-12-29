@@ -36,9 +36,25 @@ describe('ClientsController', () => {
       const expectedResponse = [{ id: '1', name: 'Client 1' }];
       client.send.mockReturnValue(expectedResponse as any);
 
-      const result = controller.findAll();
+      const result = controller.findAll({} as any);
 
       expect(client.send).toHaveBeenCalledWith('findAllClients', {});
+      expect(result).toBe(expectedResponse);
+    });
+
+    it('passes query filters to USER_SERVICE', () => {
+      const expectedResponse = [{ id: '1', name: 'Client 1' }];
+      client.send.mockReturnValue(expectedResponse as any);
+
+      const result = controller.findAll({
+        name: 'Acme',
+        teamId: 'team-1',
+      } as any);
+
+      expect(client.send).toHaveBeenCalledWith('findAllClients', {
+        name: 'Acme',
+        teamId: 'team-1',
+      });
       expect(result).toBe(expectedResponse);
     });
   });
