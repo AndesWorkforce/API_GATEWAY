@@ -226,6 +226,94 @@ export class AdtController {
   }
 
   /**
+   * Obtiene top 5 mejores rankings de productividad.
+   * @param period 'day' (día actual), 'week' (última semana), 'month' (mes actual)
+   * GET /adt/ranking/top5-best?period=day
+   * GET /adt/ranking/top5-best?period=week
+   * GET /adt/ranking/top5-best?period=month
+   */
+  @Get('ranking/top5-best')
+  getTop5BestRanking(
+    @Query('period') period: string = 'day',
+    @Query('useCache') useCache: string = 'true',
+  ) {
+    // Validar que period sea uno de los valores permitidos
+    const validPeriod = ['day', 'week', 'month'].includes(period)
+      ? (period as 'day' | 'week' | 'month')
+      : 'day';
+
+    return this.client
+      .send(getMessagePattern('adt.getTop5BestRanking'), {
+        period: validPeriod,
+        useCache: useCache !== 'false',
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene top 5 peores rankings de productividad.
+   * @param period 'day' (día actual), 'week' (última semana), 'month' (mes actual)
+   * GET /adt/ranking/top5-worst?period=day
+   * GET /adt/ranking/top5-worst?period=week
+   * GET /adt/ranking/top5-worst?period=month
+   */
+  @Get('ranking/top5-worst')
+  getTop5WorstRanking(
+    @Query('period') period: string = 'day',
+    @Query('useCache') useCache: string = 'true',
+  ) {
+    // Validar que period sea uno de los valores permitidos
+    const validPeriod = ['day', 'week', 'month'].includes(period)
+      ? (period as 'day' | 'week' | 'month')
+      : 'day';
+
+    return this.client
+      .send(getMessagePattern('adt.getTop5WorstRanking'), {
+        period: validPeriod,
+        useCache: useCache !== 'false',
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene el porcentaje de talento activo vs inactivo en un período.
+   * Un contractor se considera "activo" si tiene métricas (beats) en el período.
+   * @param period 'day' (día actual), 'week' (última semana), 'month' (mes actual)
+   * GET /adt/active-talent?period=day
+   * GET /adt/active-talent?period=week
+   * GET /adt/active-talent?period=month
+   */
+  @Get('active-talent')
+  getActiveTalentPercentage(
+    @Query('period') period: string = 'day',
+    @Query('useCache') useCache: string = 'true',
+  ) {
+    // Validar que period sea uno de los valores permitidos
+    const validPeriod = ['day', 'week', 'month'].includes(period)
+      ? (period as 'day' | 'week' | 'month')
+      : 'day';
+
+    return this.client
+      .send(getMessagePattern('adt.getActiveTalentPercentage'), {
+        period: validPeriod,
+        useCache: useCache !== 'false',
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
    * Endpoint para ejecutar ETL manualmente (útil para testing/admin).
    * GET /adt/etl/process-events?from=2025-01-01&to=2025-01-31
    */
