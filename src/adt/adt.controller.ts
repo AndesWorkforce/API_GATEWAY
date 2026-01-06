@@ -134,16 +134,23 @@ export class AdtController {
 
   /**
    * Obtiene resúmenes de sesión de un contractor.
+   * Puede filtrar por rango de fechas (from/to) o por días hacia atrás (days).
+   *
    * GET /adt/sessions/:contractorId?days=30
+   * GET /adt/sessions/:contractorId?from=2025-12-24&to=2025-12-28
    */
   @Get('sessions/:contractorId')
   getSessionSummaries(
     @Param('contractorId') contractorId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
     @Query('days') days: string = '30',
   ) {
     return this.client
       .send(getMessagePattern('adt.getSessionSummaries'), {
         contractorId,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
         days: parseInt(days, 10) || 30,
       })
       .pipe(
