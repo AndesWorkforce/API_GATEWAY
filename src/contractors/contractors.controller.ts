@@ -46,6 +46,7 @@ export class ContractorsController {
     @Query('client_id') clientId?: string,
     @Query('team_id') teamId?: string,
     @Query('job_position') jobPosition?: string,
+    @Query('isActive') isActive?: string,
   ) {
     const filters: {
       name?: string;
@@ -53,6 +54,7 @@ export class ContractorsController {
       client_id?: string;
       team_id?: string;
       job_position?: string;
+      isActive?: boolean;
     } = {};
 
     if (name?.trim()) {
@@ -69,6 +71,9 @@ export class ContractorsController {
     }
     if (jobPosition?.trim()) {
       filters.job_position = jobPosition.trim();
+    }
+    if (isActive !== undefined) {
+      filters.isActive = isActive.toLowerCase() === 'true';
     }
 
     // NATS no acepta undefined/null, siempre enviar un objeto (vacío si no hay filtros)
