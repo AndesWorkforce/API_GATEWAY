@@ -30,6 +30,15 @@ export class UsersController {
     );
   }
 
+  @Get('stats')
+  getStats() {
+    return this.client.send(getMessagePattern('getStats'), {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(getMessagePattern('findUserById'), id).pipe(
