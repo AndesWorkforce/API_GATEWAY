@@ -233,15 +233,17 @@ export class AdtController {
   }
 
   /**
-   * Obtiene top 5 mejores rankings de productividad.
+   * Obtiene top 5 rankings de productividad (mejores o peores).
    * @param period 'day' (día actual), 'week' (última semana), 'month' (mes actual)
-   * GET /adt/ranking/top5-best?period=day
-   * GET /adt/ranking/top5-best?period=week
-   * GET /adt/ranking/top5-best?period=month
+   * @param order 'best' (mejores, default) o 'worst' (peores)
+   * GET /adt/ranking/top5?period=day&order=best
+   * GET /adt/ranking/top5?period=week&order=worst
+   * GET /adt/ranking/top5?period=month&order=best
    */
-  @Get('ranking/top5-best')
-  getTop5BestRanking(
+  @Get('ranking/top5')
+  getTopRanking(
     @Query('period') period: string = 'day',
+    @Query('order') order: string = 'best',
     @Query('useCache') useCache: string = 'true',
   ) {
     // Validar que period sea uno de los valores permitidos
@@ -249,38 +251,15 @@ export class AdtController {
       ? (period as 'day' | 'week' | 'month')
       : 'day';
 
-    return this.client
-      .send(getMessagePattern('adt.getTop5BestRanking'), {
-        period: validPeriod,
-        useCache: useCache !== 'false',
-      })
-      .pipe(
-        catchError((error) => {
-          throw new RpcException(error);
-        }),
-      );
-  }
-
-  /**
-   * Obtiene top 5 peores rankings de productividad.
-   * @param period 'day' (día actual), 'week' (última semana), 'month' (mes actual)
-   * GET /adt/ranking/top5-worst?period=day
-   * GET /adt/ranking/top5-worst?period=week
-   * GET /adt/ranking/top5-worst?period=month
-   */
-  @Get('ranking/top5-worst')
-  getTop5WorstRanking(
-    @Query('period') period: string = 'day',
-    @Query('useCache') useCache: string = 'true',
-  ) {
-    // Validar que period sea uno de los valores permitidos
-    const validPeriod = ['day', 'week', 'month'].includes(period)
-      ? (period as 'day' | 'week' | 'month')
-      : 'day';
+    // Validar que order sea uno de los valores permitidos
+    const validOrder = ['best', 'worst'].includes(order)
+      ? (order as 'best' | 'worst')
+      : 'best';
 
     return this.client
-      .send(getMessagePattern('adt.getTop5WorstRanking'), {
+      .send(getMessagePattern('adt.getTopRanking'), {
         period: validPeriod,
+        order: validOrder,
         useCache: useCache !== 'false',
       })
       .pipe(
