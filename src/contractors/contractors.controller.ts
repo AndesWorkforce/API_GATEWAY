@@ -26,7 +26,8 @@ export class ContractorsController {
   private readonly logger = new Logger(ContractorsController.name);
 
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
-  @Roles(Role.Superadmin, Role.TeamAdmin)
+
+  @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
   @AllowClient()
   @Post()
   create(@Body() createContractorDto: any) {
@@ -76,14 +77,29 @@ export class ContractorsController {
       filters.isActive = isActive.toLowerCase() === 'true';
     }
 
-    // NATS no acepta undefined/null, siempre enviar un objeto (vacío si no hay filtros)
-    // El microservicio manejará el objeto vacío como "sin filtros"
     const payload = Object.keys(filters).length > 0 ? filters : {};
 
     return this.client
       .send(getMessagePattern('findAllContractors'), payload)
       .pipe(
         catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AllowClient()
+  @Get(':id/activation-key')
+  async getActivationKey(@Param('id') id: string) {
+    return this.client
+      .send(getMessagePattern('findContractorActivationKey'), id)
+      .pipe(
+        catchError((error) => {
+          this.logger.error(
+            `Error fetching activation key for ID ${id}:`,
+            error,
+          );
           throw new RpcException(error);
         }),
       );
@@ -167,7 +183,6 @@ export class ContractorsController {
     );
   }
 
-  // Contractor Day Off endpoints
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
   @Post(':id/day-offs')
