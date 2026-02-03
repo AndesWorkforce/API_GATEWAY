@@ -58,6 +58,7 @@ export class AuthGuard implements CanActivate {
         updatedAt: validationResult.updatedAt,
         type: validationResult.userType ?? 'user',
         role: validationResult.role ?? null,
+        extraRoles: validationResult.extraRoles ?? null,
       };
 
       return true;
