@@ -161,6 +161,174 @@ export class AdtController {
   }
 
   /**
+   * Obtiene resúmenes de sesión de un contractor agrupados por día.
+   * Puede filtrar por rango de fechas (from/to) o por días hacia atrás (days).
+   *
+   * GET /adt/sessions/:contractorId/by-day?days=30
+   * GET /adt/sessions/:contractorId/by-day?from=2025-12-24&to=2025-12-28
+   */
+  @Get('sessions/:contractorId/by-day')
+  getSessionSummariesByDay(
+    @Param('contractorId') contractorId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('days') days: string = '30',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getSessionSummariesByDay'), {
+        contractorId,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
+        days: parseInt(days, 10) || 30,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene la duración de actividad por hora para un contractor.
+   * Consulta contractor_activity_15s y agrupa por hora.
+   * Útil para gráficos de duración horaria durante la jornada laboral.
+   *
+   * GET /adt/hourly-activity/:contractorId?from=2025-12-24&to=2025-12-28
+   * GET /adt/hourly-activity/:contractorId?days=30
+   * GET /adt/hourly-activity/:contractorId?from=2025-12-24&to=2025-12-28&startHour=9&endHour=18
+   */
+  @Get('hourly-activity/:contractorId')
+  getHourlyActivity(
+    @Param('contractorId') contractorId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('days') days: string = '30',
+    @Query('startHour') startHour: string = '8',
+    @Query('endHour') endHour: string = '17',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getHourlyActivity'), {
+        contractorId,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
+        days: parseInt(days, 10) || 30,
+        startHour: parseInt(startHour, 10) || 8,
+        endHour: parseInt(endHour, 10) || 17,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene la duración REAL de sesiones por hora para un contractor.
+   * Calcula cuánto tiempo de sesión hubo activo DURANTE cada hora específica.
+   * Si una sesión cruza varias horas, cada hora muestra solo la porción correspondiente.
+   *
+   * GET /adt/hourly-session-duration/:contractorId?from=2025-12-24&to=2025-12-28
+   * GET /adt/hourly-session-duration/:contractorId?days=30
+   */
+  @Get('hourly-session-duration/:contractorId')
+  getHourlySessionDuration(
+    @Param('contractorId') contractorId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('days') days: string = '30',
+    @Query('startHour') startHour: string = '8',
+    @Query('endHour') endHour: string = '17',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getHourlySessionDuration'), {
+        contractorId,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
+        days: parseInt(days, 10) || 30,
+        startHour: parseInt(startHour, 10) || 8,
+        endHour: parseInt(endHour, 10) || 17,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene la productividad promedio por hora para un contractor.
+   * Usa la misma fórmula del ETL con apps y browser.
+   *
+   * GET /adt/hourly-productivity/:contractorId?from=2025-12-24&to=2025-12-28
+   * GET /adt/hourly-productivity/:contractorId?days=30
+   * GET /adt/hourly-productivity/:contractorId?from=2025-12-24&to=2025-12-28&startHour=9&endHour=18
+   */
+  @Get('hourly-productivity/:contractorId')
+  getHourlyProductivity(
+    @Param('contractorId') contractorId: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('days') days: string = '30',
+    @Query('startHour') startHour: string = '8',
+    @Query('endHour') endHour: string = '17',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getHourlyProductivity'), {
+        contractorId,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
+        days: parseInt(days, 10) || 30,
+        startHour: parseInt(startHour, 10) || 8,
+        endHour: parseInt(endHour, 10) || 17,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene la duración promedio de sesiones agrupada dinámicamente.
+   * El nivel de agrupación depende de los filtros:
+   * - Sin cliente: Agrupa por cliente
+   * - Con cliente: Agrupa por equipo
+   * - Con cliente + equipo: Agrupa por contratista individual
+   * - Con cliente + equipo + job: Igual, filtrado por job position
+   *
+   * GET /adt/grouped-avg-duration
+   * GET /adt/grouped-avg-duration?clientId=xxx
+   * GET /adt/grouped-avg-duration?clientId=xxx&teamId=yyy
+   * GET /adt/grouped-avg-duration?clientId=xxx&teamId=yyy&jobPosition=Developer
+   */
+  @Get('grouped-avg-duration')
+  getGroupedAvgSessionDuration(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('clientId') clientId?: string,
+    @Query('teamId') teamId?: string,
+    @Query('jobPosition') jobPosition?: string,
+    @Query('country') country?: string,
+    @Query('days') days: string = '30',
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getGroupedAvgSessionDuration'), {
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
+        clientId: clientId?.trim() || undefined,
+        teamId: teamId?.trim() || undefined,
+        jobPosition: jobPosition?.trim() || undefined,
+        country: country?.trim() || undefined,
+        days: parseInt(days, 10) || 30,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
    * Obtiene actividad detallada (beats de 15s) de un contractor.
    * GET /adt/activity/:contractorId?from=2025-01-01&to=2025-01-31
    */
