@@ -17,6 +17,7 @@ interface RequestUser {
   name: string;
   type: 'user' | 'client';
   role: Role | null;
+  extraRoles?: Role[] | null;
 }
 
 @Injectable()
@@ -121,7 +122,17 @@ export class RolesGuard implements CanActivate {
       return true;
     }
 
-    if (!user.role || !requiredRoles.includes(user.role)) {
+    const userRoles: Role[] = [];
+    if (user.role) {
+      userRoles.push(user.role);
+    }
+    if (user.extraRoles && Array.isArray(user.extraRoles)) {
+      userRoles.push(...user.extraRoles);
+    }
+    const hasRequiredRole = requiredRoles.some((requiredRole) =>
+      userRoles.includes(requiredRole),
+    );
+    if (!hasRequiredRole) {
       throw new ForbiddenException('User does not have sufficient permissions');
     }
 
