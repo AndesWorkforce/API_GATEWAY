@@ -92,4 +92,32 @@ export class ClientsController {
         }),
       );
   }
+
+  @Get(':id/day-offs')
+  findClientDayOffs(
+    @Param('id') id: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+    @Query('teamId') teamId?: string,
+  ) {
+    const payload: {
+      clientId: string;
+      startDate?: string;
+      endDate?: string;
+      teamId?: string;
+    } = {
+      clientId: id,
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
+      ...(teamId && { teamId }),
+    };
+
+    return this.client
+      .send(getMessagePattern('findClientDayOffs'), payload)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
 }
