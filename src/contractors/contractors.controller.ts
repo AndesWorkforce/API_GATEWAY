@@ -17,7 +17,17 @@ import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
+import { CurrentUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
+
+interface RequestUser {
+  id: string;
+  email: string;
+  name: string;
+  type: 'user' | 'client';
+  role: Role | null;
+  extraRoles?: Role[] | null;
+}
 
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
 @AllowClient()
@@ -48,6 +58,7 @@ export class ContractorsController {
     @Query('team_id') teamId?: string,
     @Query('job_position') jobPosition?: string,
     @Query('isActive') isActive?: string,
+    @CurrentUser() user?: RequestUser,
   ) {
     const filters: {
       name?: string;
@@ -64,9 +75,13 @@ export class ContractorsController {
     if (country?.trim()) {
       filters.country = country.trim();
     }
-    if (clientId?.trim()) {
+
+    if (user?.type?.toLowerCase() === 'client' && user.id) {
+      filters.client_id = user.id;
+    } else if (clientId?.trim()) {
       filters.client_id = clientId.trim();
     }
+
     if (teamId?.trim()) {
       filters.team_id = teamId.trim();
     }

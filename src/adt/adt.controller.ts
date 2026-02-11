@@ -6,6 +6,17 @@ import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
+import { CurrentUser } from '../decorators/current-user.decorator';
+
+interface RequestUser {
+  id: string;
+  email: string;
+  name: string;
+  type: 'user' | 'client';
+  role: Role | null;
+  extraRoles?: Role[] | null;
+}
+
 /**
  * Controller HTTP para consultar las tablas ADT (Analytical Data Tables).
  * Proporciona endpoints para obtener métricas de productividad y actividad.
@@ -77,7 +88,13 @@ export class AdtController {
     @Query('client_id') clientId?: string,
     @Query('team_id') teamId?: string,
     @Query('useCache') useCache: string = 'true',
+    @CurrentUser() user?: RequestUser,
   ) {
+    const finalClientId =
+      user?.type?.toLowerCase() === 'client' && user.id
+        ? user.id
+        : clientId?.trim() || undefined;
+
     return this.client
       .send(getMessagePattern('adt.getAllRealtimeMetrics'), {
         workday: this.parseDate(workday),
@@ -86,7 +103,7 @@ export class AdtController {
         name: name?.trim() || undefined,
         job_position: jobPosition?.trim() || undefined,
         country: country?.trim() || undefined,
-        client_id: clientId?.trim() || undefined,
+        client_id: finalClientId,
         team_id: teamId?.trim() || undefined,
         useCache: useCache !== 'false',
       })
