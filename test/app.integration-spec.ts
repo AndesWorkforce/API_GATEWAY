@@ -14,6 +14,34 @@ jest.mock('config', () => ({
     jwtSecretPassword: 'test-secret',
     devLogsEnabled: false,
     environment: 'development',
+    throttle: {
+      ttl: 60_000,
+      limit: 100,
+      auth: {
+        login: {
+          ttl: 60_000,
+          limit: 5,
+        },
+        register: {
+          ttl: 300_000,
+          limit: 3,
+        },
+        refresh: {
+          ttl: 60_000,
+          limit: 10,
+        },
+      },
+      agent: {
+        heartbeat: {
+          ttl: 60_000,
+          limit: 30,
+        },
+        register: {
+          ttl: 60_000,
+          limit: 5,
+        },
+      },
+    },
   },
   resolveLogLevels: () => ['error'],
   getLogModeMessage: () => 'test-mode',

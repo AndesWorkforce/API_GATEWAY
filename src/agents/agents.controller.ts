@@ -3,7 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Throttle } from '@nestjs/throttler';
 import { catchError } from 'rxjs';
 
-import { getMessagePattern } from 'config';
+import { envs, getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { Public } from 'src/decorators/public.decorator';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
@@ -20,7 +20,12 @@ import {
 export class AgentsController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Throttle({
+    default: {
+      limit: envs.throttle.agent.register.limit,
+      ttl: envs.throttle.agent.register.ttl,
+    },
+  })
   @Public()
   @Post('register')
   registerAgent(@Body() registerDto: RegisterAgentDto) {
@@ -32,6 +37,13 @@ export class AgentsController {
         }),
       );
   }
+
+  @Throttle({
+    default: {
+      limit: envs.throttle.agent.heartbeat.limit,
+      ttl: envs.throttle.agent.heartbeat.ttl,
+    },
+  })
   @Public()
   @Post('heartbeat')
   heartbeatAgent(@Body() heartbeatDto: HeartbeatAgentDto) {

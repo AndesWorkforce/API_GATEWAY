@@ -10,6 +10,19 @@ interface EnvVars {
   NATS_PASSWORD: string;
   DEV_LOGS: boolean;
   ENVIRONMENT: string;
+  // Rate Limiting Configuration
+  THROTTLE_TTL: number;
+  THROTTLE_LIMIT: number;
+  THROTTLE_AUTH_LOGIN_TTL: number;
+  THROTTLE_AUTH_LOGIN_LIMIT: number;
+  THROTTLE_AUTH_REGISTER_TTL: number;
+  THROTTLE_AUTH_REGISTER_LIMIT: number;
+  THROTTLE_AUTH_REFRESH_TTL: number;
+  THROTTLE_AUTH_REFRESH_LIMIT: number;
+  THROTTLE_AGENT_HEARTBEAT_TTL: number;
+  THROTTLE_AGENT_HEARTBEAT_LIMIT: number;
+  THROTTLE_AGENT_REGISTER_TTL: number;
+  THROTTLE_AGENT_REGISTER_LIMIT: number;
 }
 
 export const envSchema = Joi.object({
@@ -29,6 +42,21 @@ export const envSchema = Joi.object({
   ENVIRONMENT: Joi.string()
     .valid('development', 'production', 'staging')
     .default('development'),
+  // Rate Limiting - Global defaults
+  THROTTLE_TTL: Joi.number().default(60_000), // 60 seconds
+  THROTTLE_LIMIT: Joi.number().default(100), // 100 requests per TTL
+  // Rate Limiting - Auth endpoints
+  THROTTLE_AUTH_LOGIN_TTL: Joi.number().default(60_000), // 60 seconds
+  THROTTLE_AUTH_LOGIN_LIMIT: Joi.number().default(5), // 5 login attempts per minute
+  THROTTLE_AUTH_REGISTER_TTL: Joi.number().default(300_000), // 5 minutes
+  THROTTLE_AUTH_REGISTER_LIMIT: Joi.number().default(3), // 3 registrations per 5 minutes
+  THROTTLE_AUTH_REFRESH_TTL: Joi.number().default(60_000), // 60 seconds
+  THROTTLE_AUTH_REFRESH_LIMIT: Joi.number().default(10), // 10 refresh attempts per minute
+  // Rate Limiting - Agent endpoints
+  THROTTLE_AGENT_HEARTBEAT_TTL: Joi.number().default(60_000), // 60 seconds
+  THROTTLE_AGENT_HEARTBEAT_LIMIT: Joi.number().default(30), // 30 heartbeats per minute
+  THROTTLE_AGENT_REGISTER_TTL: Joi.number().default(60_000), // 60 seconds
+  THROTTLE_AGENT_REGISTER_LIMIT: Joi.number().default(5), // 5 registrations per minute
 }).unknown(true);
 
 const { error, value } = envSchema.validate(process.env);
@@ -47,6 +75,35 @@ export const envs = {
   natsPassword: envVars.NATS_PASSWORD,
   devLogsEnabled: envVars.DEV_LOGS,
   environment: envVars.ENVIRONMENT,
+  // Rate Limiting
+  throttle: {
+    ttl: envVars.THROTTLE_TTL,
+    limit: envVars.THROTTLE_LIMIT,
+    auth: {
+      login: {
+        ttl: envVars.THROTTLE_AUTH_LOGIN_TTL,
+        limit: envVars.THROTTLE_AUTH_LOGIN_LIMIT,
+      },
+      register: {
+        ttl: envVars.THROTTLE_AUTH_REGISTER_TTL,
+        limit: envVars.THROTTLE_AUTH_REGISTER_LIMIT,
+      },
+      refresh: {
+        ttl: envVars.THROTTLE_AUTH_REFRESH_TTL,
+        limit: envVars.THROTTLE_AUTH_REFRESH_LIMIT,
+      },
+    },
+    agent: {
+      heartbeat: {
+        ttl: envVars.THROTTLE_AGENT_HEARTBEAT_TTL,
+        limit: envVars.THROTTLE_AGENT_HEARTBEAT_LIMIT,
+      },
+      register: {
+        ttl: envVars.THROTTLE_AGENT_REGISTER_TTL,
+        limit: envVars.THROTTLE_AGENT_REGISTER_LIMIT,
+      },
+    },
+  },
 };
 
 /**
