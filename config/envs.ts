@@ -10,6 +10,18 @@ interface EnvVars {
   NATS_PASSWORD: string;
   DEV_LOGS: boolean;
   ENVIRONMENT: string;
+  THROTTLE_TTL: number;
+  THROTTLE_LIMIT: number;
+  THROTTLE_AUTH_LOGIN_TTL: number;
+  THROTTLE_AUTH_LOGIN_LIMIT: number;
+  THROTTLE_AUTH_REGISTER_TTL: number;
+  THROTTLE_AUTH_REGISTER_LIMIT: number;
+  THROTTLE_AUTH_REFRESH_TTL: number;
+  THROTTLE_AUTH_REFRESH_LIMIT: number;
+  THROTTLE_AGENT_HEARTBEAT_TTL: number;
+  THROTTLE_AGENT_HEARTBEAT_LIMIT: number;
+  THROTTLE_AGENT_REGISTER_TTL: number;
+  THROTTLE_AGENT_REGISTER_LIMIT: number;
 }
 
 export const envSchema = Joi.object({
@@ -29,6 +41,18 @@ export const envSchema = Joi.object({
   ENVIRONMENT: Joi.string()
     .valid('development', 'production', 'staging')
     .default('development'),
+  THROTTLE_TTL: Joi.number().default(60_000),
+  THROTTLE_LIMIT: Joi.number().default(100),
+  THROTTLE_AUTH_LOGIN_TTL: Joi.number().default(60_000),
+  THROTTLE_AUTH_LOGIN_LIMIT: Joi.number().default(5),
+  THROTTLE_AUTH_REGISTER_TTL: Joi.number().default(300_000),
+  THROTTLE_AUTH_REGISTER_LIMIT: Joi.number().default(3),
+  THROTTLE_AUTH_REFRESH_TTL: Joi.number().default(60_000),
+  THROTTLE_AUTH_REFRESH_LIMIT: Joi.number().default(10),
+  THROTTLE_AGENT_HEARTBEAT_TTL: Joi.number().default(60_000),
+  THROTTLE_AGENT_HEARTBEAT_LIMIT: Joi.number().default(30),
+  THROTTLE_AGENT_REGISTER_TTL: Joi.number().default(60_000),
+  THROTTLE_AGENT_REGISTER_LIMIT: Joi.number().default(5),
 }).unknown(true);
 
 const { error, value } = envSchema.validate(process.env);
@@ -47,6 +71,34 @@ export const envs = {
   natsPassword: envVars.NATS_PASSWORD,
   devLogsEnabled: envVars.DEV_LOGS,
   environment: envVars.ENVIRONMENT,
+  throttle: {
+    ttl: envVars.THROTTLE_TTL,
+    limit: envVars.THROTTLE_LIMIT,
+    auth: {
+      login: {
+        ttl: envVars.THROTTLE_AUTH_LOGIN_TTL,
+        limit: envVars.THROTTLE_AUTH_LOGIN_LIMIT,
+      },
+      register: {
+        ttl: envVars.THROTTLE_AUTH_REGISTER_TTL,
+        limit: envVars.THROTTLE_AUTH_REGISTER_LIMIT,
+      },
+      refresh: {
+        ttl: envVars.THROTTLE_AUTH_REFRESH_TTL,
+        limit: envVars.THROTTLE_AUTH_REFRESH_LIMIT,
+      },
+    },
+    agent: {
+      heartbeat: {
+        ttl: envVars.THROTTLE_AGENT_HEARTBEAT_TTL,
+        limit: envVars.THROTTLE_AGENT_HEARTBEAT_LIMIT,
+      },
+      register: {
+        ttl: envVars.THROTTLE_AGENT_REGISTER_TTL,
+        limit: envVars.THROTTLE_AGENT_REGISTER_LIMIT,
+      },
+    },
+  },
 };
 
 /**
