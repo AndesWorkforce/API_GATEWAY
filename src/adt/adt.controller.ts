@@ -606,4 +606,53 @@ export class AdtController {
         }),
       );
   }
+
+  /**
+   * Obtiene métricas de productividad consolidadas para un contractor.
+   * Consolida todos los agentes del contratista en una sola métrica.
+   * Usa la lógica de consolidación multi-agente (si un agente está activo, el contratista está activo).
+   *
+   * GET /adt/productivity/consolidated/:contractorId?workday=2025-01-15
+   * GET /adt/productivity/consolidated/:contractorId (día actual por defecto)
+   */
+  @Get('productivity/consolidated/:contractorId')
+  getConsolidatedProductivity(
+    @Param('contractorId') contractorId: string,
+    @Query('workday') workday?: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getConsolidatedProductivity'), {
+        contractorId,
+        workday: this.parseDate(workday),
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
+   * Obtiene métricas de productividad granuladas por agente para un contractor.
+   * Devuelve un objeto con las métricas de cada agente por separado.
+   *
+   * GET /adt/productivity/by-agent/:contractorId?workday=2025-01-15
+   * GET /adt/productivity/by-agent/:contractorId (día actual por defecto)
+   */
+  @Get('productivity/by-agent/:contractorId')
+  getProductivityByAgent(
+    @Param('contractorId') contractorId: string,
+    @Query('workday') workday?: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getProductivityByAgent'), {
+        contractorId,
+        workday: this.parseDate(workday),
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
 }
