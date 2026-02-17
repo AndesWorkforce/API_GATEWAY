@@ -1,7 +1,7 @@
 {
   "name": "Andes Gateway Env",
   "values": [
-    { "key": "baseUrl", "value": "http://localhost:3001", "enabled": true },
+    { "key": "base_url", "value": "http://localhost:3001", "enabled": true },
     { "key": "accessToken", "value": "", "enabled": true },
     {
       "key": "superadmin_email",

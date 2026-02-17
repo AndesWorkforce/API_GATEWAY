@@ -606,4 +606,36 @@ export class AdtController {
         }),
       );
   }
+
+  /**
+   * Obtiene un resumen de productividad para un contractor.
+   * Puede trabajar por día (workday) o por rango de fechas (from/to).
+   *
+   * La respuesta incluye:
+   * - consolidated: métricas consolidadas (todos los agentes juntos)
+   * - agents: métricas granuladas por agente
+   *
+   * GET /adt/productivity/:contractorId?workday=2025-01-15
+   * GET /adt/productivity/:contractorId?from=2025-01-01&to=2025-01-31
+   */
+  @Get('productivity/:contractorId')
+  getProductivitySummary(
+    @Param('contractorId') contractorId: string,
+    @Query('workday') workday?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('adt.getProductivitySummary'), {
+        contractorId,
+        workday: this.parseDate(workday),
+        from: this.parseDate(from),
+        to: this.parseDate(to),
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
 }
