@@ -608,46 +608,29 @@ export class AdtController {
   }
 
   /**
-   * Obtiene métricas de productividad consolidadas para un contractor.
-   * Consolida todos los agentes del contratista en una sola métrica.
-   * Usa la lógica de consolidación multi-agente (si un agente está activo, el contratista está activo).
+   * Obtiene un resumen de productividad para un contractor.
+   * Puede trabajar por día (workday) o por rango de fechas (from/to).
    *
-   * GET /adt/productivity/consolidated/:contractorId?workday=2025-01-15
-   * GET /adt/productivity/consolidated/:contractorId (día actual por defecto)
+   * La respuesta incluye:
+   * - consolidated: métricas consolidadas (todos los agentes juntos)
+   * - agents: métricas granuladas por agente
+   *
+   * GET /adt/productivity/:contractorId?workday=2025-01-15
+   * GET /adt/productivity/:contractorId?from=2025-01-01&to=2025-01-31
    */
-  @Get('productivity/consolidated/:contractorId')
-  getConsolidatedProductivity(
+  @Get('productivity/:contractorId')
+  getProductivitySummary(
     @Param('contractorId') contractorId: string,
     @Query('workday') workday?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ) {
     return this.client
-      .send(getMessagePattern('adt.getConsolidatedProductivity'), {
+      .send(getMessagePattern('adt.getProductivitySummary'), {
         contractorId,
         workday: this.parseDate(workday),
-      })
-      .pipe(
-        catchError((error) => {
-          throw new RpcException(error);
-        }),
-      );
-  }
-
-  /**
-   * Obtiene métricas de productividad granuladas por agente para un contractor.
-   * Devuelve un objeto con las métricas de cada agente por separado.
-   *
-   * GET /adt/productivity/by-agent/:contractorId?workday=2025-01-15
-   * GET /adt/productivity/by-agent/:contractorId (día actual por defecto)
-   */
-  @Get('productivity/by-agent/:contractorId')
-  getProductivityByAgent(
-    @Param('contractorId') contractorId: string,
-    @Query('workday') workday?: string,
-  ) {
-    return this.client
-      .send(getMessagePattern('adt.getProductivityByAgent'), {
-        contractorId,
-        workday: this.parseDate(workday),
+        from: this.parseDate(from),
+        to: this.parseDate(to),
       })
       .pipe(
         catchError((error) => {
