@@ -253,7 +253,7 @@
               }
             },
             {
-              "name": "Get Consolidated Productivity",
+              "name": "Get Productivity Summary",
               "request": {
                 "method": "GET",
                 "header": [
@@ -263,44 +263,30 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/adt/productivity/consolidated/:contractorId?workday=2025-01-15",
+                  "raw": "{{base_url}}/adt/productivity/:contractorId?workday=2025-01-15",
                   "host": ["{{base_url}}"],
-                  "path": [
-                    "adt",
-                    "productivity",
-                    "consolidated",
-                    ":contractorId"
-                  ],
+                  "path": ["adt", "productivity", ":contractorId"],
                   "query": [
                     {
                       "key": "workday",
-                      "value": "2025-01-15"
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              "name": "Get Productivity by Agent",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/adt/productivity/by-agent/:contractorId?workday=2025-01-15",
-                  "host": ["{{base_url}}"],
-                  "path": ["adt", "productivity", "by-agent", ":contractorId"],
-                  "query": [
+                      "value": "2025-01-15",
+                      "description": "Single day (YYYY-MM-DD). Use this OR from/to for date range."
+                    },
                     {
-                      "key": "workday",
-                      "value": "2025-01-15"
+                      "key": "from",
+                      "value": "2025-01-01",
+                      "disabled": true,
+                      "description": "Date range start (YYYY-MM-DD). Use with 'to'."
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31",
+                      "disabled": true,
+                      "description": "Date range end (YYYY-MM-DD). Use with 'from'."
                     }
                   ]
-                }
+                },
+                "description": "Unified endpoint for productivity metrics. Returns consolidated metrics and optionally per-agent metrics. For single agent contractors, only 'consolidated' is returned. For multi-agent contractors, both 'consolidated' and 'agents' are returned."
               }
             },
             {
