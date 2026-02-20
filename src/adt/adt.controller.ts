@@ -162,6 +162,7 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('days') days: string = '30',
+    @Query('agentId') agentId?: string,
   ) {
     return this.client
       .send(getMessagePattern('adt.getSessionSummaries'), {
@@ -169,6 +170,7 @@ export class AdtController {
         from: from?.trim() || undefined,
         to: to?.trim() || undefined,
         days: parseInt(days, 10) || 30,
+        agentId: agentId?.trim() || undefined,
       })
       .pipe(
         catchError((error) => {
@@ -179,10 +181,10 @@ export class AdtController {
 
   /**
    * Obtiene resúmenes de sesión de un contractor agrupados por día.
-   * Puede filtrar por rango de fechas (from/to) o por días hacia atrás (days).
+   * Sin agentId: consolidado (una fila por sesión). Con agentId: solo ese agente.
    *
    * GET /adt/sessions/:contractorId/by-day?days=30
-   * GET /adt/sessions/:contractorId/by-day?from=2025-12-24&to=2025-12-28
+   * GET /adt/sessions/:contractorId/by-day?from=2025-12-24&to=2025-12-28&agentId=uuid
    */
   @Get('sessions/:contractorId/by-day')
   getSessionSummariesByDay(
@@ -190,6 +192,7 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('days') days: string = '30',
+    @Query('agentId') agentId?: string,
   ) {
     return this.client
       .send(getMessagePattern('adt.getSessionSummariesByDay'), {
@@ -197,6 +200,7 @@ export class AdtController {
         from: from?.trim() || undefined,
         to: to?.trim() || undefined,
         days: parseInt(days, 10) || 30,
+        agentId: agentId?.trim() || undefined,
       })
       .pipe(
         catchError((error) => {
@@ -255,6 +259,7 @@ export class AdtController {
     @Query('days') days: string = '30',
     @Query('startHour') startHour: string = '8',
     @Query('endHour') endHour: string = '17',
+    @Query('agentId') agentId?: string,
   ) {
     return this.client
       .send(getMessagePattern('adt.getHourlySessionDuration'), {
@@ -264,6 +269,7 @@ export class AdtController {
         days: parseInt(days, 10) || 30,
         startHour: parseInt(startHour, 10) || 8,
         endHour: parseInt(endHour, 10) || 17,
+        agentId: agentId?.trim() || undefined,
       })
       .pipe(
         catchError((error) => {
@@ -275,10 +281,11 @@ export class AdtController {
   /**
    * Obtiene la productividad promedio por hora para un contractor.
    * Usa la misma fórmula del ETL con apps y browser.
+   * Con agentId opcional devuelve productividad horaria solo de ese agente; sin agentId, consolidado.
    *
    * GET /adt/hourly-productivity/:contractorId?from=2025-12-24&to=2025-12-28
    * GET /adt/hourly-productivity/:contractorId?days=30
-   * GET /adt/hourly-productivity/:contractorId?from=2025-12-24&to=2025-12-28&startHour=9&endHour=18
+   * GET /adt/hourly-productivity/:contractorId?from=2025-12-24&to=2025-12-28&agentId=xxx
    */
   @Get('hourly-productivity/:contractorId')
   getHourlyProductivity(
@@ -288,6 +295,7 @@ export class AdtController {
     @Query('days') days: string = '30',
     @Query('startHour') startHour: string = '8',
     @Query('endHour') endHour: string = '17',
+    @Query('agentId') agentId?: string,
   ) {
     return this.client
       .send(getMessagePattern('adt.getHourlyProductivity'), {
@@ -297,6 +305,7 @@ export class AdtController {
         days: parseInt(days, 10) || 30,
         startHour: parseInt(startHour, 10) || 8,
         endHour: parseInt(endHour, 10) || 17,
+        agentId: agentId?.trim() || undefined,
       })
       .pipe(
         catchError((error) => {
