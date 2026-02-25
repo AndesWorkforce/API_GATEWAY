@@ -3,7 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AgentsController } from './agents.controller';
 import {
-  RegisterAgentDto,
+  RegisterAgentNoKeyDto,
+  LinkAgentToContractorDto,
   HeartbeatAgentDto,
   SwapAgentsDto,
 } from './dto/agent.dto';
@@ -38,22 +39,39 @@ describe('AgentsController', () => {
 
   describe('registerAgent', () => {
     it('delegates to USER_SERVICE with correct pattern and payload', () => {
-      const registerDto: RegisterAgentDto = {
-        activationKey: 'activation-key-123',
+      const registerDto: RegisterAgentNoKeyDto = {
         hostname: 'hostname-1',
       };
       const expectedResponse = {
-        id: 'agent-1',
-        activationKey: 'activation-key-123',
+        agent_id: 'agent-1',
+        activation_key: 'generated-key-123',
       };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.registerAgent(registerDto);
 
-      expect(client.send).toHaveBeenCalledWith(
-        'registerOrActivateAgent',
-        registerDto,
-      );
+      expect(client.send).toHaveBeenCalledWith('registerAgent', registerDto);
+      expect(result).toBe(expectedResponse);
+    });
+  });
+
+  describe('linkAgentToContractor', () => {
+    it('delegates to USER_SERVICE with correct pattern and payload', () => {
+      const dto: LinkAgentToContractorDto = {
+        activation_key: 'agent-activation-key-1',
+        contractorId: 'contractor-1',
+      };
+      const expectedResponse = {
+        agent_id: 'agent-1',
+        contractor_id: 'contractor-1',
+        type: 'HOST',
+        parent_agent_id: null,
+      };
+      client.send.mockReturnValue(expectedResponse);
+
+      const result = controller.linkAgentToContractor(dto);
+
+      expect(client.send).toHaveBeenCalledWith('linkAgentToContractor', dto);
       expect(result).toBe(expectedResponse);
     });
   });
@@ -64,7 +82,7 @@ describe('AgentsController', () => {
         agentId: 'agent-123',
       } as HeartbeatAgentDto;
       const expectedResponse = { success: true };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.heartbeatAgent(heartbeatDto);
 
@@ -77,7 +95,7 @@ describe('AgentsController', () => {
     it('delegates to USER_SERVICE with correct pattern and contractorId', () => {
       const contractorId = 'contractor-123';
       const expectedResponse = [{ id: 'agent-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.getContractorAgents(contractorId);
 
@@ -93,7 +111,7 @@ describe('AgentsController', () => {
     it('delegates to USER_SERVICE with correct pattern and contractorId', () => {
       const contractorId = 'contractor-123';
       const expectedResponse = { hierarchy: [] };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.getAgentHierarchy(contractorId);
 
@@ -112,7 +130,7 @@ describe('AgentsController', () => {
         agent2_id: 'agent-2',
       };
       const expectedResponse = { success: true };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.swapAgentTypes(swapDto);
 
@@ -124,7 +142,7 @@ describe('AgentsController', () => {
   describe('findAll', () => {
     it('delegates to USER_SERVICE with correct pattern', () => {
       const expectedResponse = [{ id: 'agent-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findAll();
 
@@ -137,7 +155,7 @@ describe('AgentsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'agent-123';
       const expectedResponse = { id, name: 'Agent 1' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findOne(id);
 

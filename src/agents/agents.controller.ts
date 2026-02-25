@@ -9,7 +9,8 @@ import { Public } from 'src/decorators/public.decorator';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
 import {
-  RegisterAgentDto,
+  RegisterAgentNoKeyDto,
+  LinkAgentToContractorDto,
   HeartbeatAgentDto,
   SwapAgentsDto,
 } from './dto/agent.dto';
@@ -28,9 +29,21 @@ export class AgentsController {
   })
   @Public()
   @Post('register')
-  registerAgent(@Body() registerDto: RegisterAgentDto) {
+  registerAgent(@Body() registerDto: RegisterAgentNoKeyDto) {
     return this.client
-      .send(getMessagePattern('registerOrActivateAgent'), registerDto)
+      .send(getMessagePattern('registerAgent'), registerDto)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @Post('link')
+  linkAgentToContractor(@Body() dto: LinkAgentToContractorDto) {
+    return this.client
+      .send(getMessagePattern('linkAgentToContractor'), dto)
       .pipe(
         catchError((error) => {
           throw new RpcException(error);

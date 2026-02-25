@@ -1,13 +1,19 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class RegisterAgentDto {
-  @IsString()
-  @IsNotEmpty()
-  activationKey: string;
-
+export class RegisterAgentNoKeyDto {
   @IsString()
   @IsOptional()
   hostname?: string;
+}
+
+export class LinkAgentToContractorDto {
+  @IsString()
+  @IsNotEmpty()
+  activation_key: string;
+
+  @IsString()
+  @IsNotEmpty()
+  contractorId: string;
 }
 
 export class HeartbeatAgentDto {

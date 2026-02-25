@@ -985,24 +985,6 @@
           }
         },
         {
-          "name": "Get Activation Key",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/contractors/:id/activation-key",
-              "host": ["{{base_url}}"],
-              "path": ["contractors", ":id", "activation-key"]
-            },
-            "description": "Requires Superadmin or TeamAdmin role"
-          }
-        },
-        {
           "name": "Get Contractors by Client",
           "request": {
             "method": "GET",
@@ -1034,19 +1016,6 @@
               "host": ["{{base_url}}"],
               "path": ["contractors", "team", ":teamId"]
             }
-          }
-        },
-        {
-          "name": "Get Contractor by Activation Key",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/contractors/by-activation-key/:activationKey",
-              "host": ["{{base_url}}"],
-              "path": ["contractors", "by-activation-key", ":activationKey"]
-            },
-            "description": "Public endpoint"
           }
         },
         {
@@ -2201,14 +2170,40 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"contractor_id\": \"contractor-id\",\n  \"agent_id\": \"agent-id\",\n  \"agent_name\": \"PC Principal\",\n  \"agent_type\": \"primary\"\n}"
+              "raw": "{\n  \"hostname\": \"optional-machine-name\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/agents/register",
               "host": ["{{base_url}}"],
               "path": ["agents", "register"]
             },
-            "description": "Public endpoint. Throttled: 5 requests per minute"
+            "description": "Public. Registers an agent without contractor key. Backend creates an unassigned agent and returns agent_id and activation_key. Body: hostname (optional). Response: { agent_id, activation_key }. Throttled."
+          }
+        },
+        {
+          "name": "Link Agent to Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activation_key\": \"agent-activation-key-from-register\",\n  \"contractorId\": \"contractor-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agents/link",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "link"]
+            },
+            "description": "Requires Superadmin or TeamAdmin. Links an unassigned agent to a contractor using the agent's activation_key. First agent for that contractor becomes HOST; additional agents become VM with parent. Body: { activation_key, contractorId }. Response: { agent_id, contractor_id, type, parent_agent_id? }."
           }
         },
         {
@@ -2223,14 +2218,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"agent_id\": \"agent-id\",\n  \"timestamp\": \"2025-01-15T08:00:00Z\"\n}"
+              "raw": "{\n  \"agentId\": \"agent-id\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/agents/heartbeat",
               "host": ["{{base_url}}"],
               "path": ["agents", "heartbeat"]
             },
-            "description": "Public endpoint"
+            "description": "Public. Sends heartbeat for a linked agent. Body: agentId."
           }
         },
         {
@@ -2283,14 +2278,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"agent_id_1\": \"agent-id-1\",\n  \"agent_id_2\": \"agent-id-2\"\n}"
+              "raw": "{\n  \"agent1_id\": \"agent-id-1\",\n  \"agent2_id\": \"agent-id-2\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/agents/swap",
               "host": ["{{base_url}}"],
               "path": ["agents", "swap"]
             },
-            "description": "Requires Superadmin or TeamAdmin role"
+            "description": "Requires Superadmin or TeamAdmin. Swaps HOST/VM types between two agents of the same contractor. Body: agent1_id, agent2_id."
           }
         },
         {

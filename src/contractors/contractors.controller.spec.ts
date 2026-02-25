@@ -35,7 +35,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and payload', () => {
       const createContractorDto = { name: 'Contractor 1' };
       const expectedResponse = { id: 'contractor-1', ...createContractorDto };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.create(createContractorDto);
 
@@ -50,7 +50,7 @@ describe('ContractorsController', () => {
   describe('findAll', () => {
     it('delegates to USER_SERVICE with correct pattern', () => {
       const expectedResponse = [{ id: 'contractor-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findAll();
 
@@ -63,7 +63,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'contractor-123';
       const expectedResponse = { id, name: 'Contractor 1' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findOne(id);
 
@@ -76,7 +76,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'contractor-123';
       const expectedResponse = { id, name: 'Contractor 1', dayOffs: [] };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findOneWithDayOffs(id);
 
@@ -89,7 +89,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and clientId', () => {
       const clientId = 'client-123';
       const expectedResponse = [{ id: 'contractor-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findByClientId(clientId);
 
@@ -105,7 +105,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and teamId', () => {
       const teamId = 'team-123';
       const expectedResponse = [{ id: 'contractor-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findByTeamId(teamId);
 
@@ -117,28 +117,12 @@ describe('ContractorsController', () => {
     });
   });
 
-  describe('findByActivationKey', () => {
-    it('delegates to USER_SERVICE with correct pattern and activationKey', () => {
-      const activationKey = 'activation-key-123';
-      const expectedResponse = { id: 'contractor-1', activationKey };
-      client.send.mockReturnValue(expectedResponse as any);
-
-      const result = controller.findByActivationKey(activationKey);
-
-      expect(client.send).toHaveBeenCalledWith(
-        'findContractorByActivationKey',
-        activationKey,
-      );
-      expect(result).toBe(expectedResponse);
-    });
-  });
-
   describe('update', () => {
     it('delegates to USER_SERVICE with correct pattern and payload', () => {
       const id = 'contractor-123';
       const updateContractorDto = { name: 'Updated Contractor' };
       const expectedResponse = { id, ...updateContractorDto };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.update(id, updateContractorDto);
 
@@ -154,7 +138,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'contractor-123';
       const expectedResponse = { message: 'Contractor deleted' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.remove(id);
 
@@ -175,7 +159,7 @@ describe('ContractorsController', () => {
         contractor_id: id,
         ...createContractorDayOffDto,
       };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.createContractorDayOff(
         id,
@@ -194,7 +178,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'contractor-123';
       const expectedResponse = [{ id: 'dayoff-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findContractorDayOffs(id);
 
@@ -207,7 +191,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and dayOffId', () => {
       const dayOffId = 'dayoff-123';
       const expectedResponse = { id: dayOffId, date: '2024-01-01' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.findContractorDayOffById(dayOffId);
 
@@ -224,7 +208,7 @@ describe('ContractorsController', () => {
       const dayOffId = 'dayoff-123';
       const updateContractorDayOffDto = { reason: 'Updated reason' };
       const expectedResponse = { id: dayOffId, ...updateContractorDayOffDto };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.updateContractorDayOff(
         dayOffId,
@@ -243,7 +227,7 @@ describe('ContractorsController', () => {
     it('delegates to USER_SERVICE with correct pattern and dayOffId', () => {
       const dayOffId = 'dayoff-123';
       const expectedResponse = { message: 'Day off deleted' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse);
 
       const result = controller.removeContractorDayOff(dayOffId);
 

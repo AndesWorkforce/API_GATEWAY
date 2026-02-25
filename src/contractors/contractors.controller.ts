@@ -18,7 +18,10 @@ import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
-import { Public } from '../decorators/public.decorator';
+import { CreateContractorDayOffDto } from './dto/create-contractor-day-off.dto';
+import { CreateContractorDto } from './dto/create-contractor.dto';
+import { UpdateContractorDayOffDto } from './dto/update-contractor-day-off.dto';
+import { UpdateContractorDto } from './dto/update-contractor.dto';
 
 interface RequestUser {
   id: string;
@@ -40,7 +43,7 @@ export class ContractorsController {
   @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
   @AllowClient()
   @Post()
-  create(@Body() createContractorDto: any) {
+  create(@Body() createContractorDto: CreateContractorDto) {
     return this.client
       .send(getMessagePattern('createContractor'), createContractorDto)
       .pipe(
@@ -103,23 +106,6 @@ export class ContractorsController {
       );
   }
 
-  @Roles(Role.Superadmin, Role.TeamAdmin)
-  @AllowClient()
-  @Get(':id/activation-key')
-  async getActivationKey(@Param('id') id: string) {
-    return this.client
-      .send(getMessagePattern('findContractorActivationKey'), id)
-      .pipe(
-        catchError((error) => {
-          this.logger.error(
-            `Error fetching activation key for ID ${id}:`,
-            error,
-          );
-          throw new RpcException(error);
-        }),
-      );
-  }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(getMessagePattern('findContractorById'), id).pipe(
@@ -162,22 +148,13 @@ export class ContractorsController {
       );
   }
 
-  @Public()
-  @Get('by-activation-key/:activationKey')
-  findByActivationKey(@Param('activationKey') activationKey: string) {
-    return this.client
-      .send(getMessagePattern('findContractorByActivationKey'), activationKey)
-      .pipe(
-        catchError((error) => {
-          throw new RpcException(error);
-        }),
-      );
-  }
-
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContractorDto: any) {
+  update(
+    @Param('id') id: string,
+    @Body() updateContractorDto: UpdateContractorDto,
+  ) {
     return this.client
       .send(getMessagePattern('updateContractor'), { id, updateContractorDto })
       .pipe(
@@ -203,7 +180,7 @@ export class ContractorsController {
   @Post(':id/day-offs')
   createContractorDayOff(
     @Param('id') id: string,
-    @Body() createContractorDayOffDto: any,
+    @Body() createContractorDayOffDto: CreateContractorDayOffDto,
   ) {
     return this.client
       .send(getMessagePattern('createContractorDayOff'), {
@@ -244,7 +221,7 @@ export class ContractorsController {
   @Patch('day-offs/:dayOffId')
   updateContractorDayOff(
     @Param('dayOffId') dayOffId: string,
-    @Body() updateContractorDayOffDto: any,
+    @Body() updateContractorDayOffDto: UpdateContractorDayOffDto,
   ) {
     return this.client
       .send(getMessagePattern('updateContractorDayOff'), {
