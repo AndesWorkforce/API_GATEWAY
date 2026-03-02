@@ -15,7 +15,7 @@ import { catchError } from 'rxjs';
 
 import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
-import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+import { AgentOnly, AllowClient, Roles } from 'src/decorators/roles.decorator';
 
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { CreateContractorDayOffDto } from './dto/create-contractor-day-off.dto';
@@ -27,7 +27,7 @@ interface RequestUser {
   id: string;
   email: string;
   name: string;
-  type: 'user' | 'client';
+  type: 'user' | 'client' | 'agent';
   role: Role | null;
   extraRoles?: Role[] | null;
 }
@@ -113,6 +113,19 @@ export class ContractorsController {
         throw new RpcException(error);
       }),
     );
+  }
+
+  // Endpoint especial para el agente: contractor + aplicaciones asignadas
+  @AgentOnly()
+  @Get(':id/with-apps')
+  getContractorWithAppsForAgent(@Param('id') id: string) {
+    return this.client
+      .send(getMessagePattern('findContractorWithAppsForAgent'), id)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
   @Get(':id/with-day-offs')

@@ -9,13 +9,17 @@ import { Reflector } from '@nestjs/core';
 
 import { Role } from '../common/enums/role.enum';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { ALLOW_CLIENT_KEY, ROLES_KEY } from '../decorators/roles.decorator';
+import {
+  AGENT_ONLY_KEY,
+  ALLOW_CLIENT_KEY,
+  ROLES_KEY,
+} from '../decorators/roles.decorator';
 
 interface RequestUser {
   id: string;
   email: string;
   name: string;
-  type: 'user' | 'client';
+  type: 'user' | 'client' | 'agent';
   role: Role | null;
   extraRoles?: Role[] | null;
 }
@@ -35,6 +39,21 @@ export class RolesGuard implements CanActivate {
     ]);
 
     if (isPublic) {
+      return true;
+    }
+
+    // Rutas sólo para el agente técnico (userType: 'agent')
+    const agentOnly = this.reflector.getAllAndOverride<boolean>(
+      AGENT_ONLY_KEY,
+      [handler, controller],
+    );
+    if (agentOnly) {
+      const user = this.getUserFromRequest(context);
+      if (!user || user.type?.toLowerCase() !== 'agent') {
+        throw new ForbiddenException(
+          'Route accessible only to agent principal',
+        );
+      }
       return true;
     }
 
@@ -99,7 +118,9 @@ export class RolesGuard implements CanActivate {
   }
 
   private isClient(user: RequestUser): boolean {
-    return user.type?.toLowerCase() === 'client';
+    const t = user.type?.toLowerCase();
+    // Consider both real clients and agents as "client-like" for routes marked with @AllowClient()
+    return t === 'client' || t === 'agent';
   }
 
   private checkClientAccess(allowClient: boolean): boolean {

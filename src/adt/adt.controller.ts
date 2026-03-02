@@ -12,7 +12,7 @@ interface RequestUser {
   id: string;
   email: string;
   name: string;
-  type: 'user' | 'client';
+  type: 'user' | 'client' | 'agent';
   role: Role | null;
   extraRoles?: Role[] | null;
 }
