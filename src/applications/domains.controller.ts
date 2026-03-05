@@ -15,6 +15,10 @@ import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
+import type { AssignDomainsToContractorDto } from './dto/assign-domains-to-contractor.dto';
+import type { CreateDomainDto } from './dto/create-domain.dto';
+import type { UpdateDomainDto } from './dto/update-domain.dto';
+
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
 @AllowClient()
 @Controller('domains')
@@ -23,7 +27,7 @@ export class DomainsController {
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post()
-  create(@Body() createDomainDto: any) {
+  create(@Body() createDomainDto: CreateDomainDto) {
     return this.client
       .send(getMessagePattern('createDomain'), createDomainDto)
       .pipe(
@@ -53,7 +57,7 @@ export class DomainsController {
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDomainDto: any) {
+  update(@Param('id') id: string, @Body() updateDomainDto: UpdateDomainDto) {
     return this.client
       .send(getMessagePattern('updateDomain'), { id, updateDomainDto })
       .pipe(
@@ -77,7 +81,7 @@ export class DomainsController {
   @Post('contractor/:contractorId/assign')
   assignDomainsToContractor(
     @Param('contractorId') contractorId: string,
-    @Body() body: { domain_ids: string[] },
+    @Body() body: AssignDomainsToContractorDto,
   ) {
     return this.client
       .send(getMessagePattern('assignDomainsToContractor'), {
@@ -106,7 +110,7 @@ export class DomainsController {
   @Delete('contractor/:contractorId/remove')
   removeDomainsFromContractor(
     @Param('contractorId') contractorId: string,
-    @Body() body: { domain_ids: string[] },
+    @Body() body: AssignDomainsToContractorDto,
   ) {
     return this.client
       .send(getMessagePattern('removeDomainsFromContractor'), {

@@ -7,7 +7,7 @@ describe('DomainsController', () => {
   let controller: DomainsController;
   let client: jest.Mocked<ClientProxy>;
 
-  const mockClient = {
+  const mockClient: jest.Mocked<ClientProxy> = {
     send: jest.fn(),
   } as unknown as jest.Mocked<ClientProxy>;
 
@@ -35,7 +35,7 @@ describe('DomainsController', () => {
     it('delegates to USER_SERVICE with correct pattern and payload', () => {
       const createDomainDto = { name: 'domain.com', category: 'productive' };
       const expectedResponse = { id: 'domain-1', ...createDomainDto };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.create(createDomainDto);
 
@@ -47,7 +47,7 @@ describe('DomainsController', () => {
   describe('findAll', () => {
     it('delegates to USER_SERVICE with correct pattern', () => {
       const expectedResponse = [{ id: 'domain-1', name: 'domain.com' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.findAll();
 
@@ -60,7 +60,7 @@ describe('DomainsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'domain-123';
       const expectedResponse = { id, name: 'domain.com' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.findOne(id);
 
@@ -74,7 +74,7 @@ describe('DomainsController', () => {
       const id = 'domain-123';
       const updateDomainDto = { name: 'updated.com' };
       const expectedResponse = { id, ...updateDomainDto };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.update(id, updateDomainDto);
 
@@ -90,7 +90,7 @@ describe('DomainsController', () => {
     it('delegates to USER_SERVICE with correct pattern and id', () => {
       const id = 'domain-123';
       const expectedResponse = { message: 'Domain deleted' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.remove(id);
 
@@ -104,7 +104,7 @@ describe('DomainsController', () => {
       const contractorId = 'contractor-123';
       const body = { domain_ids: ['d1.com', 'd2.com'] };
       const expectedResponse = { message: 'Domains assigned' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.assignDomainsToContractor(contractorId, body);
 
@@ -120,7 +120,7 @@ describe('DomainsController', () => {
     it('delegates to USER_SERVICE with correct pattern and contractorId', () => {
       const contractorId = 'contractor-123';
       const expectedResponse = [{ id: 'domain-1' }];
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.getDomainsByContractor(contractorId);
 
@@ -137,7 +137,7 @@ describe('DomainsController', () => {
       const contractorId = 'contractor-123';
       const body = { domain_ids: ['d1.com', 'd2.com'] };
       const expectedResponse = { message: 'Domains removed' };
-      client.send.mockReturnValue(expectedResponse as any);
+      client.send.mockReturnValue(expectedResponse as unknown);
 
       const result = controller.removeDomainsFromContractor(contractorId, body);
 
