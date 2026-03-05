@@ -115,7 +115,6 @@ export class ContractorsController {
     );
   }
 
-  // Endpoint especial para el agente: contractor + aplicaciones asignadas
   @AgentOnly()
   @Get(':id/with-apps')
   getContractorWithAppsForAgent(@Param('id') id: string) {
