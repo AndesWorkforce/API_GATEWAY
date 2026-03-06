@@ -13,7 +13,7 @@ import { catchError } from 'rxjs';
 
 import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
-import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+import { AllowClient, AgentOnly, Roles } from 'src/decorators/roles.decorator';
 
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
 @AllowClient()
@@ -69,6 +69,7 @@ export class ApplicationsController {
     );
   }
   @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AgentOnly()
   @Post('contractor/:contractorId/assign')
   assignAppsToContractor(
     @Param('contractorId') contractorId: string,
@@ -97,6 +98,7 @@ export class ApplicationsController {
       );
   }
   @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AgentOnly()
   @Delete('contractor/:contractorId/remove')
   removeAppsFromContractor(
     @Param('contractorId') contractorId: string,
