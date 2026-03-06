@@ -13,7 +13,8 @@ import { catchError } from 'rxjs';
 
 import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
-import { AllowClient, Roles } from 'src/decorators/roles.decorator';
+
+import { AllowClient, AgentOnly, Roles } from 'src/decorators/roles.decorator';
 
 import type { AssignDomainsToContractorDto } from './dto/assign-domains-to-contractor.dto';
 import type { CreateDomainDto } from './dto/create-domain.dto';
@@ -78,6 +79,7 @@ export class DomainsController {
   }
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AgentOnly()
   @Post('contractor/:contractorId/assign')
   assignDomainsToContractor(
     @Param('contractorId') contractorId: string,
@@ -107,6 +109,7 @@ export class DomainsController {
   }
 
   @Roles(Role.Superadmin, Role.TeamAdmin)
+  @AgentOnly()
   @Delete('contractor/:contractorId/remove')
   removeDomainsFromContractor(
     @Param('contractorId') contractorId: string,
