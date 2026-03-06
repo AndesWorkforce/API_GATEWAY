@@ -13,6 +13,7 @@ import { catchError } from 'rxjs';
 
 import { getMessagePattern } from 'config';
 import { Role } from 'src/common/enums/role.enum';
+
 import { AllowClient, AgentOnly, Roles } from 'src/decorators/roles.decorator';
 
 import type { AssignDomainsToContractorDto } from './dto/assign-domains-to-contractor.dto';
