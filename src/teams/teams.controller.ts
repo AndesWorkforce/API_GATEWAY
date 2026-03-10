@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { catchError } from 'rxjs';
@@ -35,8 +36,13 @@ export class TeamsController {
   }
 
   @Get()
-  findAll() {
-    return this.client.send(getMessagePattern('findAllTeams'), {}).pipe(
+  findAll(@Query('clientId') clientId?: string) {
+    const pattern = clientId
+      ? getMessagePattern('findTeamsByClientId')
+      : getMessagePattern('findAllTeams');
+    const payload = clientId ?? {};
+
+    return this.client.send(pattern, payload).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
