@@ -149,10 +149,105 @@ export class ContractorsController {
       );
   }
 
+  @Get('client/:clientId/day-offs-today')
+  findClientContractorsWithDayOffToday(@Param('clientId') clientId: string) {
+    return this.client
+      .send(getMessagePattern('findClientContractorsWithDayOffToday'), clientId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Get('client/:clientId/without-day-offs-today')
+  findClientContractorsWithoutDayOffToday(@Param('clientId') clientId: string) {
+    return this.client
+      .send(
+        getMessagePattern('findClientContractorsWithoutDayOffToday'),
+        clientId,
+      )
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Get('client/:clientId/teams-day-off-stats')
+  getClientTeamsDayOffStatsInRange(
+    @Param('clientId') clientId: string,
+    @Query('start') startDate: string,
+    @Query('end') endDate: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('getClientTeamsDayOffStatsInRange'), {
+        clientId,
+        startDate,
+        endDate,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
   @Get('team/:teamId')
   findByTeamId(@Param('teamId') teamId: string) {
     return this.client
       .send(getMessagePattern('findContractorsByTeamId'), teamId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Get('team/:teamId/day-offs-on-date')
+  findTeamContractorsWithDayOffOnDate(
+    @Param('teamId') teamId: string,
+    @Query('date') date: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('findTeamContractorsWithDayOffOnDate'), {
+        teamId,
+        date,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Get('team/:teamId/without-day-offs-on-date')
+  findTeamContractorsWithoutDayOffOnDate(
+    @Param('teamId') teamId: string,
+    @Query('date') date: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('findTeamContractorsWithoutDayOffOnDate'), {
+        teamId,
+        date,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  @Get('team/:teamId/day-off-stats')
+  getTeamContractorDayOffStatsOnDate(
+    @Param('teamId') teamId: string,
+    @Query('date') date: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('getTeamContractorDayOffStatsOnDate'), {
+        teamId,
+        date,
+      })
       .pipe(
         catchError((error) => {
           throw new RpcException(error);
