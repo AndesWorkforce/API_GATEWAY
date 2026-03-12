@@ -1,9 +1,21 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  ArrayNotEmpty,
+  IsDateString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UpdateContractorDayOffDto {
-  @IsDateString()
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsDateString({}, { each: true })
   @IsOptional()
-  date?: string;
+  dates?: string[];
+
+  @IsString()
+  @IsOptional()
+  type?: string;
 
   @IsString()
   @IsOptional()
