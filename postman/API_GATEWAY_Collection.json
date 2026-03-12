@@ -1078,14 +1078,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"date\": \"2025-01-15\",\n  \"reason\": \"Vacation\"\n}"
+              "raw": "{\n  \"dates\": [\"2025-01-15\"],\n  \"reason\": \"Vacation\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/contractors/:id/day-offs",
               "host": ["{{base_url}}"],
               "path": ["contractors", ":id", "day-offs"]
             },
-            "description": "Requires Superadmin or TeamAdmin role"
+            "description": "Requires Superadmin or TeamAdmin role. 'dates' es un array de fechas (YYYY-MM-DD)."
           }
         },
         {
@@ -1138,14 +1138,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"reason\": \"Updated reason\"\n}"
+              "raw": "{\n  \"dates\": [\"2025-01-16\", \"2025-01-17\"],\n  \"reason\": \"Updated reason\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/contractors/day-offs/:dayOffId",
               "host": ["{{base_url}}"],
               "path": ["contractors", "day-offs", ":dayOffId"]
             },
-            "description": "Requires Superadmin or TeamAdmin role"
+            "description": "Requires Superadmin or TeamAdmin role. Puede actualizar 'dates' (array) y/o 'reason'."
           }
         },
         {
