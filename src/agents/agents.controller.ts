@@ -110,6 +110,16 @@ export class AgentsController {
     );
   }
 
+  @Roles(Role.Superadmin, Role.TeamAdmin)
+  @Get('unlinked')
+  findUnlinked() {
+    return this.client.send(getMessagePattern('findUnlinkedAgents'), {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(getMessagePattern('findAgentById'), id).pipe(
