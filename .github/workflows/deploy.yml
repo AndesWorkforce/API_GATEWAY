@@ -73,10 +73,8 @@ jobs:
             # ── 6. Webhook → Portainer redeploy ─────────────────────────────────────
             - name: Trigger Portainer stack redeploy
               run: |
-                  HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-                    -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}")
-                  echo "Portainer webhook HTTP status: $HTTP_STATUS"
-                  if [[ "$HTTP_STATUS" -lt 200 || "$HTTP_STATUS" -ge 300 ]]; then
-                    echo "::error::El webhook de Portainer falló — HTTP $HTTP_STATUS"
-                    exit 1
-                  fi
+                  curl -f -v -4 -X POST \
+                  -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+                  --connect-timeout 10 \
+                  "${{ secrets.PORTAINER_WEBHOOK_URL }}"
+
