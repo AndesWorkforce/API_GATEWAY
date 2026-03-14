@@ -1,81 +1,74 @@
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { catchError } from 'rxjs';
 
+import { getMessagePattern } from 'config';
+import { Role } from 'src/common/enums/role.enum';
+import { Roles } from 'src/decorators/roles.decorator';
+
+import { CurrentUser } from '../decorators/current-user.decorator';
+
+@Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
 @Controller('users')
 export class UsersController {
   constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  @Post()
-  create(@Body() createUserDto: any) {
-    return this.client.send('createUser', createUserDto);
+  @Get()
+  findAll(@CurrentUser() _user: unknown) {
+    return this.client.send(getMessagePattern('findAllUsers'), {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
-  @Get()
-  findAll() {
-    return this.client.send('findAllUsers', {});
+  @Get('stats')
+  getStats() {
+    return this.client.send(getMessagePattern('getStats'), {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send('findUserById', id);
+    return this.client.send(getMessagePattern('findUserById'), id).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
-
-  @Get(':id/day-offs')
-  findUserWithDayOffs(@Param('id') id: string) {
-    return this.client.send('findUserWithDayOffs', id);
-  }
-
+  @Roles(Role.Superadmin)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: any) {
-    return this.client.send('updateUser', { id, updateUserDto });
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: Record<string, unknown>,
+  ) {
+    return this.client
+      .send(getMessagePattern('updateUser'), { id, data: updateUserDto })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
   }
 
+  @Roles(Role.Superadmin)
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.client.send('removeUser', id);
-  }
-
-  // User Day Off endpoints
-  @Post(':id/day-offs')
-  createUserDayOff(@Param('id') id: string, @Body() createUserDayOffDto: any) {
-    return this.client.send('createUserDayOff', {
-      ...createUserDayOffDto,
-      user_id: id,
-    });
-  }
-
-  @Get(':id/day-offs')
-  findUserDayOffs(@Param('id') id: string) {
-    return this.client.send('findUserDayOffs', id);
-  }
-
-  @Get('day-offs/:dayOffId')
-  findUserDayOffById(@Param('dayOffId') dayOffId: string) {
-    return this.client.send('findUserDayOffById', dayOffId);
-  }
-
-  @Patch('day-offs/:dayOffId')
-  updateUserDayOff(
-    @Param('dayOffId') dayOffId: string,
-    @Body() updateUserDayOffDto: any,
-  ) {
-    return this.client.send('updateUserDayOff', {
-      id: dayOffId,
-      updateUserDayOffDto,
-    });
-  }
-
-  @Delete('day-offs/:dayOffId')
-  removeUserDayOff(@Param('dayOffId') dayOffId: string) {
-    return this.client.send('removeUserDayOff', dayOffId);
+    return this.client.send(getMessagePattern('removeUser'), id).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 }

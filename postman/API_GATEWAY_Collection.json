@@ -1,0 +1,2389 @@
+{
+  "info": {
+    "_postman_id": "api-gateway-collection",
+    "name": "API Gateway - Complete Collection",
+    "description": "Colección completa de endpoints del API Gateway. Incluye todas las rutas organizadas por módulos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/user",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register", "user"]
+            }
+          }
+        },
+        {
+          "name": "Register Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"client@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"Client Company\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register/client",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register", "client"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"your-refresh-token\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh-token",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "refresh-token"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"your-refresh-token\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/validate?token=your-token",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "validate"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "your-token"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ADT",
+      "item": [
+        {
+          "name": "ADT Endpoints",
+          "item": [
+            {
+              "name": "Get Daily Metrics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/daily-metrics/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "daily-metrics", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get All Realtime Metrics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/realtime-metrics?workday=2025-01-15",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "realtime-metrics"],
+                  "query": [
+                    {
+                      "key": "workday",
+                      "value": "2025-01-15"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-05",
+                      "disabled": true
+                    },
+                    {
+                      "key": "name",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "client_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "team_id",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "useCache",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Realtime Metrics by Contractor",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/realtime-metrics/:contractorId?workday=2025-01-15",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "realtime-metrics", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "workday",
+                      "value": "2025-01-15"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-05",
+                      "disabled": true
+                    },
+                    {
+                      "key": "useCache",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Productivity Summary",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/productivity/:contractorId?workday=2025-01-15",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "productivity", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "workday",
+                      "value": "2025-01-15",
+                      "description": "Single day (YYYY-MM-DD). Use this OR from/to for date range."
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-01-01",
+                      "disabled": true,
+                      "description": "Date range start (YYYY-MM-DD). Use with 'to'."
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31",
+                      "disabled": true,
+                      "description": "Date range end (YYYY-MM-DD). Use with 'from'."
+                    }
+                  ]
+                },
+                "description": "Unified endpoint for productivity metrics. Returns consolidated metrics and optionally per-agent metrics. For single agent contractors, only 'consolidated' is returned. For multi-agent contractors, both 'consolidated' and 'agents' are returned."
+              }
+            },
+            {
+              "name": "Get Session Summaries",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/sessions/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "sessions", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "agentId",
+                      "value": "",
+                      "disabled": true,
+                      "description": "ID del agente. Sin enviar: vista consolidada (una fila por sesión). Con agentId: solo sesiones de ese agente."
+                    }
+                  ]
+                },
+                "description": "Resúmenes de sesión del contractor. Sin agentId: consolidado (una fila por session_id). Con agentId: solo sesiones de ese agente."
+              }
+            },
+            {
+              "name": "Get Session Summaries by Day",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/sessions/:contractorId/by-day?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "sessions", ":contractorId", "by-day"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "agentId",
+                      "value": "",
+                      "disabled": true,
+                      "description": "ID del agente. Sin enviar: consolidado. Con agentId: solo sesiones de ese agente."
+                    }
+                  ]
+                },
+                "description": "Sesiones agrupadas por día. Sin agentId: consolidado. Con agentId: solo ese agente."
+              }
+            },
+            {
+              "name": "Get Hourly Activity",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/hourly-activity/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "hourly-activity", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startHour",
+                      "value": "8"
+                    },
+                    {
+                      "key": "endHour",
+                      "value": "17"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Hourly Session Duration",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/hourly-session-duration/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "hourly-session-duration", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startHour",
+                      "value": "8"
+                    },
+                    {
+                      "key": "endHour",
+                      "value": "17"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Hourly Productivity",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/hourly-productivity/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "hourly-productivity", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "startHour",
+                      "value": "8"
+                    },
+                    {
+                      "key": "endHour",
+                      "value": "17"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Grouped Avg Duration",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/grouped-avg-duration?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "grouped-avg-duration"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-12-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-12-28",
+                      "disabled": true
+                    },
+                    {
+                      "key": "clientId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "teamId",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "jobPosition",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "country",
+                      "value": "",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Activity",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/activity/:contractorId?limit=1000",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "activity", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get App Usage",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/app-usage/:contractorId?days=30",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "app-usage", ":contractorId"],
+                  "query": [
+                    {
+                      "key": "days",
+                      "value": "30"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-01-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31",
+                      "disabled": true
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Ranking",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/ranking?workday=2025-01-15&limit=10",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "ranking"],
+                  "query": [
+                    {
+                      "key": "workday",
+                      "value": "2025-01-15"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Top Ranking",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/ranking/top5?period=day&order=best",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "ranking", "top5"],
+                  "query": [
+                    {
+                      "key": "period",
+                      "value": "day",
+                      "description": "day | week | month"
+                    },
+                    {
+                      "key": "order",
+                      "value": "best",
+                      "description": "best | worst"
+                    },
+                    {
+                      "key": "useCache",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Active Talent Percentage",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/active-talent?period=day",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "active-talent"],
+                  "query": [
+                    {
+                      "key": "period",
+                      "value": "day",
+                      "description": "day | week | month"
+                    },
+                    {
+                      "key": "useCache",
+                      "value": "true"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "ETL Endpoints",
+          "item": [
+            {
+              "name": "Process Events",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-events?from=2025-01-01&to=2025-01-31",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-events"],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role"
+              }
+            },
+            {
+              "name": "Process Events Force",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-events-force?from=2025-01-01&to=2025-01-31",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-events-force"],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role. DELETE + INSERT (hard backfill)"
+              }
+            },
+            {
+              "name": "Process Daily Metrics",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-daily-metrics?workday=2025-01-15",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-daily-metrics"],
+                  "query": [
+                    {
+                      "key": "workday",
+                      "value": "2025-01-15",
+                      "description": "Single day"
+                    },
+                    {
+                      "key": "from",
+                      "value": "2025-01-01",
+                      "disabled": true,
+                      "description": "Date range start"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31",
+                      "disabled": true,
+                      "description": "Date range end"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role"
+              }
+            },
+            {
+              "name": "Process Session Summaries",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-session-summaries?sessionId=xxx",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-session-summaries"],
+                  "query": [
+                    {
+                      "key": "sessionId",
+                      "value": "xxx"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role"
+              }
+            },
+            {
+              "name": "Process App Usage",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-app-usage?from=2025-01-01&to=2025-01-31",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-app-usage"],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role"
+              }
+            },
+            {
+              "name": "Process App Usage Force",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/adt/etl/process-app-usage-force?from=2025-01-01&to=2025-01-31",
+                  "host": ["{{base_url}}"],
+                  "path": ["adt", "etl", "process-app-usage-force"],
+                  "query": [
+                    {
+                      "key": "from",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "to",
+                      "value": "2025-01-31"
+                    }
+                  ]
+                },
+                "description": "Requires Superadmin role. DELETE + INSERT (hard backfill)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Contractors",
+      "item": [
+        {
+          "name": "Create Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"job_position\": \"Software Developer\",\n  \"client_id\": \"client-id\",\n  \"team_id\": \"team-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/contractors",
+              "host": ["{{base_url}}"],
+              "path": ["contractors"]
+            }
+          }
+        },
+        {
+          "name": "Get All Contractors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors?name=&country=&client_id=&team_id=&job_position=&isActive=",
+              "host": ["{{base_url}}"],
+              "path": ["contractors"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": ""
+                },
+                {
+                  "key": "country",
+                  "value": ""
+                },
+                {
+                  "key": "client_id",
+                  "value": ""
+                },
+                {
+                  "key": "team_id",
+                  "value": ""
+                },
+                {
+                  "key": "job_position",
+                  "value": ""
+                },
+                {
+                  "key": "isActive",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Contractor by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/:id",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Contractor with Day Offs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/:id/with-day-offs",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id", "with-day-offs"]
+            }
+          }
+        },
+        {
+          "name": "Get Contractors by Client",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/client/:clientId",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "client", ":clientId"]
+            }
+          }
+        },
+        {
+          "name": "Get Contractors by Team",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/team/:teamId",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "team", ":teamId"]
+            }
+          }
+        },
+        {
+          "name": "Update Contractor",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/contractors/:id",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Delete Contractor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/:id",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Create Contractor Day Off",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dates\": [\"2025-01-15\"],\n  \"reason\": \"Vacation\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/contractors/:id/day-offs",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id", "day-offs"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role. 'dates' es un array de fechas (YYYY-MM-DD)."
+          }
+        },
+        {
+          "name": "Get Contractor Day Offs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/:id/day-offs",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", ":id", "day-offs"]
+            }
+          }
+        },
+        {
+          "name": "Get Contractor Day Off by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/day-offs/:dayOffId",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "day-offs", ":dayOffId"]
+            }
+          }
+        },
+        {
+          "name": "Update Contractor Day Off",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dates\": [\"2025-01-16\", \"2025-01-17\"],\n  \"reason\": \"Updated reason\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/contractors/day-offs/:dayOffId",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "day-offs", ":dayOffId"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role. Puede actualizar 'dates' (array) y/o 'reason'."
+          }
+        },
+        {
+          "name": "Delete Contractor Day Off",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/contractors/day-offs/:dayOffId",
+              "host": ["{{base_url}}"],
+              "path": ["contractors", "day-offs", ":dayOffId"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clients?name=&teamId=",
+              "host": ["{{base_url}}"],
+              "path": ["clients"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": ""
+                },
+                {
+                  "key": "teamId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Client by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clients/:id",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Client Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clients/:id",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clients/:id",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Assign Contractors to Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractorIds\": [\"contractor-id-1\", \"contractor-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clients/:id/assign-contractors",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id", "assign-contractors"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Get Client Day Offs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clients/:id/day-offs?startDate=&endDate=&teamId=",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id", "day-offs"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": ""
+                },
+                {
+                  "key": "endDate",
+                  "value": ""
+                },
+                {
+                  "key": "teamId",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get User Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/stats",
+              "host": ["{{base_url}}"],
+              "path": ["users", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["users", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["users", ":id"]
+            },
+            "description": "Requires Superadmin role"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": ["{{base_url}}"],
+              "path": ["users", ":id"]
+            },
+            "description": "Requires Superadmin role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Development Team\",\n  \"client_id\": \"client-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/teams",
+              "host": ["{{base_url}}"],
+              "path": ["teams"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teams",
+              "host": ["{{base_url}}"],
+              "path": ["teams"]
+            }
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["teams", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Team Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["teams", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/teams/:id",
+              "host": ["{{base_url}}"],
+              "path": ["teams", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Assign Contractors to Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractorIds\": [\"contractor-id-1\", \"contractor-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/teams/:id/assign-contractors",
+              "host": ["{{base_url}}"],
+              "path": ["teams", ":id", "assign-contractors"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sessions",
+      "item": [
+        {
+          "name": "Create Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractor_id\": \"contractor-id\",\n  \"start_time\": \"2025-01-15T08:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["sessions"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Get All Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions",
+              "host": ["{{base_url}}"],
+              "path": ["sessions"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Sessions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/active",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Session by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Sessions by User ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/user/:userId",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", "user", ":userId"]
+            }
+          }
+        },
+        {
+          "name": "Get Sessions by Contractor ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", "contractor", ":contractorId"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Session by Contractor ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/contractor/:contractorId/active",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", "contractor", ":contractorId", "active"]
+            }
+          }
+        },
+        {
+          "name": "Update Session",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"end_time\": \"2025-01-15T17:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "End Session",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/:id/end",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", ":id", "end"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Delete Session",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["sessions", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agent Sessions",
+      "item": [
+        {
+          "name": "Create Agent Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent_id\": \"agent-id\",\n  \"session_id\": \"session-id\",\n  \"start_time\": \"2025-01-15T08:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agent-sessions",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions"]
+            }
+          }
+        },
+        {
+          "name": "Get All Agent Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Agent Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/active",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Session by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Sessions by Agent ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/agent/:agentId",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", "agent", ":agentId"]
+            }
+          }
+        },
+        {
+          "name": "Get Active Session by Agent ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/agent/:agentId/active",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", "agent", ":agentId", "active"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Sessions by Contractor ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", "contractor", ":contractorId"]
+            }
+          }
+        },
+        {
+          "name": "Update Agent Session",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"end_time\": \"2025-01-15T17:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", ":id"]
+            }
+          }
+        },
+        {
+          "name": "End Agent Session",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/:id/end",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", ":id", "end"]
+            }
+          }
+        },
+        {
+          "name": "Delete Agent Session",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/agent-sessions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["agent-sessions", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/events",
+              "host": ["{{base_url}}"],
+              "path": ["events"]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Contractor ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/events/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["events", "contractor", ":contractorId"]
+            },
+            "description": "Public endpoint"
+          }
+        },
+        {
+          "name": "Get Events by Session ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/events/session/:sessionId",
+              "host": ["{{base_url}}"],
+              "path": ["events", "session", ":sessionId"]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Agent ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/events/agent/:agentId",
+              "host": ["{{base_url}}"],
+              "path": ["events", "agent", ":agentId"]
+            }
+          }
+        },
+        {
+          "name": "Get Events by Agent Session ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/events/agent-session/:agentSessionId",
+              "host": ["{{base_url}}"],
+              "path": ["events", "agent-session", ":agentSessionId"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Applications",
+      "item": [
+        {
+          "name": "Create Application",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Visual Studio Code\",\n  \"category\": \"IDE\",\n  \"type\": \"productive\",\n  \"weight\": 0.9\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/apps",
+              "host": ["{{base_url}}"],
+              "path": ["apps"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Get All Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/apps",
+              "host": ["{{base_url}}"],
+              "path": ["apps"]
+            }
+          }
+        },
+        {
+          "name": "Get Application by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/apps/:id",
+              "host": ["{{base_url}}"],
+              "path": ["apps", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Application",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"weight\": 0.95\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/apps/:id",
+              "host": ["{{base_url}}"],
+              "path": ["apps", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Delete Application",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/apps/:id",
+              "host": ["{{base_url}}"],
+              "path": ["apps", ":id"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Assign Apps to Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"app_ids\": [\"app-id-1\", \"app-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/apps/contractor/:contractorId/assign",
+              "host": ["{{base_url}}"],
+              "path": ["apps", "contractor", ":contractorId", "assign"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        },
+        {
+          "name": "Get Apps by Contractor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/apps/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["apps", "contractor", ":contractorId"]
+            }
+          }
+        },
+        {
+          "name": "Remove Apps from Contractor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"app_ids\": [\"app-id-1\", \"app-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/apps/contractor/:contractorId/remove",
+              "host": ["{{base_url}}"],
+              "path": ["apps", "contractor", ":contractorId", "remove"]
+            },
+            "description": "Requires Superadmin or TeamAdmin role"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        {
+          "name": "Register Agent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"hostname\": \"optional-machine-name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agents/register",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "register"]
+            },
+            "description": "Public. Registers an agent without contractor key. Backend creates an unassigned agent and returns agent_id and activation_key. Body: hostname (optional). Response: { agent_id, activation_key }. Throttled."
+          }
+        },
+        {
+          "name": "Link Agent to Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activation_key\": \"agent-activation-key-from-register\",\n  \"contractorId\": \"contractor-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agents/link",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "link"]
+            },
+            "description": "Requires Superadmin or TeamAdmin. Links an unassigned agent to a contractor using the agent's activation_key. First agent for that contractor becomes HOST; additional agents become VM with parent. Body: { activation_key, contractorId }. Response: { agent_id, contractor_id, type, parent_agent_id? }."
+          }
+        },
+        {
+          "name": "Heartbeat Agent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agentId\": \"agent-id\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agents/heartbeat",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "heartbeat"]
+            },
+            "description": "Public. Sends heartbeat for a linked agent. Body: agentId."
+          }
+        },
+        {
+          "name": "Get Contractor Agents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agents/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "contractor", ":contractorId"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Hierarchy",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agents/contractor/:contractorId/hierarchy",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "contractor", ":contractorId", "hierarchy"]
+            }
+          }
+        },
+        {
+          "name": "Swap Agent Types",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"agent1_id\": \"agent-id-1\",\n  \"agent2_id\": \"agent-id-2\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agents/swap",
+              "host": ["{{base_url}}"],
+              "path": ["agents", "swap"]
+            },
+            "description": "Requires Superadmin or TeamAdmin. Swaps HOST/VM types between two agents of the same contractor. Body: agent1_id, agent2_id."
+          }
+        },
+        {
+          "name": "Get All Agents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agents",
+              "host": ["{{base_url}}"],
+              "path": ["agents"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agents/:id",
+              "host": ["{{base_url}}"],
+              "path": ["agents", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Generate Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from\": \"2025-01-01\",\n  \"to\": \"2025-01-31\",\n  \"team_id\": \"team-123\",\n  \"selectedFields\": [\"contractorName\", \"timeWorked\", \"activityPercentage\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/generate",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "generate"]
+            },
+            "description": "Generates a productivity report in PDF format. Returns S3 URL."
+          }
+        }
+      ]
+    },
+    {
+      "name": "App",
+      "item": [
+        {
+          "name": "Get Hello",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Public endpoint"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -11,6 +11,23 @@ pnpm run prepare
 
 ---
 
+## 🌱 Variables de entorno
+
+Incluye las siguientes variables en tu archivo `.env`/`.env.example`:
+
+```bash
+PORT=3000
+NATS_HOST=localhost
+NATS_PORT=4222
+NATS_USERNAME=andes_nats
+NATS_PASSWORD=andesworkforce_nats
+DEV_LOGS=true # Habilita logs verbosos en modo desarrollo
+```
+
+Con `DEV_LOGS=false` el servicio sólo registrará errores y advertencias esenciales.
+
+---
+
 ## 📝 Formato de Commits
 
 ### Formato requerido:
