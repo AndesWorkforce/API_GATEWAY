@@ -45,6 +45,7 @@ services:
     env_file:
       - .env
     environment:
+      TZ: America/New_York
       # Override NATS_HOST so el contenedor use el servicio interno "nats"
       # en lugar de la IP externa del .env
       NATS_HOST: "nats"
