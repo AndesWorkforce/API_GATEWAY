@@ -255,6 +255,25 @@ export class ContractorsController {
       );
   }
 
+  @Get('team/:teamId/day-offs-in-range')
+  getTeamDayOffsInRange(
+    @Param('teamId') teamId: string,
+    @Query('start') startDate: string,
+    @Query('end') endDate: string,
+  ) {
+    return this.client
+      .send(getMessagePattern('findTeamDayOffsInRange'), {
+        teamId,
+        startDate,
+        endDate,
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @AllowClient()
   @Patch(':id')
