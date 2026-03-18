@@ -43,6 +43,7 @@ export class AdtController {
     return date.toISOString();
   }
 
+  // ADVANCED/BI – métricas diarias históricas por contractor (no usadas por el frontend actual)
   /**
    * Obtiene métricas diarias de un contractor (desde tabla ADT).
    * GET /adt/daily-metrics/:contractorId?days=30
@@ -64,6 +65,7 @@ export class AdtController {
       );
   }
 
+  // CORE UI – overview de todos los contractors (grid principal)
   /**
    * Obtiene métricas de productividad en tiempo real de todos los contratistas que tienen métricas.
    * Solo devuelve contratistas que tienen datos (total_beats > 0).
@@ -114,6 +116,7 @@ export class AdtController {
       );
   }
 
+  // CORE UI – detalle realtime por contractor
   /**
    * Obtiene métricas de productividad en tiempo real para un contractor.
    * Calcula desde contractor_activity_15s con caché de 30 segundos.
@@ -562,14 +565,23 @@ export class AdtController {
 
   /**
    * Endpoint para ejecutar ETL de resúmenes de sesión manualmente.
-   * GET /adt/etl/process-session-summaries?sessionId=xxx
+   * Modos:
+   * - GET /adt/etl/process-session-summaries?sessionId=xxx → solo esa sesión.
+   * - GET /adt/etl/process-session-summaries?from=YYYY-MM-DD&to=YYYY-MM-DD → todas las sesiones en ese rango (todos los contractors).
+   * - GET /adt/etl/process-session-summaries → modo "all pending" (solo sesiones nuevas que aún no tienen resumen).
    */
   @Roles(Role.Superadmin)
   @Get('etl/process-session-summaries')
-  processSessionSummaries(@Query('sessionId') sessionId?: string) {
+  processSessionSummaries(
+    @Query('sessionId') sessionId?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
     return this.client
       .send(getMessagePattern('adt.processSessionSummaries'), {
         sessionId,
+        from: from ? new Date(from).toISOString() : undefined,
+        to: to ? new Date(to).toISOString() : undefined,
       })
       .pipe(
         catchError((error) => {

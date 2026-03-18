@@ -135,6 +135,179 @@
       ]
     },
     {
+      "name": "Domains",
+      "item": [
+        {
+          "name": "Create Domain",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"example.com\",\n  \"weight\": 1,\n  \"category\": \"Productive\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/domains",
+              "host": ["{{base_url}}"],
+              "path": ["domains"]
+            }
+          }
+        },
+        {
+          "name": "Get All Domains",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/domains",
+              "host": ["{{base_url}}"],
+              "path": ["domains"]
+            }
+          }
+        },
+        {
+          "name": "Get Domain By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/domains/:id",
+              "host": ["{{base_url}}"],
+              "path": ["domains", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Domain",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"example.com\",\n  \"weight\": 1,\n  \"category\": \"Productive\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/domains/:id",
+              "host": ["{{base_url}}"],
+              "path": ["domains", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Domain",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/domains/:id",
+              "host": ["{{base_url}}"],
+              "path": ["domains", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Assign Domains To Contractor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domainIds\": [\"domain-id-1\", \"domain-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/domains/contractor/:contractorId/assign",
+              "host": ["{{base_url}}"],
+              "path": ["domains", "contractor", ":contractorId", "assign"]
+            }
+          }
+        },
+        {
+          "name": "Get Domains By Contractor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/domains/contractor/:contractorId",
+              "host": ["{{base_url}}"],
+              "path": ["domains", "contractor", ":contractorId"]
+            }
+          }
+        },
+        {
+          "name": "Remove Domains From Contractor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"domainIds\": [\"domain-id-1\", \"domain-id-2\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/domains/contractor/:contractorId/remove",
+              "host": ["{{base_url}}"],
+              "path": ["domains", "contractor", ":contractorId", "remove"]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "ADT",
       "item": [
         {
