@@ -54,7 +54,7 @@ export class UsersController {
     @Body() updateUserDto: Record<string, unknown>,
   ) {
     return this.client
-      .send(getMessagePattern('updateUser'), { id, data: updateUserDto })
+      .send(getMessagePattern('updateUser'), { id, updateUserDto })
       .pipe(
         catchError((error) => {
           throw new RpcException(error);
