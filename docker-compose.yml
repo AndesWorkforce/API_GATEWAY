@@ -54,6 +54,8 @@ services:
       THROTTLE_AGENT_REGISTER_TTL: "${THROTTLE_AGENT_REGISTER_TTL:-60000}"
       THROTTLE_AGENT_REGISTER_LIMIT: "${THROTTLE_AGENT_REGISTER_LIMIT:-5}"
 
+      CORS_ORIGINS: "https://www.pulse-aw.com,https://pulse-aw.com"
+
 networks:
   default:
     name: andes-api-gateway-net
