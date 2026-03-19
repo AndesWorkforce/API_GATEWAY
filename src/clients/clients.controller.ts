@@ -41,6 +41,23 @@ export class ClientsController {
     );
   }
 
+  @Get('day-offs')
+  findAllDayOffs(
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    const payload: { startDate?: string; endDate?: string } = {
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
+    };
+
+    return this.client.send(getMessagePattern('findAllDayOffs'), payload).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(getMessagePattern('findClientById'), id).pipe(
