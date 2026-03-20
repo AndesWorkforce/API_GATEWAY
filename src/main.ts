@@ -53,6 +53,8 @@ async function bootstrap() {
     'http://127.0.0.1:3001',
     'https://client.test.andes-workforce.com',
     'http://v8wcw0g80kg400ocg8804w0s.72.61.129.234.sslip.io',
+    'https://www.pulse-aw.com',
+    'https://pulse-aw.com',
     // Additional origins from environment variable
     ...(process.env.CORS_ORIGINS
       ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
