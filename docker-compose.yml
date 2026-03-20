@@ -1,56 +1,68 @@
-# docker-compose.yml — Local development & validation only
-# For production use a Kubernetes deployment manifest.
-#
-# Usage:
-#   1. Copy .env.template to .env and fill in your values
-#   2. docker compose up --build
+version: '3.8'
 
 services:
-  # ─── NATS message broker ────────────────────────────────────────────────────
-  nats:
-    image: nats:2.10-alpine
-    container_name: andes-nats
-    restart: unless-stopped
-    command:
-      - "--user"
-      - "${NATS_USERNAME:-andes_nats}"
-      - "--pass"
-      - "${NATS_PASSWORD:-andesworkforce_nats}"
-      - "--port"
-      - "4222"
-      - "-m"
-      - "8222" # enable HTTP monitoring endpoint
-    ports:
-      - "4222:4222" # client connections
-      - "8222:8222" # HTTP monitoring (optional)
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8222/healthz"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  # ─── API Gateway ────────────────────────────────────────────────────────────
   api-gateway:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
-    container_name: andes-api-gateway
-    restart: unless-stopped
-    depends_on:
-      nats:
-        condition: service_healthy
-    ports:
-      - "${PORT:-3001}:3001"
-    env_file:
-      - .env
+    image: ghcr.io/andesworkforce/api_gateway:latest
+    networks:
+      - traefik-public              # <-- Nombre exacto de la captura
+      - nats_nats_internal_network  # <-- Nombre exacto de la captura
+      - default
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels: 
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public" 
+        - "traefik.http.routers.api-gateway.rule=Host(`api.www.pulse-aw.com`)"
+        - "traefik.http.routers.api-gateway.entrypoints=websecure"
+        - "traefik.http.routers.api-gateway.tls=true"
+        - "traefik.http.routers.api-gateway.tls.certresolver=letsencrypt"
+        - "traefik.http.services.api-gateway.loadbalancer.server.port=3001" 
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
     environment:
-      # Override NATS_HOST so el contenedor use el servicio interno "nats"
-      # en lugar de la IP externa del .env
-      NATS_HOST: "nats"
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3001/health"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
+      NODE_ENV: production
+      PORT: "${PORT:-3001}"
+
+      # NATS
+      NATS_HOST: nats-prod
+      NATS_PORT: "4222"
+      NATS_USERNAME: "${NATS_USERNAME}"
+      NATS_PASSWORD: "${NATS_PASSWORD}"
+
+      ENVIRONMENT: "${ENVIRONMENT:-production}"
+      DEV_LOGS: "${DEV_LOGS:-false}"
+
+      THROTTLE_TTL: "${THROTTLE_TTL:-60000}"
+      THROTTLE_LIMIT: "${THROTTLE_LIMIT:-100}"
+      THROTTLE_AUTH_LOGIN_TTL: "${THROTTLE_AUTH_LOGIN_TTL:-60000}"
+      THROTTLE_AUTH_LOGIN_LIMIT: "${THROTTLE_AUTH_LOGIN_LIMIT:-5}"
+      THROTTLE_AUTH_REGISTER_TTL: "${THROTTLE_AUTH_REGISTER_TTL:-300000}"
+      THROTTLE_AUTH_REGISTER_LIMIT: "${THROTTLE_AUTH_REGISTER_LIMIT:-3}"
+      THROTTLE_AUTH_REFRESH_TTL: "${THROTTLE_AUTH_REFRESH_TTL:-60000}"
+      THROTTLE_AUTH_REFRESH_LIMIT: "${THROTTLE_AUTH_REFRESH_LIMIT:-10}"
+      THROTTLE_AGENT_HEARTBEAT_TTL: "${THROTTLE_AGENT_HEARTBEAT_TTL:-60000}"
+      THROTTLE_AGENT_HEARTBEAT_LIMIT: "${THROTTLE_AGENT_HEARTBEAT_LIMIT:-30}"
+      THROTTLE_AGENT_REGISTER_TTL: "${THROTTLE_AGENT_REGISTER_TTL:-60000}"
+      THROTTLE_AGENT_REGISTER_LIMIT: "${THROTTLE_AGENT_REGISTER_LIMIT:-5}"
+
+      CORS_ORIGINS: "https://www.pulse-aw.com,https://pulse-aw.com"
+
+networks:
+  default:
+    name: andes-api-gateway-net
+    driver: overlay
+    
+  traefik-public:
+    external: true
+    
+  nats_nats_internal_network:
+    external: true
