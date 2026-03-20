@@ -89,7 +89,6 @@ export class AdtController {
     @Query('country') country?: string,
     @Query('client_id') clientId?: string,
     @Query('team_id') teamId?: string,
-    @Query('useCache') useCache: string = 'true',
     @CurrentUser() user?: RequestUser,
   ) {
     const finalClientId =
@@ -107,7 +106,6 @@ export class AdtController {
         country: country?.trim() || undefined,
         client_id: finalClientId,
         team_id: teamId?.trim() || undefined,
-        useCache: useCache !== 'false',
       })
       .pipe(
         catchError((error) => {
@@ -135,7 +133,6 @@ export class AdtController {
     @Query('workday') workday?: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
-    @Query('useCache') useCache: string = 'true',
   ) {
     return this.client
       .send(getMessagePattern('adt.getRealtimeMetrics'), {
@@ -143,7 +140,6 @@ export class AdtController {
         workday: this.parseDate(workday),
         from: this.parseDate(from),
         to: this.parseDate(to),
-        useCache: useCache !== 'false',
       })
       .pipe(
         catchError((error) => {
@@ -441,7 +437,6 @@ export class AdtController {
   getTopRanking(
     @Query('period') period: string = 'day',
     @Query('order') order: string = 'best',
-    @Query('useCache') useCache: string = 'true',
   ) {
     // Validar que period sea uno de los valores permitidos
     const validPeriod = ['day', 'week', 'month'].includes(period)
@@ -457,7 +452,6 @@ export class AdtController {
       .send(getMessagePattern('adt.getTopRanking'), {
         period: validPeriod,
         order: validOrder,
-        useCache: useCache !== 'false',
       })
       .pipe(
         catchError((error) => {
@@ -475,10 +469,7 @@ export class AdtController {
    * GET /adt/active-talent?period=month
    */
   @Get('active-talent')
-  getActiveTalentPercentage(
-    @Query('period') period: string = 'day',
-    @Query('useCache') useCache: string = 'true',
-  ) {
+  getActiveTalentPercentage(@Query('period') period: string = 'day') {
     // Validar que period sea uno de los valores permitidos
     const validPeriod = ['day', 'week', 'month'].includes(period)
       ? (period as 'day' | 'week' | 'month')
@@ -487,7 +478,6 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getActiveTalentPercentage'), {
         period: validPeriod,
-        useCache: useCache !== 'false',
       })
       .pipe(
         catchError((error) => {

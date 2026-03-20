@@ -384,4 +384,20 @@ export class ContractorsController {
         }),
       );
   }
+
+  /**
+   * Sincroniza todos los contractors existentes a ClickHouse (ADT_MS).
+   * Útil para reparar datos cuando los contractors no aparecen en los reportes del cliente
+   * porque contractor_info_raw en ClickHouse no tiene el client_id correcto.
+   * Solo accesible por Superadmin.
+   */
+  @Roles(Role.Superadmin)
+  @Post('sync-adt')
+  syncContractorsToAdt() {
+    return this.client.send(getMessagePattern('syncContractorsToAdt'), {}).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
 }
