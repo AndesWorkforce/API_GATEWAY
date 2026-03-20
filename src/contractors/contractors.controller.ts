@@ -138,6 +138,17 @@ export class ContractorsController {
       );
   }
 
+  @Get(':id/working-days')
+  getContractorWorkingDays(@Param('id') id: string) {
+    return this.client
+      .send(getMessagePattern('getContractorWorkingDays'), id)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
   @Get('client/:clientId')
   findByClientId(@Param('clientId') clientId: string) {
     return this.client
