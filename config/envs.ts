@@ -46,13 +46,13 @@ export const envSchema = Joi.object({
   THROTTLE_AUTH_LOGIN_TTL: Joi.number().default(60_000),
   THROTTLE_AUTH_LOGIN_LIMIT: Joi.number().default(5),
   THROTTLE_AUTH_REGISTER_TTL: Joi.number().default(300_000),
-  THROTTLE_AUTH_REGISTER_LIMIT: Joi.number().default(3),
+  THROTTLE_AUTH_REGISTER_LIMIT: Joi.number().default(20),
   THROTTLE_AUTH_REFRESH_TTL: Joi.number().default(60_000),
   THROTTLE_AUTH_REFRESH_LIMIT: Joi.number().default(10),
   THROTTLE_AGENT_HEARTBEAT_TTL: Joi.number().default(60_000),
   THROTTLE_AGENT_HEARTBEAT_LIMIT: Joi.number().default(30),
   THROTTLE_AGENT_REGISTER_TTL: Joi.number().default(60_000),
-  THROTTLE_AGENT_REGISTER_LIMIT: Joi.number().default(5),
+  THROTTLE_AGENT_REGISTER_LIMIT: Joi.number().default(100),
 }).unknown(true);
 
 const { error, value } = envSchema.validate(process.env);
