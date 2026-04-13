@@ -24,7 +24,7 @@ jest.mock('config', () => ({
         },
         register: {
           ttl: 300_000,
-          limit: 3,
+          limit: 20,
         },
         refresh: {
           ttl: 60_000,
@@ -38,7 +38,7 @@ jest.mock('config', () => ({
         },
         register: {
           ttl: 60_000,
-          limit: 5,
+          limit: 100,
         },
       },
     },
@@ -209,20 +209,19 @@ describe('API Gateway (integration)', () => {
     it('POST /agents/register should respect throttling limits', async () => {
       mockUserClient.send.mockReturnValue(of({ id: 'agent-1' }));
 
-      // Make multiple requests quickly (limit is 5 per 60s)
-      const requests = Array(6)
-        .fill(null)
-        .map(() =>
-          request(app.getHttpServer())
-            .post('/agents/register')
-            .send({ activationKey: 'test-key', hostname: 'test-host' }),
-        );
+      // Limit is 100 per 60s — send sequentially to avoid bursting connections
+      let sawThrottle = false;
+      for (let i = 0; i < 101; i++) {
+        const res = await request(app.getHttpServer())
+          .post('/agents/register')
+          .send({ activationKey: 'test-key', hostname: 'test-host' });
+        if (res.status === 429) {
+          sawThrottle = true;
+          break;
+        }
+      }
 
-      const responses = await Promise.all(requests);
-
-      // At least one should be throttled (429)
-      const throttledResponses = responses.filter((res) => res.status === 429);
-      expect(throttledResponses.length).toBeGreaterThan(0);
+      expect(sawThrottle).toBe(true);
     });
   });
 });
