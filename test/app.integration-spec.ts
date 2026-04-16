@@ -19,8 +19,8 @@ jest.mock('config', () => ({
       limit: 100,
       auth: {
         login: {
-          ttl: 60_000,
-          limit: 5,
+          ttl: 1_800_000,
+          limit: 1,
         },
         register: {
           ttl: 300_000,
@@ -206,6 +206,21 @@ describe('API Gateway (integration)', () => {
   });
 
   describe('Throttling', () => {
+    it('POST /auth/login should enforce global login throttling', async () => {
+      mockAuthClient.send.mockReturnValue(of({ access_token: 'token' }));
+
+      const firstResponse = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'test@example.com', password: 'secret' });
+
+      const secondResponse = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({ email: 'another@example.com', password: 'secret' });
+
+      expect(firstResponse.status).toBe(201);
+      expect(secondResponse.status).toBe(429);
+    });
+
     it('POST /agents/register should respect throttling limits', async () => {
       mockUserClient.send.mockReturnValue(of({ id: 'agent-1' }));
 

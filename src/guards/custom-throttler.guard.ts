@@ -14,6 +14,30 @@ y logging cuando se supera el rate limit
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
   private readonly logger = new Logger(CustomThrottlerGuard.name);
+  private static readonly GLOBAL_LOGIN_THROTTLE_KEY = 'global-auth-login-lock';
+
+  protected generateKey(
+    context: ExecutionContext,
+    suffix: string,
+    name: string,
+  ): string {
+    const request = context.switchToHttp().getRequest();
+    const requestPath =
+      request?.originalUrl || request?.url || request?.route?.path;
+    const isGlobalLoginThrottle =
+      request?.method === 'POST' &&
+      (requestPath === '/auth/login' || request?.route?.path === 'login');
+
+    if (isGlobalLoginThrottle) {
+      return super.generateKey(
+        context,
+        CustomThrottlerGuard.GLOBAL_LOGIN_THROTTLE_KEY,
+        name,
+      );
+    }
+
+    return super.generateKey(context, suffix, name);
+  }
 
   protected async throwThrottlingException(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
