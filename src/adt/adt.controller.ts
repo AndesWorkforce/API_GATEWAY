@@ -598,6 +598,7 @@ export class AdtController {
         sessionId,
         from: this.queryString(from),
         to: this.queryString(to),
+
       })
       .pipe(
         catchError((error) => {
