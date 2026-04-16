@@ -19,12 +19,20 @@ export class RpcExceptionsFilter implements ExceptionFilter {
 
     if (
       typeof rpcError === 'object' &&
+      rpcError !== null &&
       'status' in rpcError &&
       'message' in rpcError
     ) {
-      const status = isNaN(+rpcError.status) ? 400 : rpcError.status;
+      const raw = (rpcError as { status: unknown }).status;
+      let httpStatus = 500;
+      if (typeof raw === 'number' && raw >= 400 && raw < 600) {
+        httpStatus = raw;
+      } else if (typeof raw === 'string' && /^\d{3}$/.test(raw)) {
+        const n = parseInt(raw, 10);
+        if (n >= 400 && n < 600) httpStatus = n;
+      }
 
-      return response.status(status).json(rpcError);
+      return response.status(httpStatus).json(rpcError);
     }
 
     return response.status(500).json({
