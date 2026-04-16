@@ -29,13 +29,33 @@ export class AdtController {
   constructor(@Inject('ADT_SERVICE') private readonly client: ClientProxy) {}
 
   /**
+   * Express puede entregar `string | string[]` si el query param se repite.
+   * Evita TypeError al llamar `.trim()` sobre un array.
+   */
+  private queryString(v?: string | string[]): string | undefined {
+    if (v === undefined || v === null) return undefined;
+    const raw = Array.isArray(v) ? v[0] : v;
+    if (typeof raw !== 'string') return undefined;
+    const t = raw.trim();
+    return t.length ? t : undefined;
+  }
+
+  private queryDaysParam(days?: string | string[], fallback = 30): number {
+    const raw =
+      days === undefined ? undefined : Array.isArray(days) ? days[0] : days;
+    const n = parseInt(String(raw ?? ''), 10);
+    return Number.isFinite(n) && n > 0 ? n : fallback;
+  }
+
+  /**
    * Helper function para validar y convertir fechas
    */
-  private parseDate(dateStr?: string): string | undefined {
-    if (!dateStr || dateStr.trim() === '') {
+  private parseDate(dateStr?: string | string[]): string | undefined {
+    const s = this.queryString(dateStr);
+    if (!s) {
       return undefined;
     }
-    const date = new Date(dateStr.trim());
+    const date = new Date(s);
     // Validar que la fecha sea válida
     if (isNaN(date.getTime())) {
       return undefined;
@@ -56,7 +76,7 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getDailyMetrics'), {
         contractorId,
-        days: parseInt(days, 10) || 30,
+        days: this.queryDaysParam(days),
       })
       .pipe(
         catchError((error) => {
@@ -94,18 +114,18 @@ export class AdtController {
     const finalClientId =
       user?.type?.toLowerCase() === 'client' && user.id
         ? user.id
-        : clientId?.trim() || undefined;
+        : this.queryString(clientId);
 
     return this.client
       .send(getMessagePattern('adt.getAllRealtimeMetrics'), {
         workday: this.parseDate(workday),
         from: this.parseDate(from),
         to: this.parseDate(to),
-        name: name?.trim() || undefined,
-        job_position: jobPosition?.trim() || undefined,
-        country: country?.trim() || undefined,
+        name: this.queryString(name),
+        job_position: this.queryString(jobPosition),
+        country: this.queryString(country),
         client_id: finalClientId,
-        team_id: teamId?.trim() || undefined,
+        team_id: this.queryString(teamId),
       })
       .pipe(
         catchError((error) => {
@@ -166,10 +186,10 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getSessionSummaries'), {
         contractorId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
-        agentId: agentId?.trim() || undefined,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days: this.queryDaysParam(days),
+        agentId: this.queryString(agentId),
       })
       .pipe(
         catchError((error) => {
@@ -196,10 +216,10 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getSessionSummariesByDay'), {
         contractorId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
-        agentId: agentId?.trim() || undefined,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days: this.queryDaysParam(days),
+        agentId: this.queryString(agentId),
       })
       .pipe(
         catchError((error) => {
@@ -229,9 +249,9 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getHourlyActivity'), {
         contractorId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days: this.queryDaysParam(days),
         startHour: parseInt(startHour, 10) || 8,
         endHour: parseInt(endHour, 10) || 17,
       })
@@ -263,12 +283,12 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getHourlySessionDuration'), {
         contractorId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days: this.queryDaysParam(days),
         startHour: parseInt(startHour, 10) || 8,
         endHour: parseInt(endHour, 10) || 17,
-        agentId: agentId?.trim() || undefined,
+        agentId: this.queryString(agentId),
       })
       .pipe(
         catchError((error) => {
@@ -299,12 +319,12 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getHourlyProductivity'), {
         contractorId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days: this.queryDaysParam(days),
         startHour: parseInt(startHour, 10) || 8,
         endHour: parseInt(endHour, 10) || 17,
-        agentId: agentId?.trim() || undefined,
+        agentId: this.queryString(agentId),
       })
       .pipe(
         catchError((error) => {
@@ -338,13 +358,13 @@ export class AdtController {
   ) {
     return this.client
       .send(getMessagePattern('adt.getGroupedAvgSessionDuration'), {
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
-        clientId: clientId?.trim() || undefined,
-        teamId: teamId?.trim() || undefined,
-        jobPosition: jobPosition?.trim() || undefined,
-        country: country?.trim() || undefined,
-        days: parseInt(days, 10) || 30,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        clientId: this.queryString(clientId),
+        teamId: this.queryString(teamId),
+        jobPosition: this.queryString(jobPosition),
+        country: this.queryString(country),
+        days: this.queryDaysParam(days),
       })
       .pipe(
         catchError((error) => {
@@ -393,9 +413,12 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.getAppUsage'), {
         contractorId,
-        from: from ? new Date(from).toISOString() : undefined,
-        to: to ? new Date(to).toISOString() : undefined,
-        days: !from && !to && days ? parseInt(days, 10) || 30 : undefined,
+        from: this.queryString(from),
+        to: this.queryString(to),
+        days:
+          !this.queryString(from) && !this.queryString(to) && days !== undefined
+            ? this.queryDaysParam(days)
+            : undefined,
       })
       .pipe(
         catchError((error) => {
@@ -573,8 +596,8 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.processSessionSummaries'), {
         sessionId,
-        from: from?.trim() || undefined,
-        to: to?.trim() || undefined,
+        from: this.queryString(from),
+        to: this.queryString(to),
       })
       .pipe(
         catchError((error) => {
