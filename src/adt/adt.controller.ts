@@ -567,11 +567,14 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
+    // Mismo criterio que GET /adt/sessions/...: fechas de calendario YYYY-MM-DD en TZ operativa.
+    // No usar new Date(from).toISOString(): para "2026-04-16" es medianoche UTC y al convertir a
+    // America/New_York pasa al día civil anterior → ETL desalineado vs la UI.
     return this.client
       .send(getMessagePattern('adt.processSessionSummaries'), {
         sessionId,
-        from: from ? new Date(from).toISOString() : undefined,
-        to: to ? new Date(to).toISOString() : undefined,
+        from: from?.trim() || undefined,
+        to: to?.trim() || undefined,
       })
       .pipe(
         catchError((error) => {
