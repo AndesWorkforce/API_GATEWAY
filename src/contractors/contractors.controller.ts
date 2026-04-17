@@ -11,6 +11,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
+import { SkipThrottle } from '@nestjs/throttler';
 import { catchError } from 'rxjs';
 
 import { getMessagePattern } from 'config';
@@ -115,6 +116,7 @@ export class ContractorsController {
     );
   }
 
+  @SkipThrottle()
   @AgentOnly()
   @Get(':id/with-apps')
   getContractorWithAppsForAgent(@Param('id') id: string) {
