@@ -91,6 +91,17 @@ export class AgentsController {
       );
   }
 
+  @Get('contractor/:contractorId/connectivity')
+  getContractorConnectivity(@Param('contractorId') contractorId: string) {
+    return this.client
+      .send(getMessagePattern('getContractorConnectivity'), contractorId)
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
   @Roles(Role.Superadmin, Role.TeamAdmin)
   @Post('swap')
   swapAgentTypes(@Body() swapDto: SwapAgentsDto) {
