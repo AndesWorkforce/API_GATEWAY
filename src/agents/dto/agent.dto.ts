@@ -20,6 +20,10 @@ export class HeartbeatAgentDto {
   @IsString()
   @IsNotEmpty()
   agentId: string;
+
+  @IsString()
+  @IsOptional()
+  power_state?: string;
 }
 
 export class SwapAgentsDto {
