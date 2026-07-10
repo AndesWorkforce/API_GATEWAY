@@ -26,6 +26,12 @@ export class HeartbeatAgentDto {
   power_state?: string;
 }
 
+export class DecommissionAgentDto {
+  @IsString()
+  @IsNotEmpty()
+  agentId: string;
+}
+
 export class SwapAgentsDto {
   @IsString()
   @IsNotEmpty()

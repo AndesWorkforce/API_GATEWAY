@@ -12,6 +12,7 @@ import {
   RegisterAgentNoKeyDto,
   LinkAgentToContractorDto,
   HeartbeatAgentDto,
+  DecommissionAgentDto,
   SwapAgentsDto,
 } from './dto/agent.dto';
 
@@ -67,6 +68,22 @@ export class AgentsController {
           throw new RpcException(error);
         }),
       );
+  }
+
+  @Throttle({
+    default: {
+      limit: envs.throttle.agent.heartbeat.limit,
+      ttl: envs.throttle.agent.heartbeat.ttl,
+    },
+  })
+  @Public()
+  @Post('decommission')
+  decommissionAgent(@Body() dto: DecommissionAgentDto) {
+    return this.client.send(getMessagePattern('decommissionAgent'), dto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Get('contractor/:contractorId')
