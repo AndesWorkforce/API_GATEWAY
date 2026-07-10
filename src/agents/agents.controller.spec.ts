@@ -6,6 +6,7 @@ import {
   RegisterAgentNoKeyDto,
   LinkAgentToContractorDto,
   HeartbeatAgentDto,
+  DecommissionAgentDto,
   SwapAgentsDto,
 } from './dto/agent.dto';
 
@@ -87,6 +88,25 @@ describe('AgentsController', () => {
       const result = controller.heartbeatAgent(heartbeatDto);
 
       expect(client.send).toHaveBeenCalledWith('heartbeatAgent', heartbeatDto);
+      expect(result).toBe(expectedResponse);
+    });
+  });
+
+  describe('decommissionAgent', () => {
+    it('delegates to USER_SERVICE with correct pattern and payload', () => {
+      const dto: DecommissionAgentDto = {
+        agentId: 'agent-123',
+      };
+      const expectedResponse = {
+        ok: true,
+        agent_id: 'agent-123',
+        decommissioned: true,
+      };
+      client.send.mockReturnValue(expectedResponse);
+
+      const result = controller.decommissionAgent(dto);
+
+      expect(client.send).toHaveBeenCalledWith('decommissionAgent', dto);
       expect(result).toBe(expectedResponse);
     });
   });
