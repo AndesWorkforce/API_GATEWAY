@@ -243,8 +243,8 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('days') days: string = '30',
-    @Query('startHour') startHour: string = '8',
-    @Query('endHour') endHour: string = '17',
+    @Query('startHour') startHour: string = '7',
+    @Query('endHour') endHour: string = '19',
   ) {
     return this.client
       .send(getMessagePattern('adt.getHourlyActivity'), {
@@ -252,8 +252,8 @@ export class AdtController {
         from: this.queryString(from),
         to: this.queryString(to),
         days: this.queryDaysParam(days),
-        startHour: parseInt(startHour, 10) || 8,
-        endHour: parseInt(endHour, 10) || 17,
+        startHour: parseInt(startHour, 10) || 7,
+        endHour: parseInt(endHour, 10) || 19,
       })
       .pipe(
         catchError((error) => {
@@ -276,8 +276,8 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('days') days: string = '30',
-    @Query('startHour') startHour: string = '8',
-    @Query('endHour') endHour: string = '17',
+    @Query('startHour') startHour: string = '7',
+    @Query('endHour') endHour: string = '19',
     @Query('agentId') agentId?: string,
   ) {
     return this.client
@@ -286,8 +286,8 @@ export class AdtController {
         from: this.queryString(from),
         to: this.queryString(to),
         days: this.queryDaysParam(days),
-        startHour: parseInt(startHour, 10) || 8,
-        endHour: parseInt(endHour, 10) || 17,
+        startHour: parseInt(startHour, 10) || 7,
+        endHour: parseInt(endHour, 10) || 19,
         agentId: this.queryString(agentId),
       })
       .pipe(
@@ -312,8 +312,8 @@ export class AdtController {
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('days') days: string = '30',
-    @Query('startHour') startHour: string = '8',
-    @Query('endHour') endHour: string = '17',
+    @Query('startHour') startHour: string = '7',
+    @Query('endHour') endHour: string = '19',
     @Query('agentId') agentId?: string,
   ) {
     return this.client
@@ -322,8 +322,8 @@ export class AdtController {
         from: this.queryString(from),
         to: this.queryString(to),
         days: this.queryDaysParam(days),
-        startHour: parseInt(startHour, 10) || 8,
-        endHour: parseInt(endHour, 10) || 17,
+        startHour: parseInt(startHour, 10) || 7,
+        endHour: parseInt(endHour, 10) || 19,
         agentId: this.queryString(agentId),
       })
       .pipe(
@@ -598,7 +598,6 @@ export class AdtController {
         sessionId,
         from: this.queryString(from),
         to: this.queryString(to),
-
       })
       .pipe(
         catchError((error) => {
