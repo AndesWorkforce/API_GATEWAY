@@ -13,6 +13,13 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, { logger: logLevels });
   const logger = new Logger('Main-Gateway');
+
+  // Confiar en el primer salto de proxy (Traefik) para que `req.ip` refleje
+  // la IP real del cliente (X-Forwarded-For) en lugar de la IP interna de
+  // Traefik. Sin esto, TODOS los usuarios comparten el mismo bucket de
+  // rate-limit (ThrottlerGuard), agotándolo entre todos y provocando 429
+  // incluso en /auth/login y /auth/refresh-token.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
   const log = (message: string) =>
     envs.devLogsEnabled ? logger.log(message) : logger.warn(message);
 
