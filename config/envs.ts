@@ -1,4 +1,4 @@
-import 'dotenv/config';
+﻿import 'dotenv/config';
 
 import * as Joi from 'joi';
 
@@ -10,6 +10,7 @@ interface EnvVars {
   NATS_PASSWORD: string;
   DEV_LOGS: boolean;
   ENVIRONMENT: string;
+  JWT_SECRET_PASSWORD: string;
   THROTTLE_TTL: number;
   THROTTLE_LIMIT: number;
   THROTTLE_AUTH_LOGIN_TTL: number;
@@ -41,6 +42,7 @@ export const envSchema = Joi.object({
   ENVIRONMENT: Joi.string()
     .valid('development', 'production', 'staging')
     .default('development'),
+  JWT_SECRET_PASSWORD: Joi.string().required(),
   THROTTLE_TTL: Joi.number().default(60_000),
   THROTTLE_LIMIT: Joi.number().default(100),
   THROTTLE_AUTH_LOGIN_TTL: Joi.number().default(60_000),
@@ -71,6 +73,7 @@ export const envs = {
   natsPassword: envVars.NATS_PASSWORD,
   devLogsEnabled: envVars.DEV_LOGS,
   environment: envVars.ENVIRONMENT,
+  jwtSecretPassword: envVars.JWT_SECRET_PASSWORD,
   throttle: {
     ttl: envVars.THROTTLE_TTL,
     limit: envVars.THROTTLE_LIMIT,
