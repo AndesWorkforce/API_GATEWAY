@@ -577,16 +577,64 @@ export class AdtController {
   }
 
   /**
+   * Recalcula métricas diarias YA EXISTENTES para el período elegido.
+   *
+   * A diferencia de /etl/process-daily-metrics (que saltea los días ya poblados),
+   * este endpoint borra y recalcula. Es el camino para propagar un cambio de
+   * fórmula o de pesos al histórico.
+   *
+   * Elegí UNO (precedencia: day > month > year > from/to):
+   * - GET /adt/etl/backfill-daily-metrics?day=2026-08-15    → un día
+   * - GET /adt/etl/backfill-daily-metrics?month=2026-08     → mes completo
+   * - GET /adt/etl/backfill-daily-metrics?year=2026         → año completo
+   * - GET /adt/etl/backfill-daily-metrics?from=2026-08-01&to=2026-08-31
+   *
+   * Los días sin beats fuente (fuera del TTL de 365 días de contractor_activity_15s)
+   * se omiten y conservan su valor anterior; quedan listados en los logs del ADT_MS.
+   *
+   * Corre de forma síncrona: preferí ir mes a mes antes que pedir un año entero.
+   */
+  @Roles(Role.Superadmin)
+  @Get('etl/backfill-daily-metrics')
+  backfillDailyMetrics(
+    @Query('day') day?: string,
+    @Query('month') month?: string,
+    @Query('year') year?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
+    // Fechas de calendario en TZ operativa: se pasan como string crudo, sin
+    // new Date().toISOString() (ver nota en processSessionSummaries).
+    return this.client
+      .send(getMessagePattern('adt.backfillDailyMetrics'), {
+        day: this.queryString(day),
+        month: this.queryString(month),
+        year: this.queryString(year),
+        from: this.queryString(from),
+        to: this.queryString(to),
+      })
+      .pipe(
+        catchError((error) => {
+          throw new RpcException(error);
+        }),
+      );
+  }
+
+  /**
    * Endpoint para ejecutar ETL de resúmenes de sesión manualmente.
    * Modos:
    * - GET /adt/etl/process-session-summaries?sessionId=xxx → solo esa sesión.
    * - GET /adt/etl/process-session-summaries?from=YYYY-MM-DD&to=YYYY-MM-DD → todas las sesiones en ese rango (todos los contractors).
+   * - GET /adt/etl/process-session-summaries?day=YYYY-MM-DD | month=YYYY-MM | year=YYYY → recálculo completo de ese período.
    * - GET /adt/etl/process-session-summaries → modo "all pending" (solo sesiones nuevas que aún no tienen resumen).
    */
   @Roles(Role.Superadmin)
   @Get('etl/process-session-summaries')
   processSessionSummaries(
     @Query('sessionId') sessionId?: string,
+    @Query('day') day?: string,
+    @Query('month') month?: string,
+    @Query('year') year?: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
   ) {
@@ -596,6 +644,9 @@ export class AdtController {
     return this.client
       .send(getMessagePattern('adt.processSessionSummaries'), {
         sessionId,
+        day: this.queryString(day),
+        month: this.queryString(month),
+        year: this.queryString(year),
         from: this.queryString(from),
         to: this.queryString(to),
       })

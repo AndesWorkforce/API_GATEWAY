@@ -55,4 +55,13 @@ export class CreateContractorDto {
   @IsString()
   @IsOptional()
   team_id?: string;
+
+  /**
+   * Hostname (COMPUTERNAME) del equipo asignado. Al instalarse, el agente reporta
+   * el nombre de su máquina y se vincula solo al contratista que lo tenga cargado.
+   * Mandar '' desasigna el equipo.
+   */
+  @IsString()
+  @IsOptional()
+  hostname?: string;
 }

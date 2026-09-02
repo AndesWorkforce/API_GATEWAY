@@ -14,6 +14,7 @@ import {
   HeartbeatAgentDto,
   DecommissionAgentDto,
   SwapAgentsDto,
+  ReportAgentHostnameDto,
 } from './dto/agent.dto';
 
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
@@ -50,6 +51,22 @@ export class AgentsController {
           throw new RpcException(error);
         }),
       );
+  }
+
+  @Throttle({
+    default: {
+      limit: envs.throttle.agent.heartbeat.limit,
+      ttl: envs.throttle.agent.heartbeat.ttl,
+    },
+  })
+  @Public()
+  @Post('report-hostname')
+  reportAgentHostname(@Body() dto: ReportAgentHostnameDto) {
+    return this.client.send(getMessagePattern('reportAgentHostname'), dto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
   }
 
   @Throttle({
