@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Inject } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Inject,
+  UseGuards,
+} from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { Throttle } from '@nestjs/throttler';
 import { catchError } from 'rxjs';
@@ -8,12 +16,14 @@ import { Role } from 'src/common/enums/role.enum';
 import { Public } from 'src/decorators/public.decorator';
 import { AllowClient, Roles } from 'src/decorators/roles.decorator';
 
+import { AgentTokenGuard } from '../guards/agent-token.guard';
 import {
   RegisterAgentNoKeyDto,
   LinkAgentToContractorDto,
   HeartbeatAgentDto,
   DecommissionAgentDto,
   SwapAgentsDto,
+  ReportAgentHostnameDto,
 } from './dto/agent.dto';
 
 @Roles(Role.Superadmin, Role.TeamAdmin, Role.Visualizer)
@@ -58,6 +68,25 @@ export class AgentsController {
       ttl: envs.throttle.agent.heartbeat.ttl,
     },
   })
+  // @Public() salta el AuthGuard de usuario; AgentTokenGuard exige en su lugar
+  // el JWT del agente y verifica que solo pueda operar sobre si mismo.
+  @Public()
+  @UseGuards(AgentTokenGuard)
+  @Post('report-hostname')
+  reportAgentHostname(@Body() dto: ReportAgentHostnameDto) {
+    return this.client.send(getMessagePattern('reportAgentHostname'), dto).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
+
+  @Throttle({
+    default: {
+      limit: envs.throttle.agent.heartbeat.limit,
+      ttl: envs.throttle.agent.heartbeat.ttl,
+    },
+  })
   @Public()
   @Post('heartbeat')
   heartbeatAgent(@Body() heartbeatDto: HeartbeatAgentDto) {
@@ -76,7 +105,10 @@ export class AgentsController {
       ttl: envs.throttle.agent.heartbeat.ttl,
     },
   })
+  // Deshabilita el agente: sin esta guarda, cualquiera con un agentId podia
+  // apagarle el monitoreo a otra persona con un POST sin credenciales.
   @Public()
+  @UseGuards(AgentTokenGuard)
   @Post('decommission')
   decommissionAgent(@Body() dto: DecommissionAgentDto) {
     return this.client.send(getMessagePattern('decommissionAgent'), dto).pipe(

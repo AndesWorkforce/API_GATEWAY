@@ -56,6 +56,14 @@ export class UpdateContractorDto {
   @IsOptional()
   team_id?: string;
 
+  /**
+   * Hostname (COMPUTERNAME) del equipo asignado. Mandar '' desasigna el equipo;
+   * omitir la clave deja el valor actual intacto.
+   */
+  @IsString()
+  @IsOptional()
+  hostname?: string;
+
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;

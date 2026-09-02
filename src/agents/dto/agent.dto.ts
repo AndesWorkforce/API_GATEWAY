@@ -1,6 +1,10 @@
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class RegisterAgentNoKeyDto {
+  /**
+   * Hostname (COMPUTERNAME) del equipo, leído por el agente al instalarse.
+   * Si matchea con Contractor.hostname, el agente se vincula solo.
+   */
   @IsString()
   @IsOptional()
   hostname?: string;
@@ -24,6 +28,16 @@ export class HeartbeatAgentDto {
   @IsString()
   @IsOptional()
   power_state?: string;
+}
+
+export class ReportAgentHostnameDto {
+  @IsString()
+  @IsNotEmpty()
+  agentId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  hostname: string;
 }
 
 export class DecommissionAgentDto {
