@@ -15,7 +15,7 @@ services:
       labels: 
         - "traefik.enable=true"
         - "traefik.docker.network=traefik-public" 
-        - "traefik.http.routers.api-gateway.rule=Host(`api.www.pulse-aw.com`)"
+        - "traefik.http.routers.api-gateway.rule=Host(`api.pulse-aw.com`) || Host(`api.www.pulse-aw.com`)"
         - "traefik.http.routers.api-gateway.entrypoints=websecure"
         - "traefik.http.routers.api-gateway.tls=true"
         - "traefik.http.routers.api-gateway.tls.certresolver=letsencrypt"
@@ -48,6 +48,8 @@ services:
 
       ENVIRONMENT: "${ENVIRONMENT:-production}"
       DEV_LOGS: "${DEV_LOGS:-false}"
+
+      JWT_SECRET_PASSWORD: "${JWT_SECRET_PASSWORD}"
 
       THROTTLE_TTL: "${THROTTLE_TTL:-60000}"
       THROTTLE_LIMIT: "${THROTTLE_LIMIT:-100}"
