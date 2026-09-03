@@ -57,9 +57,20 @@ export class CreateContractorDto {
   team_id?: string;
 
   /**
-   * Hostname (COMPUTERNAME) del equipo asignado. Al instalarse, el agente reporta
-   * el nombre de su máquina y se vincula solo al contratista que lo tenga cargado.
-   * Mandar '' desasigna el equipo.
+   * Equipos (COMPUTERNAME) del contratista. Al instalarse, el agente reporta el
+   * nombre de su maquina y se vincula solo al contratista que la tenga cargada.
+   *
+   * Un contratista puede tener varios equipos, pero cada equipo pertenece a uno
+   * solo. Mandar [] desasigna todos; omitir la clave deja los actuales intactos.
+   */
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  hostnames?: string[];
+
+  /**
+   * @deprecated Usar `hostnames`. Se mantiene para clientes anteriores a que un
+   * contratista pudiera tener mas de un equipo; se trata como lista de uno.
    */
   @IsString()
   @IsOptional()
