@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Body,
   Param,
   Inject,
@@ -183,6 +184,24 @@ export class AgentsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(getMessagePattern('findAgentById'), id).pipe(
+      catchError((error) => {
+        throw new RpcException(error);
+      }),
+    );
+  }
+
+  /**
+   * Borra definitivamente un agente SIN VINCULAR.
+   *
+   * Los agentes vinculados no se borran: tienen métricas históricas asociadas y
+   * su baja correcta es `POST /agents/decommission`, que las preserva. USER_MS
+   * valida esa condición, así que el endpoint no es una puerta trasera para
+   * eliminar agentes con historial.
+   */
+  @Roles(Role.Superadmin)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.client.send(getMessagePattern('removeAgent'), id).pipe(
       catchError((error) => {
         throw new RpcException(error);
       }),
